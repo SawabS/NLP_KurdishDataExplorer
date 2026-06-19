@@ -1,0 +1,206 @@
+% Compile with LuaLaTeX or XeLaTeX (uses biber for the bibliography)
+% Recommended: latexmk -lualatex proposal.tex
+
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{fontspec}
+\usepackage{unicode-math}
+\IfFontExistsTF{Libertinus Serif}
+  {\setmainfont{Libertinus Serif}}
+  {\setmainfont{Noto Serif}}
+\IfFontExistsTF{Libertinus Math}
+  {\setmathfont{Libertinus Math}}
+  {\setmathfont{Noto Sans Math}}
+
+\usepackage{xcolor}
+\definecolor{MainText}{HTML}{1F2933}
+\definecolor{SecondaryText}{HTML}{4B5563}
+\definecolor{Accent}{HTML}{5B718A}
+\definecolor{SoftBeige}{HTML}{E9E2D7}
+\definecolor{PageSoft}{HTML}{F7F6F2}
+\definecolor{HeaderFill}{HTML}{DDE5EA}
+\definecolor{RowGray}{HTML}{F3F4F6}
+\definecolor{RuleGray}{HTML}{C7CDD4}
+
+\usepackage{setspace}
+\setstretch{1.15}
+\usepackage{microtype}
+\emergencystretch=3em
+
+\usepackage{parskip}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+
+\usepackage{titlesec}
+\titleformat{\section}
+  {\Large\bfseries\color{Accent}}
+  {\thesection}{0.75em}{}
+
+\titleformat{\subsection}
+  {\large\bfseries\color{MainText}}
+  {\thesubsection}{0.75em}{}
+
+\titlespacing*{\section}{0pt}{1.4em}{0.55em}
+\titlespacing*{\subsection}{0pt}{1.0em}{0.35em}
+
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{makecell}
+\usepackage{ragged2e}
+
+\arrayrulecolor{RuleGray}
+\renewcommand{\arraystretch}{1.12}
+\setlength{\tabcolsep}{4.5pt}
+
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\newcolumntype{C}{>{\Centering\arraybackslash}X}
+\newcolumntype{R}{>{\RaggedLeft\arraybackslash}X}
+\newcommand{\compacttable}{\small\setlength{\tabcolsep}{4.5pt}\renewcommand{\arraystretch}{1.08}}
+
+\usepackage[most]{tcolorbox}
+\tcbset{
+  colback=PageSoft,
+  colframe=Accent,
+  boxrule=0.5pt,
+  arc=2mm,
+  left=6pt,
+  right=6pt,
+  top=6pt,
+  bottom=6pt
+}
+
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.25em,itemsep=0.25em,topsep=0.25em}
+\setlist[enumerate]{leftmargin=1.35em,itemsep=0.25em,topsep=0.25em}
+
+\usepackage[backend=biber,style=ieee,sorting=nyt,maxbibnames=6]{biblatex}
+\addbibresource{references.bib}
+
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=Accent,
+  urlcolor=Accent,
+  citecolor=Accent,
+  pdftitle={Kurdish Data Explorer Proposal},
+  pdfauthor={Sawab Hussein}
+}
+
+\AtBeginDocument{\color{MainText}}
+
+\begin{document}
+
+% ---------- Title page ----------
+\thispagestyle{empty}
+\begingroup
+\centering
+\vspace*{\stretch{1.1}}
+
+{\color{Accent}\rule{0.55\textwidth}{0.7pt}}\par
+\vspace{1.1em}
+{\fontsize{30}{36}\selectfont\bfseries\color{MainText} Kurdish Data Explorer\par}
+\vspace{0.9em}
+{\large\itshape\color{SecondaryText} An Interactive Topic-Modeling and Exploratory Analysis\\ Tool for Kurdish Sorani Text\par}
+\vspace{1.1em}
+{\color{Accent}\rule{0.55\textwidth}{0.7pt}}\par
+
+\vspace{\stretch{0.9}}
+
+{\large\color{SecondaryText} Project Proposal and Literature Review\par}
+\vspace{0.4em}
+{\color{SecondaryText} Subject: Course Based Project I\par}
+
+\vspace{\stretch{1.0}}
+
+{\color{MainText}\begin{tabular}{r@{\hskip 0.6em}l}
+  {\color{SecondaryText}Student:} & Sawab Hussein \\[0.35em]
+  {\color{SecondaryText}Instructor:} & Dr.\ Dara Sherwani \\[0.35em]
+  {\color{SecondaryText}Date:} & June 20, 2026 \\
+\end{tabular}\par}
+
+\vspace*{\stretch{1.3}}
+\endgroup
+\clearpage
+
+% ---------- Table of contents ----------
+\thispagestyle{empty}
+\tableofcontents
+\clearpage
+
+% ---------- Body ----------
+\section{Introduction}
+
+\subsection{Problem Statement}
+Kurdish remains a low-resource language for natural language processing, despite a growing volume of digital news content in the Sorani dialect. Existing corpora and datasets are often released as flat collections of text that are difficult for students, journalists, and non-specialist researchers to explore at scale. Two persistent obstacles compound this difficulty: orthographic inconsistency across sources and the rich morphology of Sorani, both of which complicate tokenization and statistical analysis. As a result, the thematic structure latent in available Kurdish text is rarely made legible to a human reader without substantial engineering effort. This project addresses that accessibility gap rather than the construction of a new model from scratch.
+
+\subsection{Objectives}
+\begin{enumerate}
+  \item Assemble and normalize a working collection of Sorani news text from an existing, openly published dataset.
+  \item Build a reproducible preprocessing pipeline using established Kurdish language processing tools.
+  \item Apply transformer-based topic modeling to surface coherent themes, and compare it against classical baselines.
+  \item Deliver a deployed, interactive web application that lets users browse topics, categories, and keyword distributions.
+\end{enumerate}
+
+\subsection{Dataset Source}
+The primary dataset is the Kurdish News Dataset Headlines (KNDH), an openly published multiclass collection of Sorani news headlines distributed through \emph{Data in Brief}~\cite{badawiKurdishNewsDataset2023}. Where additional running text is useful for evaluation, the project may draw on the publicly documented AsoSoft text corpus~\cite{veisiKurdishLanguageProcessing2019}. Both sources are used as-is, with provenance preserved.
+
+\subsection{Proposed Methodology}
+The pipeline follows four stages. First, text is normalized and tokenized using the Kurdish Language Processing Toolkit (KLPT)~\cite{ahmadiKLPTKurdishLanguage2020} to address orthographic variation. Second, documents are embedded with multilingual sentence-transformer models. Third, topics are induced with BERTopic, which combines dimensionality reduction and density-based clustering with a class-based TF--IDF representation; this configuration mirrors prior work on morphologically rich, low-resource short text~\cite{medveckiMultilingualTransformerBERTopic2024}. Finally, the induced topics are compared against Latent Dirichlet Allocation and Non-negative Matrix Factorization baselines using topic-coherence measures. The emphasis is on examining which configuration is most suitable within the project scope, not on claiming a universally best method.
+
+\subsection{Deployment Strategy}
+The explorer will be packaged as a Streamlit application and deployed to a free managed host such as Streamlit Community Cloud or Hugging Face Spaces. Precomputed embeddings and fitted topic models will be cached so that the interface remains responsive, allowing users to filter by news category, inspect per-topic keywords, and view document examples without re-running the pipeline.
+
+\subsection{Timeline}
+The course runs for eight weeks in total. The first week involved no project activity, and the second week was devoted to preparing this proposal and literature review, leaving roughly six weeks of active development from the current point at the start of Week~3. The schedule below reflects that reality and is deliberately compact: it concentrates the modeling and evaluation in the middle weeks and reserves the final week for the written report, with the application built in parallel so that deployment is not left until the end.
+
+\begin{table}[htbp]
+\centering
+\compacttable
+\rowcolors{2}{white}{RowGray}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\arraybackslash}p{0.13\textwidth} Y Y}
+\rowcolor{HeaderFill}
+\textbf{Week} & \textbf{Phase} & \textbf{Main Deliverable} \\
+1 & Course onboarding & No project activity \\
+2 & Proposal and literature review & This document \\
+3 & Data acquisition and normalization & Cleaned KNDH collection and KLPT preprocessing scripts \\
+4 & Embedding and topic modeling & Initial BERTopic results \\
+5 & Baselines and evaluation & Coherence comparison against LDA and NMF \\
+6 & Application development & Working Streamlit explorer \\
+7 & Deployment and refinement & Hosted, responsive application \\
+8 & Documentation and submission & Final written report \\
+\end{tabularx}
+\end{table}
+
+\section{Literature Review}
+
+The proposed work sits at the intersection of three strands of research: the state of Kurdish language resources, the maturation of processing tools for the language, and the transfer of transformer-based methods to low-resource and morphologically rich settings. This review surveys representative work in each strand and situates the project within the gaps they identify.
+
+\subsection{Kurdish Language Resources and Corpora}
+A recurring theme in the Kurdish NLP literature is the scarcity of well-organized, machine-readable text. Azzat, Jacksi, and Ali~\cite{azzatKurdishLanguageCorpus2023} survey the available textual corpora across Kurdish dialects and conclude that, despite growing online content, the language suffers from a lack of unified orthography and annotated resources. They frame machine-readable text as the first step toward applications such as information retrieval and recommendation, and explicitly call for better-organized corpora. Crucially, their review does not only catalogue what exists; it also enumerates open problems, including dialectal fragmentation and the absence of shared annotation standards, and it suggests future directions for the field. These observations motivate the present project's emphasis on normalization and on making existing text easier to explore, rather than on collecting new data: if usable corpora already exist but remain hard to inspect, an accessible explorer addresses a concrete and acknowledged need.
+
+Veisi, MohammadAmini, and Hosseini~\cite{veisiKurdishLanguageProcessing2019} report the practical experience of building the AsoSoft text corpus, documenting the collection and preprocessing steps required to turn heterogeneous Sorani text into a usable resource. Their account is valuable precisely because it is procedural: they describe the encoding conversions, character normalization, and filtering decisions that any real Kurdish pipeline must confront. The persistence of inconsistent character encodings and orthography across sources, which they treat as a central obstacle, directly informs the preprocessing stage proposed here and provides a concrete precedent for the kinds of cleaning operations the pipeline must perform before any modeling can be trusted.
+
+\subsection{Processing Tools for Kurdish}
+Tooling has begun to close some of the resource gap. Ahmadi~\cite{ahmadiKLPTKurdishLanguage2020} introduces the Kurdish Language Processing Toolkit (KLPT), an open-source library that organizes preprocessing, tokenization, and related utilities into coherent modules covering more than one Kurdish dialect. By packaging normalization and segmentation behind a documented interface, KLPT lets downstream work treat orthographic cleanup as a configured step rather than a bespoke effort. It is significant for this project because it offers a reproducible, citable foundation for text normalization, reducing the need to reimplement low-level processing and allowing the work to concentrate on analysis and presentation. Adopting an established toolkit also aligns with the cautious engineering stance of building on standard components rather than from scratch, and it improves the reproducibility of the eventual pipeline because the preprocessing behavior is fixed by a versioned dependency.
+
+\subsection{Datasets and Text Classification in Kurdish}
+The dataset underpinning this project comes from work on Kurdish news classification. Badawi and colleagues~\cite{badawiKurdishNewsDataset2023} release the Kurdish News Dataset Headlines (KNDH), a multiclass collection of Sorani headlines intended to support classification research and published with documentation in a data-descriptor venue. Its categorical structure is valuable for an exploratory tool because it provides human-interpretable labels against which discovered topics can be compared, offering a check on whether unsupervised themes correspond to recognizable news domains. Headlines are also a deliberately challenging form of short text: they are terse, often elliptical, and carry little redundant context, which makes them a realistic and informative testbed for the short-text topic-modeling methods adopted later in this proposal.
+
+Transformer architectures have shown that supervised Kurdish text tasks are tractable even with limited data. Omer and Hassani~\cite{omerIdiomDetectionSorani2025} treat idiom detection in Sorani as a text-classification problem, constructing a dataset of 10,580 sentences covering 101 idioms and comparing a fine-tuned KuBERT transformer against an RCNN and a BiLSTM. The transformer reached close to 99\% accuracy, well above the recurrent baselines, which the authors read as evidence that transformer architectures transfer effectively to low-resource Kurdish. This finding supports the choice of transformer-based embeddings in the present methodology.
+
+\subsection{Transformers in Low-Resource and Morphologically Rich Settings}
+Beyond classification, transformers have been applied to generation and fine-grained analysis in Kurdish. Badawi~\cite{badawiTransformerBasedNeuralNetwork2023} presents a transformer-based neural machine translation model for Sorani, combining existing parallel corpora and reporting a BLEU score of 0.45. While the task differs from topic modeling, the study demonstrates that attention-based models can be trained productively on aggregated Kurdish data. Bharati and colleagues~\cite{bharatiMorphologicalFeatureExtraction2026} pursue fine-grained Sorani dialect identification through a hybrid transformer-linguistic approach that injects morphological features into the model. Their work underscores both the morphological richness of Sorani and the value of pairing neural representations with linguistic preprocessing, which is precisely the combination this project adopts through KLPT and transformer embeddings.
+
+The methodological blueprint for the analysis comes from outside Kurdish. Medvecki and colleagues~\cite{medveckiMultilingualTransformerBERTopic2024} apply BERTopic with three multilingual embedding models to short text in Serbian, another morphologically rich, low-resource language, and compare it against LDA and NMF at two levels of preprocessing. They report that, with appropriate parameter settings, BERTopic yields more informative topics than the classical methods and that the performance drop under partial rather than full preprocessing is minimal. This robustness matters for Kurdish, where exhaustive preprocessing is itself difficult, and it suggests that a transformer-based topic model can tolerate the imperfect normalization that Kurdish text invariably entails. The authors explicitly note that their findings can inform work on other morphologically rich low-resource languages and short text, a description that fits Sorani news headlines well and provides direct justification for the proposed pipeline, its multilingual embeddings, and its choice of LDA and NMF as comparison baselines rather than as the primary method.
+
+\subsection{Summary}
+Taken together, these studies establish that Kurdish has usable but under-explored datasets~\cite{badawiKurdishNewsDataset2023,veisiKurdishLanguageProcessing2019}, maturing preprocessing tools~\cite{ahmadiKLPTKurdishLanguage2020}, and a demonstrated capacity to support transformer-based methods~\cite{omerIdiomDetectionSorani2025,badawiTransformerBasedNeuralNetwork2023,bharatiMorphologicalFeatureExtraction2026}, while a transferable topic-modeling recipe exists for comparable languages~\cite{medveckiMultilingualTransformerBERTopic2024}. What remains underdeveloped, and what the surveyed reviews call for~\cite{azzatKurdishLanguageCorpus2023}, is accessible tooling that lets a reader explore the thematic structure of Kurdish text directly. The Kurdish Data Explorer is positioned to address that gap within a modest, well-defined project scope.
+
+\clearpage
+\printbibliography[heading=bibnumbered,title={References}]
+
+\end{document}

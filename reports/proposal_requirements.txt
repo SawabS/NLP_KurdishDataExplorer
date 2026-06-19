@@ -1,0 +1,22 @@
+Each student is required to submit an individual written assignment, covering the following:
+
+
+
+Introduction Section (500 words)
+
+Project title
+Problem statement
+Objectives
+Dataset source
+Proposed methodology
+Deployment strategy
+Timeline
+
+
+Literature Review Section (1,000 words)
+
+Minimum 5 academic papers/relevant project
+IEEE/ACM/Springer/Elsevier sources preferred
+
+
+Note: Citation and referencing are required.
