@@ -139,20 +139,20 @@ Kurdish remains a low-resource language for natural language processing, despite
 
 \subsection{Objectives}
 \begin{enumerate}
-  \item Assemble and normalize a working collection of Sorani news text from an existing, openly published dataset.
+  \item Assemble and normalize a working collection of Kurdish Sorani text by drawing on established, openly published data assets that together span both short headlines and longer running text.
   \item Build a reproducible preprocessing pipeline using established Kurdish language processing tools.
   \item Apply transformer-based topic modeling to surface coherent themes, and compare it against classical baselines.
   \item Deliver a deployed, interactive web application that lets users browse topics, categories, and keyword distributions.
 \end{enumerate}
 
 \subsection{Dataset Source}
-The primary dataset is the Kurdish News Dataset Headlines (KNDH), an openly published multiclass collection of Sorani news headlines distributed through \emph{Data in Brief}~\cite{badawiKurdishNewsDataset2023}. Where additional running text is useful for evaluation, the project may draw on the publicly documented AsoSoft text corpus~\cite{veisiKurdishLanguageProcessing2019}. Both sources are used as-is, with provenance preserved.
+The project draws on two complementary data assets. The first is the Kurdish News Dataset Headlines (KNDH), an openly published multiclass collection of Sorani headlines distributed through \emph{Data in Brief}~\cite{badawiKurdishNewsDataset2023}, which contributes short, labelled text. The second is the publicly documented AsoSoft text corpus~\cite{veisiKurdishLanguageProcessing2019}, which contributes longer, general-domain running text and broadens coverage beyond a single genre. Both sources are used as-is, with provenance preserved.
 
 \subsection{Proposed Methodology}
 The pipeline follows four stages. First, text is normalized and tokenized using the Kurdish Language Processing Toolkit (KLPT)~\cite{ahmadiKLPTKurdishLanguage2020} to address orthographic variation. Second, documents are embedded with multilingual sentence-transformer models. Third, topics are induced with BERTopic, which combines dimensionality reduction and density-based clustering with a class-based TF--IDF representation; this configuration mirrors prior work on morphologically rich, low-resource short text~\cite{medveckiMultilingualTransformerBERTopic2024}. Finally, the induced topics are compared against Latent Dirichlet Allocation and Non-negative Matrix Factorization baselines using topic-coherence measures. The emphasis is on examining which configuration is most suitable within the project scope, not on claiming a universally best method.
 
 \subsection{Deployment Strategy}
-The explorer will be packaged as a Streamlit application and deployed to a free managed host such as Streamlit Community Cloud or Hugging Face Spaces. Precomputed embeddings and fitted topic models will be cached so that the interface remains responsive, allowing users to filter by news category, inspect per-topic keywords, and view document examples without re-running the pipeline.
+The explorer will be packaged as a Streamlit application and deployed to a free managed host such as Streamlit Community Cloud or Hugging Face Spaces. Precomputed embeddings and fitted topic models will be cached so that the interface remains responsive, allowing users to filter by source or category, inspect per-topic keywords, and view document examples without re-running the pipeline.
 
 \subsection{Timeline}
 The course runs for eight weeks in total. The first week involved no project activity, and the second week was devoted to preparing this proposal and literature review, leaving roughly six weeks of active development from the current point at the start of Week~3. The schedule below reflects that reality and is deliberately compact: it concentrates the modeling and evaluation in the middle weeks and reserves the final week for the written report, with the application built in parallel so that deployment is not left until the end.
