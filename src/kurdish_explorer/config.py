@@ -1,0 +1,76 @@
+"""Central configuration: paths, model registry, and default parameters.
+
+All paths are derived from the repository root so the package works regardless
+of the current working directory or deployment host.
+"""
+from __future__ import annotations
+
+from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# Paths
+# ---------------------------------------------------------------------------
+ROOT = Path(__file__).resolve().parents[2]
+DATA_DIR = ROOT / "data"
+RAW_DIR = DATA_DIR / "raw"
+PROCESSED_DIR = DATA_DIR / "processed"
+ARTIFACTS_DIR = ROOT / "artifacts"
+EMBED_CACHE_DIR = ARTIFACTS_DIR / "embeddings"
+
+for _d in (PROCESSED_DIR, ARTIFACTS_DIR, EMBED_CACHE_DIR):
+    _d.mkdir(parents=True, exist_ok=True)
+
+KNDH_PARQUET = PROCESSED_DIR / "kndh.parquet"
+ASOSOFT_PARQUET = PROCESSED_DIR / "asosoft_small.parquet"
+
+# ---------------------------------------------------------------------------
+# Datasets
+# ---------------------------------------------------------------------------
+# The five balanced KNDH categories (confirmed from the released data).
+KNDH_CATEGORIES = ["economic", "health", "science & technology", "social", "sport"]
+
+# ---------------------------------------------------------------------------
+# Embedding model registry
+# ---------------------------------------------------------------------------
+# The three multilingual sentence-transformers from Medvecki et al. (2024),
+# plus multilingual-e5-base as a strong additional option.
+EMBEDDING_MODELS: dict[str, str] = {
+    "minilm": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "distiluse": "sentence-transformers/distiluse-base-multilingual-cased-v2",
+    "mpnet": "sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
+    "e5-base": "intfloat/multilingual-e5-base",
+    # Domain-adapted (TSDAE) MiniLM — produced by scripts/finetune_tsdae.py.
+    "kdx-minilm-tsdae": str(ARTIFACTS_DIR / "models" / "kdx-minilm-tsdae"),
+}
+DEFAULT_EMBEDDING_MODEL = "minilm"
+
+# ---------------------------------------------------------------------------
+# Modeling defaults
+# ---------------------------------------------------------------------------
+SEED = 42
+
+# UMAP (dimensionality reduction before clustering)
+UMAP_PARAMS = dict(n_neighbors=15, n_components=5, min_dist=0.0, metric="cosine")
+
+# HDBSCAN (density-based clustering). Tuned on full KNDH (see scripts/tune_bertopic.py):
+# larger min_cluster_size -> fewer, more diverse, better label-aligned topics; a low
+# min_samples keeps native outliers down before c-TF-IDF outlier reassignment.
+HDBSCAN_PARAMS = dict(min_cluster_size=250, min_samples=10, metric="euclidean", prediction_data=True)
+
+# Token pattern keeps Unicode word characters (works for Arabic-script Kurdish).
+TOKEN_PATTERN = r"(?u)\b\w\w+\b"
+
+# BERTopic c-TF-IDF runs its vectorizer over *grouped per-topic* documents (one
+# concatenated doc per topic), so min_df must stay tiny and max_df off — otherwise
+# keywords collapse to only words shared across many topics.
+CTFIDF_VECTORIZER_PARAMS = dict(token_pattern=TOKEN_PATTERN, min_df=1, ngram_range=(1, 1))
+
+# LDA/NMF baselines vectorize the *full* document set, where corpus-level df
+# pruning is appropriate.
+BASELINE_VECTORIZER_PARAMS = dict(token_pattern=TOKEN_PATTERN, min_df=5, max_df=0.5, ngram_range=(1, 1))
+
+# Number of topics for the LDA/NMF baselines (BERTopic discovers its own count).
+N_BASELINE_TOPICS = 20
+
+# Words per topic used for keyword display and coherence scoring.
+TOP_N_WORDS = 10
