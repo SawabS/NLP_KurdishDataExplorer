@@ -76,3 +76,61 @@ def topic_words(model, top_n: int = config.TOP_N_WORDS) -> dict[int, list[tuple[
             continue
         out[int(tid)] = [(w, float(s)) for w, s in model.get_topic(tid)[:top_n]]
     return out
+
+
+# ---------------------------------------------------------------------------
+# Hierarchical topics (the drill-down tree)
+# ---------------------------------------------------------------------------
+def hierarchy_nodes(model, docs: list[str], topic_info) -> list[dict]:
+    """Compute BERTopic's topic hierarchy and flatten it into tree nodes.
+
+    BERTopic merges topics pairwise by c-TF-IDF distance, producing a binary
+    tree: each *internal* node is a merge of two children, each *leaf* is an
+    original topic. We convert that into a parent/child node table the app can
+    render as an icicle / treemap / sunburst (Plotly ``branchvalues="total"``),
+    so a user can start at a broad cluster and drill down into ever more
+    specific sub-topics.
+
+    Each node carries its document ``count`` (leaf = topic size; internal =
+    sum of descendant leaf sizes), a readable ``label`` (top keywords), and a
+    ``topic_id`` for leaves so the app can pull example documents.
+    """
+    hier = model.hierarchical_topics(docs)
+    counts = {int(t): int(c) for t, c in zip(topic_info["Topic"], topic_info["Count"])}
+
+    info: dict[int, dict] = {}
+    child_to_parent: dict[int, int] = {}
+    for _, row in hier.iterrows():
+        p = int(row["Parent_ID"])
+        cl, cr = int(row["Child_Left_ID"]), int(row["Child_Right_ID"])
+        leaf_topics = [int(t) for t in row["Topics"]]
+        info[p] = {"name": str(row["Parent_Name"]), "topics": leaf_topics}
+        info.setdefault(cl, {"name": str(row["Child_Left_Name"]), "topics": None})
+        info.setdefault(cr, {"name": str(row["Child_Right_Name"]), "topics": None})
+        child_to_parent[cl] = p
+        child_to_parent[cr] = p
+
+    nodes: list[dict] = []
+    for nid, meta in info.items():
+        is_leaf = nid in counts
+        if is_leaf:
+            count = counts[nid]
+        else:
+            count = sum(counts.get(t, 0) for t in (meta["topics"] or []))
+        parent = child_to_parent.get(nid)
+        nodes.append({
+            "id": str(nid),
+            "parent": "" if parent is None else str(parent),
+            "label": _short_label(meta["name"]),
+            "full_label": meta["name"],
+            "count": count,
+            "is_leaf": is_leaf,
+            "topic_id": nid if is_leaf else None,
+        })
+    return nodes
+
+
+def _short_label(name: str, max_words: int = 4) -> str:
+    """Trim a BERTopic node name ('12_word_word_word') to a few readable words."""
+    parts = [p for p in str(name).replace("_", " ").split() if not p.isdigit()]
+    return " · ".join(parts[:max_words]) if parts else str(name)

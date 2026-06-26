@@ -112,9 +112,13 @@ final number substantially — see below.)
 
 | Model | NPMI | Topics | Notes |
 |---|---|---|---|
-| **BERTopic (tuned)** | **-0.053** | 46 | 32 outliers (0.06%); beats LDA, near NMF |
+| **BERTopic (tuned)** | **-0.056** | 48 | 36 outliers (0.07%); beats LDA, near NMF |
 | LDA | -0.149 | 20 | |
 | NMF | +0.107 | 20 | NPMI structurally favors bag-of-words |
+
+(Numbers are from the shipped `kndh__minilm` artifact. Run-to-run topic counts
+move by a few topics because UMAP/HDBSCAN are stochastic; the artifact in the repo
+is the source of truth the app serves.)
 
 Interpretation: NPMI inherently favors LDA/NMF (they optimize word co-occurrence);
 [[BERTopic]] wins on diversity, near-zero outliers, semantic coherence, and not
@@ -130,33 +134,86 @@ Rationale: improve Sorani representation while keeping the embedder general-purp
 for the size-unbounded goal (an alternative, supervised fine-tuning on the 5 KNDH
 labels, was rejected as it would bias the generic engine).
 
-Comparison on full KNDH (production configs, post outlier-reduction):
+Comparison on full KNDH (production configs, post outlier-reduction; the shipped
+artifacts):
 
-| Model (tuned) | Topics | NPMI | Diversity | NMI vs categories |
+| Model (tuned) | Topics | Outliers | NPMI | Diversity | NMI vs categories |
+|---|---|---|---|---|---|
+| Base MiniLM (mcs=250) | 48 | 36 | -0.056 | 0.838 | **0.224** |
+| KDX-MiniLM-TSDAE (mcs=50) | 45 | **2** | **+0.038** | **0.847** | 0.159 |
+
+**Finding (honest trade-off):** at comparable granularity, TSDAE wins on every
+*intrinsic* metric — coherence (NPMI -0.056 → +0.038, now positive and beating LDA),
+diversity (0.838 → 0.847), and especially cluster confidence (native HDBSCAN
+outliers fall sharply; only 2 documents remain unassigned vs 36). But it *reduces
+alignment with the 5 human news categories* (NMI 0.224 → 0.159), because the
+unsupervised reconstruction objective does not track those domains. It also needs
+its own granularity (mcs=250 gave too few topics on the denser space; re-tuned to
+50). Neither model dominates the human-label axis, so both ship and are selectable
+in the app — base MiniLM for category-faithful exploration, the fine-tuned model for
+finer / more coherent semantic clustering.
+
+## Topic hierarchy (the drill-down tree)
+
+The headline app idea: instead of a flat list, topics are shown as a **hierarchy
+the user can drill into** — start at a broad cluster (e.g. politics, sport), click
+to reveal its sub-topics, and keep going until leaves are specific. Implemented on
+top of BERTopic's `hierarchical_topics(docs)`, which merges topics pairwise by
+c-TF-IDF distance into a binary tree. `topics.hierarchy_nodes()` flattens that tree
+into parent/child nodes, each carrying a document `count` (leaf = topic size,
+internal = sum of descendant leaf sizes), a readable keyword `label`, and a
+`topic_id` for leaves. Saved as `hierarchy.json` per run.
+
+The app renders it as an interactive Plotly **icicle / treemap / sunburst**
+(`branchvalues="total"`, so box size = document count). Hovering a node shows its
+keywords, document count, and a sample snippet for intuition; a leaf inspector below
+shows "how many documents are here", the keyword bars, and example texts. The
+**distribution** (top topics + topic×category heatmap) sits directly below the tree.
+
+## Source isolation and transparency
+
+The user explores **one source at a time and sources are never mixed** unless they
+ask. Navigation is source-first: pick a corpus (KNDH, AsoSoft, or an upload), then an
+embedding model; the run key is `<source>__<model>` so each run only ever contains
+one corpus's documents. Every source shows a provenance banner (what it is, size,
+labeled/unlabeled, origin). Shipped runs:
+
+| Source | Docs | Topics | NPMI | Notes |
 |---|---|---|---|---|
-| Base MiniLM (mcs=250) | 44 | -0.038 | 0.864 | **0.232** |
-| KDX-MiniLM-TSDAE (mcs=50) | 88 | **+0.009** | 0.855 | 0.175 |
+| `kndh__minilm` | 50,000 | 48 | -0.056 | labeled, 5 categories |
+| `kndh__kdx-minilm-tsdae` | 50,000 | 45 | +0.038 | labeled, fine-tuned embedder |
+| `asosoft__minilm` | 7,108 | 47 | +0.081 | unlabeled running text (mcs=25) |
 
-**Finding (honest trade-off):** TSDAE *improved coherence* (NPMI turned positive,
-beating LDA) and produced a denser space (native HDBSCAN outliers fell from ~30–50%
-to ~5–16%), but *reduced category alignment* (NMI 0.232 → 0.175) since its
-reconstruction objective does not track the 5 news domains. It also needed its own
-granularity (mcs=250 gave only 7 topics; re-tuned to 50). Neither model dominates,
-so both ship and are selectable in the app — base MiniLM for category-faithful
-exploration, the fine-tuned model for finer/more-coherent semantic clustering.
+## Generic upload engine (size-unbounded goal)
+
+`app/upload_page.py` + `pipeline.run_on_texts()` let a user point the explorer at
+**their own text** — a `.txt` file (split by line or paragraph) or a tabular file
+(`.csv/.tsv/.xlsx/.parquet`, choosing a text column and optional label column). The
+result becomes its own isolated source with the same tree / map / baselines.
+
+Scaling provisions for hundreds-of-MB inputs:
+
+- **Server-path input** bypasses the browser upload cap (`server.maxUploadSize`
+  raised to 2 GB in `.streamlit/config.toml`) and reads the file directly off disk.
+- Files are **streamed line-by-line**, not loaded twice into memory.
+- A **"documents to embed" cap** samples very large corpora to a workable size for a
+  live GPU run; the full-corpus path (memory-mapped embeddings, online clustering) is
+  the offline `run_pipeline` script — see `docs/ARCHITECTURE.md`. Topic stats always
+  reflect whatever was embedded.
 
 ## Application
 
-`app/streamlit_app.py` reads precomputed artifacts (no model refit) and offers
-tabs: Topics (table + MMR keyword bars + example docs), Map (2D UMAP scatter,
-point-sampled for scale), Distributions (topic sizes, topic×category heatmap),
-Baselines (NPMI comparison + LDA/NMF keywords).
+`app/streamlit_app.py` reads precomputed artifacts (no model refit). Two modes:
+**Explore a source** (source-first nav → Topic tree, Topics table, Map, Baselines)
+and **Upload & explore** (the generic engine above).
 
 ## Reproducibility
 
 ```bash
 conda run -n ai python scripts/prepare_data.py
-conda run -n ai python scripts/run_pipeline.py --source kndh --model minilm
+conda run -n ai python scripts/run_pipeline.py --source kndh --model minilm --min-cluster-size 250
+conda run -n ai python scripts/run_pipeline.py --source kndh --model kdx-minilm-tsdae --min-cluster-size 50
+conda run -n ai python scripts/run_pipeline.py --source asosoft --model minilm --normalize --min-cluster-size 25
 conda run -n ai python scripts/tune_bertopic.py --model minilm
 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
   conda run -n ai python scripts/finetune_tsdae.py --base minilm --max-sentences 110000 --batch-size 8
@@ -175,3 +232,7 @@ conda run -n ai streamlit run app/streamlit_app.py
 
 - 2026-06-26: Initial implementation record (setup, data, tuning, baselines, app);
   TSDAE fine-tuning launched, comparison numbers pending.
+- 2026-06-26: Added the drill-down topic hierarchy, source-first navigation (no
+  mixing) with an AsoSoft run, and the generic upload engine. Regenerated all
+  artifacts with `hierarchy.json`; refreshed comparison numbers to match the shipped
+  runs (base MiniLM 48 topics / NPMI -0.056 / NMI 0.224; TSDAE 45 / +0.038 / 0.159).

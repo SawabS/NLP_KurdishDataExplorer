@@ -1,5 +1,29 @@
 # Wiki Log
 
+## [2026-06-26] build | Drill-down topic tree, source isolation, and upload engine
+
+Three user-requested features for the demo, all documented in
+[[Implementation and Methodology]]:
+
+- **Drill-down topic hierarchy.** Topics are now an interactive tree
+  (icicle / treemap / sunburst) built from BERTopic `hierarchical_topics`: click a
+  broad cluster to reveal sub-topics; box size = document count; hover shows
+  keywords + count + a sample; a leaf inspector shows counts and example texts, with
+  the distribution placed directly below. New `topics.hierarchy_nodes()` +
+  `hierarchy.json` artifact.
+- **Source-first navigation, no mixing.** The app picks a *source* then a model;
+  each run is one corpus only, with a provenance banner. Added an explorable
+  **AsoSoft** run (7,108 docs, 47 topics, NPMI +0.081, mcs=25) alongside the two
+  KNDH runs.
+- **Generic upload engine.** `app/upload_page.py` + `pipeline.run_on_texts()` accept
+  a `.txt` (line/paragraph) or table (`.csv/.tsv/.xlsx/.parquet`, choose column);
+  server-path input + streamed reads + a sample cap target hundreds-of-MB inputs.
+
+Regenerated all artifacts with hierarchy and refreshed the comparison numbers to the
+shipped runs: base MiniLM 48 topics / NPMI -0.056 / NMI 0.224; TSDAE 45 / +0.038 /
+NMI 0.159 (TSDAE now wins coherence, diversity, and outliers; base wins label
+alignment). Numbers in [[KDX-MiniLM-TSDAE (fine-tuned embedder)]] updated to match.
+
 ## [2026-06-26] build | Pipeline implementation, BERTopic tuning, and TSDAE fine-tuning
 
 Documented in full at [[Implementation and Methodology]]. Summary of work done:

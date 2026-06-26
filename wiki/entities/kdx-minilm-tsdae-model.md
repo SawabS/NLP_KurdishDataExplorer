@@ -48,19 +48,21 @@ Training converged in ~45 min (train_loss 11.54). Evaluated by re-running the fu
 KNDH pipeline and comparing against base MiniLM (production configs, post
 outlier-reduction):
 
-| Model (tuned) | Topics | NPMI | Diversity | NMI vs categories |
-|---|---|---|---|---|
-| Base MiniLM (`min_cluster_size=250`) | 44 | -0.038 | 0.864 | **0.232** |
-| **KDX-MiniLM-TSDAE** (`min_cluster_size=50`) | 88 | **+0.009** | 0.855 | 0.175 |
+| Model (tuned) | Topics | Outliers | NPMI | Diversity | NMI vs categories |
+|---|---|---|---|---|---|
+| Base MiniLM (`min_cluster_size=250`) | 48 | 36 | -0.056 | 0.838 | **0.224** |
+| **KDX-MiniLM-TSDAE** (`min_cluster_size=50`) | 45 | **2** | **+0.038** | **0.847** | 0.159 |
 
-**Honest finding (a trade-off, not a clean win):** TSDAE adaptation *improved*
-coherence (NPMI -0.038 → +0.009, now positive and beating LDA) and produced a
-denser embedding space (HDBSCAN clusters far more confidently — native outliers
-dropped from ~30–50% to ~5–16% in the sweeps). But it *reduced* alignment with the
-5 human news categories (NMI 0.232 → 0.175), because the unsupervised reconstruction
-objective does not track those domains. Different embedding geometry also needs its
-own granularity: the same HDBSCAN setting that gives base MiniLM 44 topics yields
-only 7 here, so it was re-tuned to `min_cluster_size=50`.
+**Honest finding (a trade-off, not a clean win):** at comparable granularity, TSDAE
+adaptation *wins on every intrinsic metric* — coherence (NPMI -0.056 → +0.038, now
+positive and beating LDA), diversity (0.838 → 0.847), and cluster confidence (only 2
+documents stay unassigned vs 36; native HDBSCAN outliers drop sharply in the sweeps).
+But it *reduces* alignment with the 5 human news categories (NMI 0.224 → 0.159),
+because the unsupervised reconstruction objective does not track those domains.
+Different embedding geometry also needs its own granularity: the same HDBSCAN setting
+that gives base MiniLM its topics yields too few here, so it was re-tuned to
+`min_cluster_size=50`. (These are the shipped artifacts; topic counts move a few
+between runs because UMAP/HDBSCAN are stochastic.)
 
 Practical guidance: base MiniLM for category-faithful exploration; KDX-MiniLM-TSDAE
 for finer, more coherent semantic clustering. Both are selectable in the app.
