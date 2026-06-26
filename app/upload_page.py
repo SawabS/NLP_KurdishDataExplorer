@@ -89,7 +89,7 @@ def _peek_columns(path: Path) -> list[str]:
 
 
 def render_upload() -> None:
-    st.title("⬆️ Upload & explore your own text")
+    st.title("Upload & explore your own text")
     st.caption("Point the explorer at any text: a dataset's text column or a raw text file "
                "(supports very large files via the server-path option). It becomes its own "
                "isolated source; nothing is mixed with the built-in corpora.")
@@ -208,4 +208,4 @@ def render_upload() -> None:
                f"NPMI: {res.coherence.get('BERTopic', float('nan')):.3f}")
     st.cache_data.clear()
     st.info(f"Switch **Mode → Explore a source** and pick source **`{run_id}`** "
-            "to browse the topic tree, map, and examples.", icon="✅")
+            "to browse the topic tree, map, and examples.")

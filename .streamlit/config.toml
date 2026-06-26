@@ -8,4 +8,4 @@ maxMessageSize = 2000
 # so both light and dark themes work and are user-toggleable. primaryColor is
 # theme-neutral and keeps the brand accent consistent across both.
 [theme]
-primaryColor = "#3182bd"
+primaryColor = "#6b9bd1"

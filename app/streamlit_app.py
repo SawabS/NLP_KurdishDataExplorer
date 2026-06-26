@@ -16,6 +16,7 @@ Design principles the user asked for:
 """
 from __future__ import annotations
 
+import html
 import sys
 from pathlib import Path
 
@@ -23,10 +24,12 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+_APP_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(_APP_DIR))                 # so sibling modules (upload_page) import
+sys.path.insert(0, str(_APP_DIR.parent / "src"))  # so the kurdish_explorer package imports
 from kurdish_explorer import pipeline  # noqa: E402
 
-st.set_page_config(page_title="Kurdish Data Explorer", page_icon="📰", layout="wide")
+st.set_page_config(page_title="Kurdish Data Explorer", layout="wide")
 
 # Human-readable provenance shown next to each source so users know what they
 # are exploring and never confuse one corpus with another.
@@ -46,9 +49,23 @@ SOURCE_INFO = {
     },
 }
 
-# Qualitative palette for category coloring (readable in both themes).
-_CAT_PALETTE = px.colors.qualitative.Set2
-_GROUP_COLOR = "#9aa7b3"  # neutral grey for internal (non-leaf) tree nodes
+# Soft pastel palette for category coloring (readable in both themes).
+_CAT_PALETTE = px.colors.qualitative.Pastel
+_LEAF_COLOR = "#8fb8e8"   # pastel blue for unlabeled leaves
+_GROUP_COLOR = "#b7c0cc"  # soft neutral grey for internal (non-leaf) tree nodes
+
+
+def category_color_map(categories) -> dict:
+    """Stable category -> pastel color, so a label looks the same in every chart.
+
+    Sorting the real categories keeps colors consistent run-to-run; the synthetic
+    tree placeholders ('(group)', '(unlabeled)') always fall back to neutral grey.
+    """
+    cats = sorted(c for c in set(categories) if c not in ("(group)", "(unlabeled)"))
+    cmap = {c: _CAT_PALETTE[i % len(_CAT_PALETTE)] for i, c in enumerate(cats)}
+    cmap["(group)"] = _GROUP_COLOR
+    cmap["(unlabeled)"] = _GROUP_COLOR
+    return cmap
 
 
 def source_meta(source: str) -> dict:
@@ -75,28 +92,209 @@ def _load(run: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Theme-aware chart styling
+# Theming: a visible in-app Light/Dark toggle (Streamlit 1.58 has no runtime
+# theme setter, so we paint the page with CSS and match every chart to it).
 # ---------------------------------------------------------------------------
-def _theme_type() -> str:
-    """Active Streamlit theme ('light' or 'dark'); robust to API quirks."""
-    try:
-        return st.context.theme.type or "light"
-    except Exception:
-        return "light"
+# Soft pastel palettes, tuned for contrast (text passes WCAG AA on its surface
+# in both modes). `th`/`zebra`/`hover`/`soft` drive the custom HTML tables.
+THEMES = {
+    "Light": dict(
+        bg="#fbfcfe", fg="#2b3039", muted="#6b7280",
+        sidebar="#f4f6fb", card="#ffffff", input="#ffffff",
+        border="#e4e8f1", soft="#eef1f7", header="#eef2fb", alert="#eef4fc",
+        accent="#6b9bd1", th="#e9eefb", zebra="#f7f9fd", hover="#eef4ff",
+    ),
+    "Dark": dict(
+        bg="#171a23", fg="#e7eaf2", muted="#9aa3b5",
+        sidebar="#1b1f2b", card="#1e2230", input="#232838", border="#2f3547",
+        soft="#272c3a", header="#232838", alert="#1c2533",
+        accent="#9db8e8", th="#262b3b", zebra="#1b1f2b", hover="#2a3042",
+    ),
+}
+
+
+def current_theme() -> str:
+    return st.session_state.get("ui_theme") or "Light"
+
+
+def _flip_theme() -> None:
+    st.session_state.ui_theme = "Dark" if current_theme() == "Light" else "Light"
+
+
+def render_theme_toggle() -> None:
+    """A small borderless icon button (top-right) that flips light/dark."""
+    if "ui_theme" not in st.session_state:
+        st.session_state.ui_theme = "Light"
+    light = current_theme() == "Light"
+    icon = ":material/dark_mode:" if light else ":material/light_mode:"
+    tip = "Switch to dark theme" if light else "Switch to light theme"
+    st.button(icon, key="theme_toggle", help=tip, on_click=_flip_theme)
+
+
+def render_table(df: pd.DataFrame, height: int = 320, rename: dict | None = None) -> None:
+    """Render a DataFrame as a fully theme-controlled, scrollable HTML table.
+
+    Streamlit's ``st.dataframe`` is a canvas grid that ignores page CSS, so it
+    never matched the theme. This emits semantic HTML styled by the classes in
+    ``apply_theme`` (pastel header, zebra rows, sticky header) and uses
+    ``dir="auto"`` so Sorani (Arabic-script) renders right-to-left correctly.
+    """
+    show = df.rename(columns=rename) if rename else df
+    head = "".join(f"<th>{html.escape(str(c))}</th>" for c in show.columns)
+    body = []
+    for _, row in show.iterrows():
+        cells = "".join(
+            f"<td dir='auto'>{'' if pd.isna(v) else html.escape(str(v))}</td>" for v in row
+        )
+        body.append(f"<tr>{cells}</tr>")
+    st.markdown(
+        f"<div class='kdx-twrap' style='max-height:{height}px'>"
+        f"<table class='kdx-table'><thead><tr>{head}</tr></thead>"
+        f"<tbody>{''.join(body)}</tbody></table></div>",
+        unsafe_allow_html=True,
+    )
+
+
+def apply_theme(mode: str) -> None:
+    """Paint the whole page (chrome, widgets, tables, charts) for the chosen mode."""
+    t = THEMES[mode]
+    st.markdown(
+        f"""
+        <style>
+          /* base surfaces */
+          .stApp, [data-testid="stMain"] {{ background-color: {t['bg']}; color: {t['fg']}; }}
+          [data-testid="stHeader"] {{ background: transparent; }}
+          section[data-testid="stSidebar"] > div {{ background-color: {t['sidebar']}; }}
+
+          /* text */
+          .stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp p, .stApp li, .stApp span,
+          [data-testid="stMarkdownContainer"], [data-testid="stWidgetLabel"] label,
+          [data-baseweb="tab"] {{ color: {t['fg']} !important; }}
+          [data-testid="stCaptionContainer"], .stApp small {{ color: {t['muted']} !important; }}
+          [data-testid="stMetricValue"] {{ color: {t['fg']} !important; }}
+          [data-testid="stMetricLabel"] {{ color: {t['muted']} !important; }}
+          hr {{ border-color: {t['border']} !important; }}
+          .stApp code {{ background: {t['header']}; color: {t['accent']}; }}
+
+          /* inputs: text / number / select (BaseWeb) */
+          .stTextInput input, .stNumberInput input, .stTextArea textarea,
+          [data-baseweb="select"] > div, [data-baseweb="input"] > div {{
+            background-color: {t['input']} !important; color: {t['fg']} !important;
+            border-color: {t['border']} !important;
+          }}
+          [data-baseweb="popover"] [role="listbox"], [data-baseweb="menu"], [data-baseweb="menu"] li {{
+            background-color: {t['card']} !important; color: {t['fg']} !important;
+          }}
+
+          /* tabs / expander / alerts / buttons / slider / radio */
+          [data-baseweb="tab-list"] {{ border-bottom-color: {t['border']} !important; }}
+          [data-baseweb="tab-highlight"] {{ background-color: {t['accent']} !important; }}
+          [data-testid="stExpander"] details {{
+            background-color: {t['card']}; border: 1px solid {t['border']}; border-radius: 10px;
+          }}
+          [data-testid="stExpander"] summary {{ color: {t['fg']} !important; }}
+          [data-testid="stAlert"] {{
+            background-color: {t['alert']} !important; color: {t['fg']} !important;
+            border: 1px solid {t['border']};
+          }}
+          [data-testid="stAlert"] * {{ color: {t['fg']} !important; }}
+          .stButton button, [data-testid="stBaseButton-secondary"] {{
+            background-color: {t['card']} !important; color: {t['fg']} !important;
+            border: 1px solid {t['border']} !important;
+          }}
+          [data-testid="stMetric"] {{
+            background-color: {t['card']}; border: 1px solid {t['border']};
+            border-radius: 10px; padding: 10px 14px;
+          }}
+
+          /* file uploader: dropzone box, instructions, Browse button, file chip */
+          [data-testid="stFileUploaderDropzone"] {{
+            background-color: {t['soft']} !important; color: {t['fg']} !important;
+            border: 1px dashed {t['border']} !important; border-radius: 10px;
+          }}
+          [data-testid="stFileUploaderDropzoneInstructions"],
+          [data-testid="stFileUploaderDropzoneInstructions"] * {{ color: {t['muted']} !important; }}
+          [data-testid="stFileUploaderDropzone"] button,
+          [data-testid="stFileUploader"] [data-testid="stBaseButton-secondary"] {{
+            background-color: {t['card']} !important; color: {t['fg']} !important;
+            border: 1px solid {t['border']} !important;
+          }}
+          [data-testid="stFileUploader"] li,
+          [data-testid="stFileUploader"] [data-testid="UploadedFileInfo"] {{
+            background-color: {t['soft']} !important; color: {t['fg']} !important;
+            border-radius: 8px;
+          }}
+
+          /* form: render the parse/model panel as a themed card */
+          [data-testid="stForm"] {{
+            background-color: {t['card']} !important; border: 1px solid {t['border']} !important;
+            border-radius: 12px;
+          }}
+
+          /* number-input steppers */
+          [data-testid="stNumberInputStepUp"], [data-testid="stNumberInputStepDown"] {{
+            background-color: {t['soft']} !important; color: {t['fg']} !important;
+            border-color: {t['border']} !important;
+          }}
+
+          /* progress bar + slider follow the pastel accent */
+          [data-testid="stProgress"] div[role="progressbar"] > div {{
+            background-color: {t['accent']} !important;
+          }}
+          [data-testid="stSlider"] [data-baseweb="slider"] div[role="slider"] {{
+            background-color: {t['accent']} !important;
+          }}
+          [data-testid="stSliderThumbValue"], [data-testid="stSliderTickBar"] {{ color: {t['muted']} !important; }}
+
+          /* theme toggle: borderless icon, pinned right */
+          .st-key-theme_toggle {{ display: flex; justify-content: flex-end; }}
+          .st-key-theme_toggle button {{
+            background: transparent !important; border: none !important; box-shadow: none !important;
+            color: {t['fg']} !important; padding: 2px 6px; font-size: 1.3rem;
+          }}
+          .st-key-theme_toggle button:hover {{ color: {t['accent']} !important; background: transparent !important; }}
+
+          /* custom HTML data tables (theme-controlled, scrollable, RTL-aware) */
+          .kdx-twrap {{
+            overflow: auto; border: 1px solid {t['border']}; border-radius: 10px;
+            background: {t['card']};
+          }}
+          .kdx-table {{ width: 100%; border-collapse: collapse; font-size: 0.86rem; }}
+          .kdx-table thead th {{
+            position: sticky; top: 0; z-index: 1; text-align: left; font-weight: 600;
+            background: {t['th']}; color: {t['fg']}; padding: 9px 12px;
+            border-bottom: 1px solid {t['border']}; white-space: nowrap;
+          }}
+          .kdx-table td {{
+            padding: 8px 12px; color: {t['fg']}; border-bottom: 1px solid {t['soft']};
+            vertical-align: top; line-height: 1.45;
+          }}
+          .kdx-table tbody tr:nth-child(even) {{ background: {t['zebra']}; }}
+          .kdx-table tbody tr:hover {{ background: {t['hover']}; }}
+          .kdx-twrap::-webkit-scrollbar {{ width: 9px; height: 9px; }}
+          .kdx-twrap::-webkit-scrollbar-thumb {{ background: {t['border']}; border-radius: 8px; }}
+          .kdx-twrap::-webkit-scrollbar-track {{ background: transparent; }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def themed(fig, height: int | None = None):
-    """Make a Plotly figure follow the active light/dark theme.
+    """Match a Plotly figure to the chosen Light/Dark theme.
 
-    Uses a transparent background so the chart blends with the Streamlit canvas,
-    and a matching template + font color so text stays readable in both themes.
+    Uses a transparent background so the chart blends with the page, and a
+    matching template + font color so text stays readable in both themes.
     """
-    dark = _theme_type() == "dark"
+    t = THEMES["Dark" if current_theme() == "Dark" else "Light"]
     fig.update_layout(
-        template="plotly_dark" if dark else "plotly_white",
+        template="plotly_dark" if current_theme() == "Dark" else "plotly_white",
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color="#e6e6e6" if dark else "#1a1a1a"),
+        font=dict(color=t["fg"]),
+        colorway=[t["accent"], *_CAT_PALETTE],  # single-series bars take the pastel accent
+        xaxis=dict(gridcolor=t["soft"]),
+        yaxis=dict(gridcolor=t["soft"]),
     )
     if height is not None:
         fig.update_layout(height=height)
@@ -165,14 +363,19 @@ def build_tree_frame(hierarchy: list[dict], docs: pd.DataFrame, has_labels: bool
 # Main
 # ---------------------------------------------------------------------------
 def main() -> None:
-    st.title("📰 Kurdish Data Explorer")
+    # Header: title on the left, theme icon pinned to the top-right corner.
+    title_col, toggle_col = st.columns([0.9, 0.1], vertical_alignment="center")
+    with title_col:
+        st.title("Kurdish Data Explorer")
+    with toggle_col:
+        render_theme_toggle()
+    apply_theme(current_theme())
+
     st.caption("Topic modeling and exploratory analysis for Central Kurdish (Sorani) text. "
                "Explore one source at a time, drill into topics, or upload your own text.")
 
     runs_by_source = pipeline.runs_by_source()
-
     page = st.sidebar.radio("Mode", ["Explore a source", "Upload & explore"], index=0)
-    st.sidebar.caption("Tip: switch light / dark theme in the Settings menu (top-right).")
 
     if page == "Upload & explore":
         from upload_page import render_upload  # local module
@@ -207,7 +410,7 @@ def main() -> None:
     hierarchy = art.get("hierarchy", [])
 
     # ---- Source banner (provenance shown once, here) ----
-    st.info(f"**Source:** {sinfo['name']}  \n{sinfo['desc']}", icon="📚")
+    st.info(f"**Source:** {sinfo['name']}  \n{sinfo['desc']}")
 
     # ---- Header metrics ----
     c1, c2, c3, c4 = st.columns(4)
@@ -252,13 +455,10 @@ def render_tree_tab(container, hierarchy, docs, view, topic_info, topic_words, h
                           label_visibility="collapsed")
 
         if has_labels:
-            cats = [c for c in tree["category"].unique() if c not in ("(group)", "(unlabeled)")]
-            cmap = {c: _CAT_PALETTE[i % len(_CAT_PALETTE)] for i, c in enumerate(sorted(cats))}
-            cmap["(group)"] = _GROUP_COLOR
-            cmap["(unlabeled)"] = _GROUP_COLOR
+            cmap = category_color_map(tree["category"].unique())
             color_col = "category"
         else:
-            cmap = {"group": _GROUP_COLOR, "topic": "#3182bd"}
+            cmap = {"group": _GROUP_COLOR, "topic": _LEAF_COLOR}
             color_col = "kind"
 
         kw = dict(
@@ -280,12 +480,12 @@ def render_tree_tab(container, hierarchy, docs, view, topic_info, topic_words, h
             root_color="rgba(0,0,0,0)",
         )
         fig.update_layout(margin=dict(l=0, r=0, t=10, b=0))
-        st.plotly_chart(themed(fig, height=560), use_container_width=True)
+        st.plotly_chart(themed(fig, height=560), width="stretch")
 
         with st.expander("All topics (table)"):
             named = topic_info[topic_info["Topic"] != -1]
-            st.dataframe(named[["Topic", "Count", "Name"]].reset_index(drop=True),
-                         use_container_width=True, height=300, hide_index=True)
+            render_table(named[["Topic", "Count", "Name"]].reset_index(drop=True),
+                         height=320, rename={"Name": "Keywords"})
 
         # ---- Leaf inspector: how many docs, and what they look like ----
         st.markdown("#### Inspect a topic (leaf)")
@@ -303,13 +503,13 @@ def render_tree_tab(container, hierarchy, docs, view, topic_info, topic_words, h
                 fig = px.bar(wdf, x="score", y="word", orientation="h",
                              title=f"Topic {tid} keywords")
                 fig.update_layout(margin=dict(l=10, r=10, t=40, b=10))
-                st.plotly_chart(themed(fig, height=340), use_container_width=True)
+                st.plotly_chart(themed(fig, height=340), width="stretch")
         with right:
             sub = view[view["topic"] == tid]
             st.metric("Documents in this topic (current filter)", f"{len(sub):,}")
             cols = [c for c in ["text", "text_en", "label"] if c in sub.columns]
-            st.dataframe(sub[cols].head(12).reset_index(drop=True),
-                         use_container_width=True, height=260, hide_index=True)
+            render_table(sub[cols].head(12).reset_index(drop=True), height=280,
+                         rename={"text": "Text (Sorani)", "text_en": "English", "label": "Category"})
 
         # ---- Distribution, below the tree ----
         st.divider()
@@ -319,9 +519,10 @@ def render_tree_tab(container, hierarchy, docs, view, topic_info, topic_words, h
                   .groupby(["topic", "label"]).size().reset_index(name="n"))
             ct["topic"] = ct["topic"].astype(str)
             fig2 = px.density_heatmap(ct, x="label", y="topic", z="n",
+                                      color_continuous_scale="Blues",
                                       title="Documents per (topic, category)")
             fig2.update_layout(margin=dict(l=10, r=10, t=40, b=10))
-            st.plotly_chart(themed(fig2, height=520), use_container_width=True)
+            st.plotly_chart(themed(fig2, height=520), width="stretch")
             st.caption("Where each discovered topic's documents fall across the human categories.")
         else:
             sizes = (docs[docs["topic"] != -1].groupby("topic").size()
@@ -331,7 +532,7 @@ def render_tree_tab(container, hierarchy, docs, view, topic_info, topic_words, h
                           title="Largest topics by document count")
             fig2.update_layout(margin=dict(l=10, r=10, t=40, b=10),
                                yaxis=dict(categoryorder="total ascending"))
-            st.plotly_chart(themed(fig2, height=520), use_container_width=True)
+            st.plotly_chart(themed(fig2, height=520), width="stretch")
 
 
 # ---------------------------------------------------------------------------
@@ -364,23 +565,29 @@ def render_map_tab(container, view, topic_words, has_labels) -> None:
 
         if color_by == "Category" and has_labels:
             color_col, legend = "label", True
+            # Same pastel-per-category mapping the topic tree uses.
+            color_kw = dict(color_discrete_map=category_color_map(plot_df["label"].unique()))
         else:
             color_col, legend = "topic_str", False
+            # px assigns trace colors at construction, so `themed()`'s colorway
+            # can't recolor them later — pass the pastel sequence here instead.
+            color_kw = dict(color_discrete_sequence=_CAT_PALETTE)
 
         fig = px.scatter(
-            plot_df, x="x", y="y", color=color_col, opacity=0.65,
+            plot_df, x="x", y="y", color=color_col, opacity=0.7,
             custom_data=["topic_str", "keywords", "snippet"],
             labels={"topic_str": "topic", "label": "category"},
+            **color_kw,
         )
         fig.update_traces(
-            marker=dict(size=5),
+            marker=dict(size=6, line=dict(width=0)),
             hovertemplate=("<b>topic %{customdata[0]}</b>: %{customdata[1]}"
                            "<br>%{customdata[2]}<extra></extra>"),
         )
         fig.update_layout(showlegend=legend, margin=dict(l=0, r=0, t=10, b=0),
                           xaxis=dict(visible=False), yaxis=dict(visible=False),
                           legend_title_text="category")
-        st.plotly_chart(themed(fig, height=640), use_container_width=True)
+        st.plotly_chart(themed(fig, height=640), width="stretch")
         st.caption(f"Showing {len(plot_df):,} of {len(view):,} documents. "
                    "At hundreds-of-MB scale this view samples; topic stats use all documents.")
 
@@ -396,7 +603,7 @@ def render_baselines_tab(container, meta, art) -> None:
             cdf = pd.DataFrame({"model": list(coh), "NPMI": list(coh.values())})
             fig = px.bar(cdf, x="model", y="NPMI", text_auto=".3f",
                          title="BERTopic vs LDA vs NMF")
-            st.plotly_chart(themed(fig, height=380), use_container_width=True)
+            st.plotly_chart(themed(fig, height=380), width="stretch")
         else:
             st.info("No coherence scores stored for this run.")
 
@@ -405,10 +612,10 @@ def render_baselines_tab(container, meta, art) -> None:
             which = st.radio("Baseline", list(art["baseline_topics"]), horizontal=True)
             bt = art["baseline_topics"][which]
             tidy = pd.DataFrame({
-                "topic": [f"topic {i}" for i in range(len(bt))],
-                "keywords": [", ".join(t) for t in bt],
+                "Topic": [f"topic {i}" for i in range(len(bt))],
+                "Keywords": [", ".join(t) for t in bt],
             })
-            st.dataframe(tidy, use_container_width=True, hide_index=True, height=360)
+            render_table(tidy, height=380)
         else:
             st.caption("Baselines were not computed for this run.")
 
