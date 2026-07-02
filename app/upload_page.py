@@ -64,12 +64,17 @@ def read_text_documents(path: Path, split: str, min_words: int) -> list[str]:
 def read_table_documents(path: Path, text_col: str, label_col: str | None,
                           min_words: int) -> tuple[list[str], list[str] | None]:
     ext = path.suffix.lower()
+    # Only materialize the columns we need; on wide GB-scale tables this is the
+    # difference between fitting in RAM and not.
+    usecols = list(dict.fromkeys(
+        [text_col] + ([label_col] if label_col and label_col != "(none)" else [])
+    ))
     if ext in {".xlsx", ".xls"}:
-        df = pd.read_excel(path)
+        df = pd.read_excel(path, usecols=usecols)
     elif ext == ".parquet":
-        df = pd.read_parquet(path)
+        df = pd.read_parquet(path, columns=usecols)
     else:
-        df = pd.read_csv(path, sep="\t" if ext == ".tsv" else ",")
+        df = pd.read_csv(path, sep="\t" if ext == ".tsv" else ",", usecols=usecols)
     df = df.dropna(subset=[text_col])
     texts = df[text_col].astype(str).tolist()
     labels = df[label_col].astype(str).tolist() if label_col and label_col != "(none)" else None
@@ -83,7 +88,8 @@ def _peek_columns(path: Path) -> list[str]:
     if path.suffix.lower() in {".xlsx", ".xls"}:
         return list(pd.read_excel(path, nrows=5).columns)
     if path.suffix.lower() == ".parquet":
-        return list(pd.read_parquet(path).head(5).columns)
+        import pyarrow.parquet as pq
+        return list(pq.read_schema(path).names)  # metadata only, never loads data
     sep = "\t" if path.suffix.lower() == ".tsv" else ","
     return list(pd.read_csv(path, sep=sep, nrows=5).columns)
 
@@ -147,7 +153,8 @@ def render_upload() -> None:
 
         st.markdown("#### Model & topics")
         model = st.selectbox("Embedding model", list(config.EMBEDDING_MODELS),
-                             index=list(config.EMBEDDING_MODELS).index(config.DEFAULT_EMBEDDING_MODEL))
+                             index=list(config.EMBEDDING_MODELS).index(config.DEFAULT_EMBEDDING_MODEL),
+                             format_func=lambda k: config.EMBEDDING_MODEL_LABELS.get(k, k))
         normalize = st.checkbox("KLPT-normalize (recommended for raw Sorani)", value=True)
         max_docs = st.number_input("Documents to embed (sample cap for live runs)",
                                    500, 200000, 20000, step=500)

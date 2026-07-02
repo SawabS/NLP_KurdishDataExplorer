@@ -18,6 +18,18 @@ def run_key(source: str, model_key: str) -> str:
     return f"{source}__{model_key}"
 
 
+def available_model_options(source: str, available_runs: dict[str, list[str]] | None = None) -> list[tuple[str, str]]:
+    """Return UI-ready model labels for a source, marking unfitted models explicitly."""
+    run_keys = set((available_runs or runs_by_source()).get(source, []))
+    options: list[tuple[str, str]] = []
+    for model_key in config.EMBEDDING_MODELS:
+        label = config.EMBEDDING_MODEL_LABELS.get(model_key, model_key)
+        if model_key not in run_keys:
+            label = f"{label} — fit required"
+        options.append((label, model_key))
+    return options
+
+
 def artifact_dir(source: str, model_key: str):
     d = config.ARTIFACTS_DIR / run_key(source, model_key)
     d.mkdir(parents=True, exist_ok=True)

@@ -44,4 +44,4 @@ No question pages yet.
 ## Synthesis
 
 - [Kurdish Data Explorer Pipeline](synthesis/kurdish-data-explorer-pipeline.md) — how the eight sources ground each stage of the project pipeline.
-- [Implementation and Methodology](synthesis/implementation-and-methodology.md) — transparent as-built record: environment, data provenance, preprocessing, BERTopic tuning + results, baselines, TSDAE fine-tuning, app, reproducibility.
+- [Implementation and Methodology](synthesis/implementation-and-methodology.md) — transparent as-built record: environment, data provenance, preprocessing, BERTopic tuning + results, baselines, TSDAE fine-tuning, app UI/upload behavior, reproducibility.

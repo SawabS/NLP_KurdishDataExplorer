@@ -44,6 +44,16 @@ EMBEDDING_MODELS: dict[str, str] = {
 }
 DEFAULT_EMBEDDING_MODEL = "minilm"
 
+# Human-readable model names for the UI. Keys mirror EMBEDDING_MODELS; the
+# raw HF ids / local paths above stay the single source of truth for loading.
+EMBEDDING_MODEL_LABELS: dict[str, str] = {
+    "minilm": "MiniLM · multilingual, fast (recommended)",
+    "distiluse": "DistilUSE · multilingual, balanced",
+    "mpnet": "MPNet · multilingual, highest quality",
+    "e5-base": "E5-base · multilingual, strong retrieval",
+    "kdx-minilm-tsdae": "KDX MiniLM · TSDAE domain-adapted for Sorani",
+}
+
 # ---------------------------------------------------------------------------
 # Modeling defaults
 # ---------------------------------------------------------------------------

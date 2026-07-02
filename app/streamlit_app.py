@@ -27,7 +27,7 @@ import streamlit as st
 _APP_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(_APP_DIR))                 # so sibling modules (upload_page) import
 sys.path.insert(0, str(_APP_DIR.parent / "src"))  # so the kurdish_explorer package imports
-from kurdish_explorer import pipeline  # noqa: E402
+from kurdish_explorer import config, pipeline  # noqa: E402
 
 st.set_page_config(page_title="Kurdish Data Explorer", layout="wide")
 
@@ -51,8 +51,16 @@ SOURCE_INFO = {
 
 # Soft pastel palette for category coloring (readable in both themes).
 _CAT_PALETTE = px.colors.qualitative.Pastel
-_LEAF_COLOR = "#8fb8e8"   # pastel blue for unlabeled leaves
-_GROUP_COLOR = "#b7c0cc"  # soft neutral grey for internal (non-leaf) tree nodes
+
+
+def _leaf_color() -> str:
+    """Pastel blue for unlabeled leaves, tuned per theme."""
+    return "#7ba7d7" if current_theme() == "Dark" else "#8fb8e8"
+
+
+def _group_color() -> str:
+    """Neutral grey for internal (non-leaf) tree nodes, tuned per theme."""
+    return "#3e4557" if current_theme() == "Dark" else "#b7c0cc"
 
 
 def category_color_map(categories) -> dict:
@@ -63,8 +71,8 @@ def category_color_map(categories) -> dict:
     """
     cats = sorted(c for c in set(categories) if c not in ("(group)", "(unlabeled)"))
     cmap = {c: _CAT_PALETTE[i % len(_CAT_PALETTE)] for i, c in enumerate(cats)}
-    cmap["(group)"] = _GROUP_COLOR
-    cmap["(unlabeled)"] = _GROUP_COLOR
+    cmap["(group)"] = _group_color()
+    cmap["(unlabeled)"] = _group_color()
     return cmap
 
 
@@ -185,6 +193,17 @@ def apply_theme(mode: str) -> None:
           [data-baseweb="popover"] [role="listbox"], [data-baseweb="menu"], [data-baseweb="menu"] li {{
             background-color: {t['card']} !important; color: {t['fg']} !important;
           }}
+          [data-baseweb="menu"] li[aria-selected="true"],
+          [data-baseweb="menu"] li:hover {{
+            background-color: {t['hover']} !important; color: {t['fg']} !important;
+          }}
+
+          /* tooltips (e.g. on the theme toggle) must follow the theme too */
+          [data-baseweb="tooltip"], [role="tooltip"], [data-baseweb="tooltip"] *,
+          [data-testid="stTooltipContent"], [data-testid="stTooltipContent"] * {{
+            background-color: {t['card']} !important; color: {t['fg']} !important;
+            border-color: {t['border']} !important;
+          }}
 
           /* tabs / expander / alerts / buttons / slider / radio */
           [data-baseweb="tab-list"] {{ border-bottom-color: {t['border']} !important; }}
@@ -283,8 +302,9 @@ def apply_theme(mode: str) -> None:
 def themed(fig, height: int | None = None):
     """Match a Plotly figure to the chosen Light/Dark theme.
 
-    Uses a transparent background so the chart blends with the page, and a
-    matching template + font color so text stays readable in both themes.
+    Uses a transparent background so the chart blends with the page, and sets
+    every text element (title, axes, legend, colorbar, hover) explicitly so
+    nothing falls back to a template color that only works in one theme.
     """
     t = THEMES["Dark" if current_theme() == "Dark" else "Light"]
     fig.update_layout(
@@ -293,12 +313,42 @@ def themed(fig, height: int | None = None):
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(color=t["fg"]),
         colorway=[t["accent"], *_CAT_PALETTE],  # single-series bars take the pastel accent
-        xaxis=dict(gridcolor=t["soft"]),
-        yaxis=dict(gridcolor=t["soft"]),
+        xaxis=dict(gridcolor=t["soft"], title_font=dict(color=t["muted"]),
+                   tickfont=dict(color=t["muted"]), zerolinecolor=t["border"]),
+        yaxis=dict(gridcolor=t["soft"], title_font=dict(color=t["muted"]),
+                   tickfont=dict(color=t["muted"]), zerolinecolor=t["border"]),
+        legend=dict(font=dict(color=t["fg"]), title_font=dict(color=t["muted"])),
+        hoverlabel=dict(bgcolor=t["card"], bordercolor=t["border"],
+                        font=dict(color=t["fg"])),
     )
+    # Only style the title when one exists: setting title_font on a titleless
+    # figure makes Streamlit's plotly frontend render a literal "undefined".
+    if fig.layout.title and fig.layout.title.text:
+        fig.update_layout(title_font=dict(color=t["fg"]))
+    # Continuous-color charts (the topic x category heatmap): theme the colorbar.
+    if fig.layout.coloraxis and fig.layout.coloraxis.colorscale:
+        fig.update_layout(coloraxis_colorbar=dict(
+            tickfont=dict(color=t["muted"]), title_font=dict(color=t["muted"]),
+            outlinewidth=0,
+        ))
     if height is not None:
         fig.update_layout(height=height)
     return fig
+
+
+def accent_seq() -> list[str]:
+    """Single-color sequence so px bar charts take the theme accent at build time
+    (px assigns trace colors at construction; a later ``colorway`` can't recolor them)."""
+    return [THEMES[current_theme()]["accent"]]
+
+
+def heat_scale() -> list[list]:
+    """Sequential scale for density heatmaps that starts at the page surface color,
+    so sparse cells fade into the background instead of glowing white in dark mode."""
+    t = THEMES[current_theme()]
+    if current_theme() == "Dark":
+        return [[0.0, t["card"]], [0.5, "#3b5a86"], [1.0, "#9ec2f0"]]
+    return [[0.0, "#f2f6fc"], [0.5, "#8fb8e8"], [1.0, "#31629e"]]
 
 
 # ---------------------------------------------------------------------------
@@ -400,9 +450,23 @@ def main() -> None:
     sinfo = source_meta(source)
 
     st.sidebar.markdown("### 2 · Embedding model")
-    models = sorted(runs_by_source[source])
-    model = st.sidebar.selectbox("Embedding model", models)
+    model_options = pipeline.available_model_options(source, runs_by_source)
+    model_labels = [label for label, _ in model_options]
+    selected_label = st.sidebar.selectbox("Embedding model", model_labels)
+    model = next(key for label, key in model_options if label == selected_label)
     run = f"{source}__{model}"
+
+    if model not in runs_by_source.get(source, []):
+        st.sidebar.warning(
+            f"The selected model has not been fitted for this corpus yet. "
+            "Fit it once to generate the explorer artifacts."
+        )
+        if st.sidebar.button("Fit this model now"):
+            with st.spinner(f"Fitting {selected_label} for {source}…"):
+                pipeline.run(source=source, model_key=model, with_baselines=False)
+            st.cache_data.clear()
+            st.rerun()
+        st.stop()
 
     art = _load(run)
     meta, docs = art["meta"], art["documents"]
@@ -419,7 +483,9 @@ def main() -> None:
     c3.metric("Outliers", f"{meta.get('n_outliers', 0):,}")
     bt_npmi = meta.get("coherence_npmi", {}).get("BERTopic")
     c4.metric("BERTopic NPMI", f"{bt_npmi:.3f}" if bt_npmi is not None else "n/a")
-    st.caption(f"Embedding model: `{meta['model_name']}`, fit in {meta.get('seconds', '?')}s")
+    friendly = config.EMBEDDING_MODEL_LABELS.get(meta.get("model_key"), meta["model_name"])
+    st.caption(f"Embedding model: **{friendly}** (`{Path(str(meta['model_name'])).name}`), "
+               f"fit in {meta.get('seconds', '?')}s")
 
     # ---- Optional category filter (labeled corpora only) ----
     view = docs
@@ -451,14 +517,25 @@ def render_tree_tab(container, hierarchy, docs, view, topic_info, topic_words, h
                    + (" Color shows each topic's dominant category." if has_labels else ""))
 
         tree = build_tree_frame(hierarchy, docs, has_labels)
-        layout = st.radio("Layout", ["Icicle", "Treemap", "Sunburst"], horizontal=True,
-                          label_visibility="collapsed")
+        lcol, dcol = st.columns([2, 1], vertical_alignment="center")
+        with lcol:
+            layout = st.radio("Layout", ["Icicle", "Treemap", "Sunburst"], horizontal=True,
+                              label_visibility="collapsed")
+        with dcol:
+            # BERTopic's merge tree is deep (binary), so rendering every level at
+            # once is unreadable; show a few levels and drill in by clicking.
+            depth_label = st.select_slider(
+                "Visible depth", options=["2 levels", "3 levels", "4 levels", "All"],
+                value="3 levels", help="How many hierarchy levels to show at once; "
+                "click a cluster to drill deeper regardless.",
+            )
+        maxdepth = {"2 levels": 2, "3 levels": 3, "4 levels": 4, "All": -1}[depth_label]
 
         if has_labels:
             cmap = category_color_map(tree["category"].unique())
             color_col = "category"
         else:
-            cmap = {"group": _GROUP_COLOR, "topic": _LEAF_COLOR}
+            cmap = {"group": _group_color(), "topic": _leaf_color()}
             color_col = "kind"
 
         kw = dict(
@@ -479,6 +556,12 @@ def render_tree_tab(container, hierarchy, docs, view, topic_info, topic_words, h
                            + cat_line + "<br><i>%{customdata[1]}</i><extra></extra>"),
             root_color="rgba(0,0,0,0)",
         )
+        if maxdepth > 0:
+            fig.update_traces(maxdepth=maxdepth)
+        if layout in ("Icicle", "Treemap"):
+            # The pathbar renders an "undefined" chip for our string root ids;
+            # clicking the top-level box already navigates back up, so hide it.
+            fig.update_traces(pathbar_visible=False)
         fig.update_layout(margin=dict(l=0, r=0, t=10, b=0))
         st.plotly_chart(themed(fig, height=560), width="stretch")
 
@@ -491,7 +574,8 @@ def render_tree_tab(container, hierarchy, docs, view, topic_info, topic_words, h
         st.markdown("#### Inspect a topic (leaf)")
         leaves = sorted((n for n in hierarchy if n["is_leaf"]),
                         key=lambda n: n["count"], reverse=True)
-        opts = {f"{n['label']}  ·  {n['count']:,} docs": int(n["topic_id"]) for n in leaves}
+        # ‎ (LTR mark) keeps the count readable after RTL Sorani keywords.
+        opts = {f"{n['label']}‎  ·  {n['count']:,} docs": int(n["topic_id"]) for n in leaves}
         pick = st.selectbox("Topic", list(opts), key="tree_leaf")
         tid = opts[pick]
 
@@ -501,7 +585,8 @@ def render_tree_tab(container, hierarchy, docs, view, topic_info, topic_words, h
             if words:
                 wdf = pd.DataFrame(words, columns=["word", "score"]).iloc[::-1]
                 fig = px.bar(wdf, x="score", y="word", orientation="h",
-                             title=f"Topic {tid} keywords")
+                             title=f"Topic {tid} keywords",
+                             color_discrete_sequence=accent_seq())
                 fig.update_layout(margin=dict(l=10, r=10, t=40, b=10))
                 st.plotly_chart(themed(fig, height=340), width="stretch")
         with right:
@@ -519,9 +604,11 @@ def render_tree_tab(container, hierarchy, docs, view, topic_info, topic_words, h
                   .groupby(["topic", "label"]).size().reset_index(name="n"))
             ct["topic"] = ct["topic"].astype(str)
             fig2 = px.density_heatmap(ct, x="label", y="topic", z="n",
-                                      color_continuous_scale="Blues",
+                                      color_continuous_scale=heat_scale(),
+                                      labels={"n": "docs"},
                                       title="Documents per (topic, category)")
-            fig2.update_layout(margin=dict(l=10, r=10, t=40, b=10))
+            fig2.update_layout(margin=dict(l=10, r=10, t=40, b=10),
+                               coloraxis_colorbar_title_text="docs")
             st.plotly_chart(themed(fig2, height=520), width="stretch")
             st.caption("Where each discovered topic's documents fall across the human categories.")
         else:
@@ -529,7 +616,8 @@ def render_tree_tab(container, hierarchy, docs, view, topic_info, topic_words, h
                      .reset_index(name="count").nlargest(25, "count"))
             sizes["topic"] = sizes["topic"].astype(str)
             fig2 = px.bar(sizes, x="count", y="topic", orientation="h",
-                          title="Largest topics by document count")
+                          title="Largest topics by document count",
+                          color_discrete_sequence=accent_seq())
             fig2.update_layout(margin=dict(l=10, r=10, t=40, b=10),
                                yaxis=dict(categoryorder="total ascending"))
             st.plotly_chart(themed(fig2, height=520), width="stretch")
@@ -602,7 +690,8 @@ def render_baselines_tab(container, meta, art) -> None:
         if coh:
             cdf = pd.DataFrame({"model": list(coh), "NPMI": list(coh.values())})
             fig = px.bar(cdf, x="model", y="NPMI", text_auto=".3f",
-                         title="BERTopic vs LDA vs NMF")
+                         title="BERTopic vs LDA vs NMF",
+                         color_discrete_sequence=accent_seq())
             st.plotly_chart(themed(fig, height=380), width="stretch")
         else:
             st.info("No coherence scores stored for this run.")

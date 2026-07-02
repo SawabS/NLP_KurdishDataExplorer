@@ -1,5 +1,30 @@
 # Wiki Log
 
+## [2026-07-03] build | Streamlit UI polish, upload-read efficiency, and verification
+
+Updated the live explorer UI and documentation after a codebase/wiki/doc/env pass:
+
+- Model selectors use friendly labels from `EMBEDDING_MODEL_LABELS`; unfitted
+  model/source pairs remain visible as `fit required`.
+- Dark-theme Plotly styling now covers chart titles, axes, legends, colorbars,
+  hover labels, topic/category heatmap scale, and single-series bar accents.
+- Topic-tree rendering defaults to 3 visible levels, keeps drill-down available,
+  hides the Plotly pathbar that produced `undefined`, and uses theme-aware tree
+  colors.
+- Upload table handling now peeks schemas cheaply and reads only the selected text
+  and optional label columns for CSV/TSV/Excel/Parquet inputs.
+- README was rewritten to document the application, pipeline, artifacts, wiki, and
+  reproducibility commands.
+- Verification: `python -m pytest` passed (1 test). Streamlit was launched on
+  `127.0.0.1:8602` and checked with Playwright across KNDH, Topic tree / Map /
+  Baselines, light/dark themes, icicle/treemap/sunburst layouts, dark tooltip
+  computed colors, absence of literal `undefined`, and upload-page rendering.
+
+Unresolved / pending:
+
+- `gh` is not installed in this environment, so GitHub PR creation via GitHub CLI
+  was unavailable. Plain `git` push may still work if SSH credentials are present.
+
 ## [2026-06-26] build | Drill-down topic tree, source isolation, and upload engine
 
 Three user-requested features for the demo, all documented in

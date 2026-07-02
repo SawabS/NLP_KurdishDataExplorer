@@ -2,7 +2,7 @@
 title: "Implementation and Methodology"
 type: synthesis
 created: 2026-06-26
-updated: 2026-06-26
+updated: 2026-07-03
 status: stable
 tags: [implementation, methodology, reproducibility, bertopic, tsdae, pipeline, transparency]
 sources: ["raw/sources/KLPT – Kurdish Language Processing Toolkit.pdf", "raw/sources/Kurdish News Dataset Headlines (KNDH) through multiclass classification.pdf", "raw/sources/Toward Kurdish language processing: Experiments in collecting and processing the AsoSoft text corpus.pdf", "raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf"]
@@ -196,6 +196,11 @@ Scaling provisions for hundreds-of-MB inputs:
 - **Server-path input** bypasses the browser upload cap (`server.maxUploadSize`
   raised to 2 GB in `.streamlit/config.toml`) and reads the file directly off disk.
 - Files are **streamed line-by-line**, not loaded twice into memory.
+- Tabular inputs now use a cheap **schema peek** before full read: Parquet reads
+  only metadata via `pyarrow.parquet.read_schema()`, while CSV/TSV/Excel peek only
+  a few rows. Once the user chooses columns, table reads materialize only the text
+  column and optional label column (`usecols` / Parquet `columns`), avoiding
+  wide-table memory spikes.
 - A **"documents to embed" cap** samples very large corpora to a workable size for a
   live GPU run; the full-corpus path (memory-mapped embeddings, online clustering) is
   the offline `run_pipeline` script — see `docs/ARCHITECTURE.md`. Topic stats always
@@ -204,8 +209,26 @@ Scaling provisions for hundreds-of-MB inputs:
 ## Application
 
 `app/streamlit_app.py` reads precomputed artifacts (no model refit). Two modes:
-**Explore a source** (source-first nav → Topic tree, Topics table, Map, Baselines)
+**Explore a source** (source-first nav → Topic tree, Map, Baselines)
 and **Upload & explore** (the generic engine above).
+
+### UI polish and verification (2026-07-03)
+
+- Model selectors now show human-readable names from `EMBEDDING_MODEL_LABELS`
+  instead of raw Hugging Face identifiers; unfitted model/source combinations are
+  still visible and marked `fit required`.
+- Plotly theming is explicit for titles, axes, legends, colorbars, hover labels,
+  and single-series bar colors. The topic/category heatmap uses a theme-aware
+  sequential scale so sparse cells do not glow white in dark mode.
+- The topic tree defaults to **3 levels** with a visible depth control. Icicle and
+  treemap pathbars are hidden to avoid Plotly rendering a stray `undefined` chip
+  for the synthetic root, while click-to-drill remains available.
+- Dark-mode tree colors use muted internal-node surfaces and pastel leaf/category
+  colors so icicle, treemap, and sunburst charts blend with the page.
+- Verified live with Playwright against Streamlit on `127.0.0.1:8602`: KNDH source
+  selection, friendly model labels, Topic tree / Map / Baselines tabs, light and
+  dark themes, icicle / treemap / sunburst layouts, dark tooltip computed colors,
+  absence of literal `undefined`, and upload-page rendering.
 
 ## Reproducibility
 
@@ -236,3 +259,5 @@ conda run -n ai streamlit run app/streamlit_app.py
   mixing) with an AsoSoft run, and the generic upload engine. Regenerated all
   artifacts with `hierarchy.json`; refreshed comparison numbers to match the shipped
   runs (base MiniLM 48 topics / NPMI -0.056 / NMI 0.224; TSDAE 45 / +0.038 / 0.159).
+- 2026-07-03: Polished Streamlit selectors, chart theming, topic-tree defaults, and
+  upload table reads; verified the live app with Playwright in light and dark modes.
