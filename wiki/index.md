@@ -45,3 +45,4 @@ No question pages yet.
 
 - [Kurdish Data Explorer Pipeline](synthesis/kurdish-data-explorer-pipeline.md) — how the eight sources ground each stage of the project pipeline.
 - [Implementation and Methodology](synthesis/implementation-and-methodology.md) — transparent as-built record: environment, data provenance, preprocessing, BERTopic tuning + results, baselines, TSDAE fine-tuning, app UI/upload behavior, reproducibility.
+- [Project Presentation Overview](synthesis/project-presentation-overview.md) — single linear narrative (problem → literature → methodology → results → limitations → conclusion), written as the primary source for presentations/podcast generation.

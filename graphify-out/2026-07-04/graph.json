@@ -4,16 +4,6 @@
   "graph": {},
   "nodes": [
     {
-      "label": "app.json",
-      "file_type": "code",
-      "source_file": ".obsidian/app.json",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "obsidian_app",
-      "community": 46,
-      "norm_label": "app.json"
-    },
-    {
       "label": "streamlit_app.py",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
@@ -2124,16 +2114,6 @@
       "norm_label": "reproducibility rule"
     },
     {
-      "label": "_COMMUNITY_Soran Badawi.md",
-      "file_type": "document",
-      "source_file": "_COMMUNITY_Soran Badawi.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "community_soran_badawi",
-      "community": 45,
-      "norm_label": "_community_soran badawi.md"
-    },
-    {
       "label": "ARCHITECTURE.md",
       "file_type": "document",
       "source_file": "docs/ARCHITECTURE.md",
@@ -2770,7 +2750,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "wiki_concepts_morphological_richness_morphological_richness",
-      "community": 41,
+      "community": 0,
       "norm_label": "morphological richness"
     },
     {
@@ -2780,7 +2760,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "wiki_concepts_morphological_richness_summary",
-      "community": 41,
+      "community": 0,
       "norm_label": "summary"
     },
     {
@@ -2790,7 +2770,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "wiki_concepts_morphological_richness_key_claims",
-      "community": 41,
+      "community": 0,
       "norm_label": "key claims"
     },
     {
@@ -2800,7 +2780,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "wiki_concepts_morphological_richness_evidence",
-      "community": 41,
+      "community": 0,
       "norm_label": "evidence"
     },
     {
@@ -2810,7 +2790,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "wiki_concepts_morphological_richness_connections",
-      "community": 41,
+      "community": 0,
       "norm_label": "connections"
     },
     {
@@ -2820,7 +2800,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "wiki_concepts_morphological_richness_open_questions",
-      "community": 41,
+      "community": 0,
       "norm_label": "open questions"
     },
     {
@@ -2830,7 +2810,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "wiki_concepts_morphological_richness_change_log",
-      "community": 41,
+      "community": 0,
       "norm_label": "change log"
     },
     {
@@ -3090,7 +3070,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_transformer_models",
-      "community": 42,
+      "community": 9,
       "norm_label": "transformer models"
     },
     {
@@ -3100,7 +3080,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_summary",
-      "community": 42,
+      "community": 9,
       "norm_label": "summary"
     },
     {
@@ -3110,7 +3090,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_key_claims",
-      "community": 42,
+      "community": 9,
       "norm_label": "key claims"
     },
     {
@@ -3120,7 +3100,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_evidence",
-      "community": 42,
+      "community": 9,
       "norm_label": "evidence"
     },
     {
@@ -3130,7 +3110,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_connections",
-      "community": 42,
+      "community": 9,
       "norm_label": "connections"
     },
     {
@@ -3140,7 +3120,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_open_questions",
-      "community": 42,
+      "community": 9,
       "norm_label": "open questions"
     },
     {
@@ -3150,7 +3130,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_change_log",
-      "community": 42,
+      "community": 9,
       "norm_label": "change log"
     },
     {
@@ -3330,7 +3310,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "wiki_entities_kdx_minilm_tsdae_model_kdx_minilm_tsdae_fine_tuned_embedder",
-      "community": 43,
+      "community": 3,
       "norm_label": "kdx-minilm-tsdae (fine-tuned embedder)"
     },
     {
@@ -3340,7 +3320,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "wiki_entities_kdx_minilm_tsdae_model_summary",
-      "community": 43,
+      "community": 3,
       "norm_label": "summary"
     },
     {
@@ -3350,7 +3330,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "wiki_entities_kdx_minilm_tsdae_model_how_it_was_trained_full_transparency",
-      "community": 43,
+      "community": 3,
       "norm_label": "how it was trained (full transparency)"
     },
     {
@@ -3360,7 +3340,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "wiki_entities_kdx_minilm_tsdae_model_evidence_evaluation",
-      "community": 43,
+      "community": 3,
       "norm_label": "evidence / evaluation"
     },
     {
@@ -3370,7 +3350,7 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "wiki_entities_kdx_minilm_tsdae_model_connections",
-      "community": 43,
+      "community": 3,
       "norm_label": "connections"
     },
     {
@@ -3380,17 +3360,17 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "wiki_entities_kdx_minilm_tsdae_model_open_questions",
-      "community": 43,
+      "community": 3,
       "norm_label": "open questions"
     },
     {
       "label": "Change log",
       "file_type": "document",
       "source_file": "wiki/entities/kdx-minilm-tsdae-model.md",
-      "source_location": "L86",
+      "source_location": "L84",
       "_origin": "ast",
       "id": "wiki_entities_kdx_minilm_tsdae_model_change_log",
-      "community": 43,
+      "community": 3,
       "norm_label": "change log"
     },
     {
@@ -3490,7 +3470,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "wiki_entities_kndh_kurdish_news_dataset_headlines_kndh",
-      "community": 30,
+      "community": 0,
       "norm_label": "kurdish news dataset headlines (kndh)"
     },
     {
@@ -3500,7 +3480,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "wiki_entities_kndh_summary",
-      "community": 30,
+      "community": 0,
       "norm_label": "summary"
     },
     {
@@ -3510,7 +3490,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "wiki_entities_kndh_key_claims",
-      "community": 30,
+      "community": 0,
       "norm_label": "key claims"
     },
     {
@@ -3520,7 +3500,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "wiki_entities_kndh_evidence",
-      "community": 30,
+      "community": 0,
       "norm_label": "evidence"
     },
     {
@@ -3530,7 +3510,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "wiki_entities_kndh_connections",
-      "community": 30,
+      "community": 0,
       "norm_label": "connections"
     },
     {
@@ -3540,7 +3520,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "wiki_entities_kndh_open_questions",
-      "community": 30,
+      "community": 0,
       "norm_label": "open questions"
     },
     {
@@ -3550,7 +3530,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "wiki_entities_kndh_change_log",
-      "community": 30,
+      "community": 0,
       "norm_label": "change log"
     },
     {
@@ -3650,7 +3630,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "wiki_entities_soran_badawi_soran_badawi",
-      "community": 30,
+      "community": 31,
       "norm_label": "soran badawi"
     },
     {
@@ -3660,7 +3640,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "wiki_entities_soran_badawi_summary",
-      "community": 30,
+      "community": 31,
       "norm_label": "summary"
     },
     {
@@ -3670,7 +3650,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "wiki_entities_soran_badawi_key_claims",
-      "community": 30,
+      "community": 31,
       "norm_label": "key claims"
     },
     {
@@ -3680,7 +3660,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "wiki_entities_soran_badawi_evidence",
-      "community": 30,
+      "community": 31,
       "norm_label": "evidence"
     },
     {
@@ -3690,7 +3670,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "wiki_entities_soran_badawi_connections",
-      "community": 30,
+      "community": 31,
       "norm_label": "connections"
     },
     {
@@ -3700,7 +3680,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "wiki_entities_soran_badawi_open_questions",
-      "community": 30,
+      "community": 31,
       "norm_label": "open questions"
     },
     {
@@ -3710,7 +3690,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "wiki_entities_soran_badawi_change_log",
-      "community": 30,
+      "community": 31,
       "norm_label": "change log"
     },
     {
@@ -3730,7 +3710,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "wiki_index_wiki_index",
-      "community": 0,
+      "community": 3,
       "norm_label": "wiki index"
     },
     {
@@ -3740,7 +3720,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "wiki_index_sources",
-      "community": 0,
+      "community": 3,
       "norm_label": "sources"
     },
     {
@@ -3750,7 +3730,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "wiki_index_entities",
-      "community": 0,
+      "community": 3,
       "norm_label": "entities"
     },
     {
@@ -3760,7 +3740,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "wiki_index_concepts",
-      "community": 0,
+      "community": 3,
       "norm_label": "concepts"
     },
     {
@@ -3770,7 +3750,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "wiki_index_questions",
-      "community": 0,
+      "community": 3,
       "norm_label": "questions"
     },
     {
@@ -3780,7 +3760,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "wiki_index_synthesis",
-      "community": 0,
+      "community": 3,
       "norm_label": "synthesis"
     },
     {
@@ -3804,20 +3784,10 @@
       "norm_label": "wiki log"
     },
     {
-      "label": "[2026-07-04] lint+ingest | Pre-presentation wiki review and consolidated overview",
-      "file_type": "document",
-      "source_file": "wiki/log.md",
-      "source_location": "L3",
-      "_origin": "ast",
-      "id": "wiki_log_2026_07_04_lint_ingest_pre_presentation_wiki_review_and_consolidated_overview",
-      "community": 32,
-      "norm_label": "[2026-07-04] lint+ingest | pre-presentation wiki review and consolidated overview"
-    },
-    {
       "label": "[2026-07-03] build | Streamlit UI polish, upload-read efficiency, and verification",
       "file_type": "document",
       "source_file": "wiki/log.md",
-      "source_location": "L34",
+      "source_location": "L3",
       "_origin": "ast",
       "id": "wiki_log_2026_07_03_build_streamlit_ui_polish_upload_read_efficiency_and_verification",
       "community": 32,
@@ -3827,7 +3797,7 @@
       "label": "[2026-06-26] build | Drill-down topic tree, source isolation, and upload engine",
       "file_type": "document",
       "source_file": "wiki/log.md",
-      "source_location": "L59",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "wiki_log_2026_06_26_build_drill_down_topic_tree_source_isolation_and_upload_engine",
       "community": 32,
@@ -3837,7 +3807,7 @@
       "label": "[2026-06-26] build | Pipeline implementation, BERTopic tuning, and TSDAE fine-tuning",
       "file_type": "document",
       "source_file": "wiki/log.md",
-      "source_location": "L83",
+      "source_location": "L52",
       "_origin": "ast",
       "id": "wiki_log_2026_06_26_build_pipeline_implementation_bertopic_tuning_and_tsdae_fine_tuning",
       "community": 32,
@@ -3847,7 +3817,7 @@
       "label": "[2026-06-26] eval | TSDAE fine-tuning comparison completed",
       "file_type": "document",
       "source_file": "wiki/log.md",
-      "source_location": "L112",
+      "source_location": "L81",
       "_origin": "ast",
       "id": "wiki_log_2026_06_26_eval_tsdae_fine_tuning_comparison_completed",
       "community": 32,
@@ -3857,7 +3827,7 @@
       "label": "[2026-06-26] ingest | Bootstrap wiki from 8 Kurdish NLP sources",
       "file_type": "document",
       "source_file": "wiki/log.md",
-      "source_location": "L127",
+      "source_location": "L96",
       "_origin": "ast",
       "id": "wiki_log_2026_06_26_ingest_bootstrap_wiki_from_8_kurdish_nlp_sources",
       "community": 32,
@@ -4720,7 +4690,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_kurdish_data_explorer_pipeline",
-      "community": 44,
+      "community": 3,
       "norm_label": "kurdish data explorer pipeline"
     },
     {
@@ -4730,7 +4700,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_summary",
-      "community": 44,
+      "community": 3,
       "norm_label": "summary"
     },
     {
@@ -4740,7 +4710,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_key_claims",
-      "community": 44,
+      "community": 3,
       "norm_label": "key claims"
     },
     {
@@ -4750,7 +4720,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_evidence_pipeline_stages",
-      "community": 44,
+      "community": 3,
       "norm_label": "evidence (pipeline stages)"
     },
     {
@@ -4760,7 +4730,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_connections",
-      "community": 44,
+      "community": 3,
       "norm_label": "connections"
     },
     {
@@ -4770,147 +4740,17 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_open_questions_risks",
-      "community": 44,
+      "community": 3,
       "norm_label": "open questions / risks"
     },
     {
       "label": "Change log",
       "file_type": "document",
       "source_file": "wiki/synthesis/kurdish-data-explorer-pipeline.md",
-      "source_location": "L87",
+      "source_location": "L81",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_change_log",
-      "community": 44,
-      "norm_label": "change log"
-    },
-    {
-      "label": "project-presentation-overview.md",
-      "file_type": "document",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "wiki_synthesis_project_presentation_overview",
-      "community": 0,
-      "norm_label": "project-presentation-overview.md"
-    },
-    {
-      "label": "Project Presentation Overview",
-      "file_type": "document",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
-      "community": 31,
-      "norm_label": "project presentation overview"
-    },
-    {
-      "label": "1. The problem",
-      "file_type": "document",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L19",
-      "_origin": "ast",
-      "id": "wiki_synthesis_project_presentation_overview_1_the_problem",
-      "community": 31,
-      "norm_label": "1. the problem"
-    },
-    {
-      "label": "2. The objective",
-      "file_type": "document",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L34",
-      "_origin": "ast",
-      "id": "wiki_synthesis_project_presentation_overview_2_the_objective",
-      "community": 31,
-      "norm_label": "2. the objective"
-    },
-    {
-      "label": "3. Literature review \u2014 why each piece was chosen",
-      "file_type": "document",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L56",
-      "_origin": "ast",
-      "id": "wiki_synthesis_project_presentation_overview_3_literature_review_why_each_piece_was_chosen",
-      "community": 31,
-      "norm_label": "3. literature review \u2014 why each piece was chosen"
-    },
-    {
-      "label": "4. Methodology \u2014 how the pipeline actually works",
-      "file_type": "document",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L93",
-      "_origin": "ast",
-      "id": "wiki_synthesis_project_presentation_overview_4_methodology_how_the_pipeline_actually_works",
-      "community": 31,
-      "norm_label": "4. methodology \u2014 how the pipeline actually works"
-    },
-    {
-      "label": "5. Tuning \u2014 finding the right cluster granularity",
-      "file_type": "document",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L137",
-      "_origin": "ast",
-      "id": "wiki_synthesis_project_presentation_overview_5_tuning_finding_the_right_cluster_granularity",
-      "community": 31,
-      "norm_label": "5. tuning \u2014 finding the right cluster granularity"
-    },
-    {
-      "label": "6. Results \u2014 BERTopic vs. classical baselines, and the fine-tuning trade-off",
-      "file_type": "document",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L158",
-      "_origin": "ast",
-      "id": "wiki_synthesis_project_presentation_overview_6_results_bertopic_vs_classical_baselines_and_the_fine_tuning_trade_off",
-      "community": 31,
-      "norm_label": "6. results \u2014 bertopic vs. classical baselines, and the fine-tuning trade-off"
-    },
-    {
-      "label": "7. The application",
-      "file_type": "document",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L199",
-      "_origin": "ast",
-      "id": "wiki_synthesis_project_presentation_overview_7_the_application",
-      "community": 31,
-      "norm_label": "7. the application"
-    },
-    {
-      "label": "8. Honest limitations and open questions",
-      "file_type": "document",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L222",
-      "_origin": "ast",
-      "id": "wiki_synthesis_project_presentation_overview_8_honest_limitations_and_open_questions",
-      "community": 31,
-      "norm_label": "8. honest limitations and open questions"
-    },
-    {
-      "label": "9. Conclusion",
-      "file_type": "document",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L247",
-      "_origin": "ast",
-      "id": "wiki_synthesis_project_presentation_overview_9_conclusion",
-      "community": 31,
-      "norm_label": "9. conclusion"
-    },
-    {
-      "label": "Connections",
-      "file_type": "document",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L258",
-      "_origin": "ast",
-      "id": "wiki_synthesis_project_presentation_overview_connections",
-      "community": 31,
-      "norm_label": "connections"
-    },
-    {
-      "label": "Change log",
-      "file_type": "document",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L266",
-      "_origin": "ast",
-      "id": "wiki_synthesis_project_presentation_overview_change_log",
-      "community": 31,
+      "community": 3,
       "norm_label": "change log"
     }
   ],
@@ -9415,7 +9255,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/entities/kdx-minilm-tsdae-model.md",
-      "source_location": "L86",
+      "source_location": "L84",
       "weight": 1.0,
       "source": "wiki_entities_kdx_minilm_tsdae_model_kdx_minilm_tsdae_fine_tuned_embedder",
       "target": "wiki_entities_kdx_minilm_tsdae_model_change_log",
@@ -9922,16 +9762,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/index.md",
-      "source_location": "L48",
-      "weight": 1.0,
-      "source": "wiki_index",
-      "target": "wiki_synthesis_project_presentation_overview",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/index.md",
@@ -9995,7 +9825,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L59",
+      "source_location": "L28",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
       "target": "wiki_log_2026_06_26_build_drill_down_topic_tree_source_isolation_and_upload_engine",
@@ -10005,7 +9835,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L83",
+      "source_location": "L52",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
       "target": "wiki_log_2026_06_26_build_pipeline_implementation_bertopic_tuning_and_tsdae_fine_tuning",
@@ -10015,7 +9845,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L112",
+      "source_location": "L81",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
       "target": "wiki_log_2026_06_26_eval_tsdae_fine_tuning_comparison_completed",
@@ -10025,7 +9855,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L127",
+      "source_location": "L96",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
       "target": "wiki_log_2026_06_26_ingest_bootstrap_wiki_from_8_kurdish_nlp_sources",
@@ -10035,20 +9865,10 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L34",
-      "weight": 1.0,
-      "source": "wiki_log_wiki_log",
-      "target": "wiki_log_2026_07_03_build_streamlit_ui_polish_upload_read_efficiency_and_verification",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/log.md",
       "source_location": "L3",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
-      "target": "wiki_log_2026_07_04_lint_ingest_pre_presentation_wiki_review_and_consolidated_overview",
+      "target": "wiki_log_2026_07_03_build_streamlit_ui_polish_upload_read_efficiency_and_verification",
       "confidence_score": 1.0
     },
     {
@@ -10642,16 +10462,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L47",
-      "weight": 1.0,
-      "source": "wiki_synthesis_project_presentation_overview",
-      "target": "wiki_synthesis_implementation_and_methodology",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/synthesis/implementation-and-methodology.md",
@@ -10842,20 +10652,10 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L59",
-      "weight": 1.0,
-      "source": "wiki_synthesis_project_presentation_overview",
-      "target": "wiki_synthesis_kurdish_data_explorer_pipeline",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/synthesis/kurdish-data-explorer-pipeline.md",
-      "source_location": "L87",
+      "source_location": "L81",
       "weight": 1.0,
       "source": "wiki_synthesis_kurdish_data_explorer_pipeline_kurdish_data_explorer_pipeline",
       "target": "wiki_synthesis_kurdish_data_explorer_pipeline_change_log",
@@ -10910,128 +10710,8 @@
       "source": "wiki_synthesis_kurdish_data_explorer_pipeline_kurdish_data_explorer_pipeline",
       "target": "wiki_synthesis_kurdish_data_explorer_pipeline_summary",
       "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L11",
-      "weight": 1.0,
-      "source": "wiki_synthesis_project_presentation_overview",
-      "target": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L19",
-      "weight": 1.0,
-      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
-      "target": "wiki_synthesis_project_presentation_overview_1_the_problem",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L34",
-      "weight": 1.0,
-      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
-      "target": "wiki_synthesis_project_presentation_overview_2_the_objective",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L56",
-      "weight": 1.0,
-      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
-      "target": "wiki_synthesis_project_presentation_overview_3_literature_review_why_each_piece_was_chosen",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L93",
-      "weight": 1.0,
-      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
-      "target": "wiki_synthesis_project_presentation_overview_4_methodology_how_the_pipeline_actually_works",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L137",
-      "weight": 1.0,
-      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
-      "target": "wiki_synthesis_project_presentation_overview_5_tuning_finding_the_right_cluster_granularity",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L158",
-      "weight": 1.0,
-      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
-      "target": "wiki_synthesis_project_presentation_overview_6_results_bertopic_vs_classical_baselines_and_the_fine_tuning_trade_off",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L199",
-      "weight": 1.0,
-      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
-      "target": "wiki_synthesis_project_presentation_overview_7_the_application",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L222",
-      "weight": 1.0,
-      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
-      "target": "wiki_synthesis_project_presentation_overview_8_honest_limitations_and_open_questions",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L247",
-      "weight": 1.0,
-      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
-      "target": "wiki_synthesis_project_presentation_overview_9_conclusion",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L266",
-      "weight": 1.0,
-      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
-      "target": "wiki_synthesis_project_presentation_overview_change_log",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "wiki/synthesis/project-presentation-overview.md",
-      "source_location": "L258",
-      "weight": 1.0,
-      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
-      "target": "wiki_synthesis_project_presentation_overview_connections",
-      "confidence_score": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "203e2af7e93dd7efd218e7bdbd0a5eee705b5e32"
+  "built_at_commit": "63b210ea338477ce21953f5fc89aa842209fa4c0"
 }

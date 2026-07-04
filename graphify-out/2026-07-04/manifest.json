@@ -210,8 +210,8 @@
     "semantic_hash": ""
   },
   "wiki/entities/kdx-minilm-tsdae-model.md": {
-    "mtime": 1783112948.23293,
-    "ast_hash": "96bd4f19492f778fcf2e4024b48e17f5",
+    "mtime": 1782495364.6542683,
+    "ast_hash": "e1a280b1834e2f07197f7e136273a303",
     "semantic_hash": ""
   },
   "wiki/entities/klpt.md": {
@@ -235,13 +235,13 @@
     "semantic_hash": ""
   },
   "wiki/index.md": {
-    "mtime": 1783113068.657436,
-    "ast_hash": "1dd1f9dc5c6780824a9a7a2dba226f58",
+    "mtime": 1783031873.7028716,
+    "ast_hash": "f9bad8058a4cec31abe670ac05fea82b",
     "semantic_hash": ""
   },
   "wiki/log.md": {
-    "mtime": 1783113092.396278,
-    "ast_hash": "1a62340de2b47892aaf4966ccff53d6b",
+    "mtime": 1783031887.929494,
+    "ast_hash": "0a1122d6269832717f9774522386c85c",
     "semantic_hash": ""
   },
   "wiki/sources/asosoft-text-corpus.md": {
@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "wiki/synthesis/kurdish-data-explorer-pipeline.md": {
-    "mtime": 1783112965.691133,
-    "ast_hash": "8f26e79cf1d2343350c42caea5fccd3f",
+    "mtime": 1782480135.865448,
+    "ast_hash": "1390915c24c3879652d0d192f53aa837",
     "semantic_hash": ""
   },
   "raw/sources/A Transformer-based Neural Network Machine Translation Model for the Kurdish Sorani Dialect.pdf": {
@@ -337,41 +337,6 @@
   "reports/proposal.pdf": {
     "mtime": 1781907428.1979532,
     "ast_hash": "2e983d92cb8cec705338da4903bd1dce",
-    "semantic_hash": ""
-  },
-  ".obsidian/app.json": {
-    "mtime": 1783095363.3848484,
-    "ast_hash": "99914b932bd37a50b983c5e7c90ae93b",
-    "semantic_hash": ""
-  },
-  ".obsidian/appearance.json": {
-    "mtime": 1783095363.3858485,
-    "ast_hash": "99914b932bd37a50b983c5e7c90ae93b",
-    "semantic_hash": ""
-  },
-  ".obsidian/core-plugins.json": {
-    "mtime": 1783095362.898818,
-    "ast_hash": "7c877bea49eaeabb100563bd157b9051",
-    "semantic_hash": ""
-  },
-  ".obsidian/graph.json": {
-    "mtime": 1783095454.589999,
-    "ast_hash": "442a8fab47ab85be1750a30562cd54bc",
-    "semantic_hash": ""
-  },
-  ".obsidian/workspace.json": {
-    "mtime": 1783095451.492157,
-    "ast_hash": "caadb783345fff8b2a95da175fe798ae",
-    "semantic_hash": ""
-  },
-  "_COMMUNITY_Soran Badawi.md": {
-    "mtime": 1783095447.203908,
-    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
-    "semantic_hash": ""
-  },
-  "wiki/synthesis/project-presentation-overview.md": {
-    "mtime": 1783113039.9863303,
-    "ast_hash": "af5b7b53ee8cca778100410c6d5992ca",
     "semantic_hash": ""
   }
 }

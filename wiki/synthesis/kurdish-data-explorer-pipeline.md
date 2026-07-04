@@ -70,14 +70,25 @@ models transfer to low-resource settings:
 
 - **Source-grounded caution:** the BLEU 0.45 in the NMT paper and the near-99% idiom
   accuracy are strong claims on small data; cite them as encouraging, not decisive.
-- **Data availability:** AsoSoft and KNDH licensing/redistribution must be confirmed
-  before ingestion.
-- **Topic–label alignment:** whether unsupervised topics on KNDH recover the five
-  human categories is an open empirical question, central to the project's
-  evaluation.
-- **Embedding backbone:** Kurdish-specific KuBERT vs multilingual
-  sentence-transformers remains untested for Sorani clustering.
+- **Data availability — resolved:** both KNDH and AsoSoft (Small) were ingested
+  successfully; see provenance in [[Implementation and Methodology]]. AsoSoft Large
+  (75M tokens) and its topic-annotated RAR remain optional/not yet ingested.
+- **Topic–label alignment — answered empirically:** unsupervised BERTopic on full
+  KNDH reaches NMI 0.224 against the 5 human categories (base MiniLM), vs 0.159 for
+  the TSDAE-adapted embedder — topics partially but not fully recover the human
+  labels; full sweep in [[Implementation and Methodology]].
+- **Embedding backbone — narrowed, not fully closed:** the shipped pipeline uses
+  multilingual sentence-transformers (MiniLM, DistilUSE, MPNet, E5-base) plus a
+  domain-adapted [[KDX-MiniLM-TSDAE (fine-tuned embedder)]]; Kurdish-specific
+  [[KuBERT]] was never wired into the embedding stage (only referenced from the
+  idiom-detection source as classification evidence), so the comparison against a
+  Kurdish-specific encoder is still untested.
 
 ## Change log
 
 - 2026-06-26: Created after initial ingest of all eight sources.
+- 2026-07-04: Reconciled open questions against the finished implementation —
+  data acquisition and topic–label alignment questions answered, embedding-backbone
+  question narrowed. Full as-built detail lives in
+  [[Implementation and Methodology]]; this page stays the literature-grounded
+  design rationale.

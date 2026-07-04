@@ -1,5 +1,36 @@
 # Wiki Log
 
+## [2026-07-04] lint+ingest | Pre-presentation wiki review and consolidated overview
+
+User is presenting the project tomorrow and generating a NotebookLM podcast from
+the sources. Reviewed the whole wiki for staleness ahead of that:
+
+- Found `entities/kdx-minilm-tsdae-model.md` stuck at `status: draft` with a change
+  log saying "evaluation pending," even though the file's own body already
+  contained the finished comparison table. Fixed: status set to `stable`,
+  `updated` bumped, change log entry added, open questions section split into
+  "answered" vs still-open.
+- Found `synthesis/kurdish-data-explorer-pipeline.md`'s "Open questions / risks"
+  section pre-dated the finished implementation: data-availability and
+  topic–label-alignment questions were already answered by
+  [[Implementation and Methodology]], and the embedding-backbone question needed
+  narrowing (KuBERT was never wired into the embedding stage). Reconciled.
+- All other pages checked (`status:` field, line counts 47–86 lines each) were
+  consistently detailed with no orphans or contradictions found.
+- Created `synthesis/project-presentation-overview.md`: a single linear narrative
+  (problem → literature review → methodology → tuning → results/trade-offs → app
+  → limitations → conclusion) meant to be the primary upload for NotebookLM /
+  presentation prep, since a fragmented wiki graph makes for a worse podcast
+  source than one coherent document.
+
+Updated `wiki/index.md` (new synthesis entry).
+
+Unresolved / pending (unchanged from before):
+
+- AsoSoft Large (75M) + topic-annotated RAR (needs `unrar`) not yet ingested.
+- Kurdish-specific KuBERT was never wired into the embedding stage — untested
+  against multilingual sentence-transformers for this clustering task.
+
 ## [2026-07-03] build | Streamlit UI polish, upload-read efficiency, and verification
 
 Updated the live explorer UI and documentation after a codebase/wiki/doc/env pass:

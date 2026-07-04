@@ -2,8 +2,8 @@
 title: "KDX-MiniLM-TSDAE (fine-tuned embedder)"
 type: entity
 created: 2026-06-26
-updated: 2026-06-26
-status: draft
+updated: 2026-07-04
+status: stable
 tags: [model, embedding, tsdae, fine-tuning, domain-adaptation, sorani, minilm]
 sources: ["raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf"]
 ---
@@ -77,10 +77,15 @@ for finer, more coherent semantic clustering. Both are selectable in the app.
 
 ## Open questions
 
-- Does domain adaptation actually improve topic quality on KNDH, or is the
-  off-the-shelf multilingual model already sufficient?
-- Would more epochs / a larger sentence corpus (full AsoSoft 75M) help materially?
+- **Answered:** domain adaptation does improve intrinsic topic quality (NPMI,
+  diversity, outlier rate) but trades away category alignment (NMI) — see
+  the trade-off table above. Not a clean win; both models ship.
+- Still open: would more epochs / a larger sentence corpus (full AsoSoft 75M)
+  narrow or widen the NMI gap versus base MiniLM?
 
 ## Change log
 
 - 2026-06-26: Created when TSDAE fine-tuning was launched; evaluation pending.
+- 2026-07-04: Evaluation complete (see table above); marked stable. Status/change
+  log had lagged the actual finished results — caught during a pre-presentation
+  wiki review.
