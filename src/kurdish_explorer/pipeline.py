@@ -30,6 +30,16 @@ def available_model_options(source: str, available_runs: dict[str, list[str]] | 
     return options
 
 
+def fitted_model_options(source: str, available_runs: dict[str, list[str]] | None = None) -> list[tuple[str, str]]:
+    """Return UI-ready model labels for fitted artifacts only."""
+    run_keys = set((available_runs or runs_by_source()).get(source, []))
+    return [
+        (config.EMBEDDING_MODEL_LABELS.get(model_key, model_key), model_key)
+        for model_key in config.EMBEDDING_MODELS
+        if model_key in run_keys
+    ]
+
+
 def artifact_dir(source: str, model_key: str):
     d = config.ARTIFACTS_DIR / run_key(source, model_key)
     d.mkdir(parents=True, exist_ok=True)

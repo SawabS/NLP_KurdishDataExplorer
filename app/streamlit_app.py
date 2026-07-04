@@ -95,8 +95,9 @@ def _first_run_for(source: str) -> str:
 
 
 @st.cache_data(show_spinner=False)
-def _load(run: str) -> dict:
-    return pipeline.load_run(run)
+def _load_all(runs: tuple[str, ...]) -> dict[str, dict]:
+    """Preload every fitted run so sidebar navigation never triggers fitting."""
+    return {run: pipeline.load_run(run) for run in runs}
 
 
 # ---------------------------------------------------------------------------
@@ -432,13 +433,17 @@ def main() -> None:
         render_upload()
         return
 
+    all_runs = tuple(pipeline.list_runs())
     if not runs_by_source:
         st.warning(
-            "No fitted runs found. Generate one first, e.g.:\n\n"
-            "`python scripts/run_pipeline.py --source kndh --model minilm`\n\n"
+            "No precomputed runs found. Generate model artifacts first, e.g.:\n\n"
+            "`python scripts/run_pipeline.py --source kndh --all-models --no-baselines`\n\n"
             "or use **Upload & explore** in the sidebar."
         )
         st.stop()
+
+    with st.spinner("Loading precomputed model artifacts…"):
+        loaded_runs = _load_all(all_runs)
 
     # ---- Source-first navigation (never mixes sources) ----
     st.sidebar.markdown("### 1 · Source")
@@ -450,25 +455,29 @@ def main() -> None:
     sinfo = source_meta(source)
 
     st.sidebar.markdown("### 2 · Embedding model")
-    model_options = pipeline.available_model_options(source, runs_by_source)
+    model_options = pipeline.fitted_model_options(source, runs_by_source)
+    missing_models = [
+        key for key in config.EMBEDDING_MODELS
+        if key not in set(runs_by_source.get(source, []))
+    ]
+    if missing_models:
+        st.sidebar.info(
+            f"{len(missing_models)} registered model(s) are not precomputed for this source. "
+            f"Run `python scripts/run_pipeline.py --source {source} --all-models` "
+            "before launching the app to make every model switchable."
+        )
+    if not model_options:
+        st.warning(
+            "This source has no artifacts for the currently registered embedding models. "
+            f"Run `python scripts/run_pipeline.py --source {source} --all-models` and rerun the app."
+        )
+        st.stop()
     model_labels = [label for label, _ in model_options]
     selected_label = st.sidebar.selectbox("Embedding model", model_labels)
     model = next(key for label, key in model_options if label == selected_label)
     run = f"{source}__{model}"
 
-    if model not in runs_by_source.get(source, []):
-        st.sidebar.warning(
-            f"The selected model has not been fitted for this corpus yet. "
-            "Fit it once to generate the explorer artifacts."
-        )
-        if st.sidebar.button("Fit this model now"):
-            with st.spinner(f"Fitting {selected_label} for {source}…"):
-                pipeline.run(source=source, model_key=model, with_baselines=False)
-            st.cache_data.clear()
-            st.rerun()
-        st.stop()
-
-    art = _load(run)
+    art = loaded_runs[run]
     meta, docs = art["meta"], art["documents"]
     topic_info, topic_words = art["topic_info"], art["topic_words"]
     hierarchy = art.get("hierarchy", [])

@@ -15,8 +15,8 @@
     "semantic_hash": ""
   },
   "app/streamlit_app.py": {
-    "mtime": 1783031228.7893293,
-    "ast_hash": "26c502e4827f060b55031f1bd7b0cf42",
+    "mtime": 1783148857.7862377,
+    "ast_hash": "3aad32c787fe85ae1f089057b5dfbb10",
     "semantic_hash": ""
   },
   "app/upload_page.py": {
@@ -35,8 +35,8 @@
     "semantic_hash": ""
   },
   "scripts/run_pipeline.py": {
-    "mtime": 1782481381.342138,
-    "ast_hash": "c37b6ca7f2f19fb8c80bde38bbc45244",
+    "mtime": 1783148873.5626967,
+    "ast_hash": "728144ab13e1390bb55a3e0ea0960652",
     "semantic_hash": ""
   },
   "scripts/tune_bertopic.py": {
@@ -75,8 +75,8 @@
     "semantic_hash": ""
   },
   "src/kurdish_explorer/pipeline.py": {
-    "mtime": 1783030348.3879614,
-    "ast_hash": "b2c349715c477be7b4c1149fbc49f36b",
+    "mtime": 1783148836.097244,
+    "ast_hash": "8734f83803fa0a6c8d02b21431a727d7",
     "semantic_hash": ""
   },
   "src/kurdish_explorer/preprocess.py": {
@@ -90,8 +90,8 @@
     "semantic_hash": ""
   },
   "tests/test_pipeline_model_options.py": {
-    "mtime": 1782505617.5046775,
-    "ast_hash": "6eeaef4f5693c992c5c785b56089edc2",
+    "mtime": 1783148880.550113,
+    "ast_hash": "06aab01a0143a7915788e9c678cfda74",
     "semantic_hash": ""
   },
   "tools/lint_wiki.py": {
@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1783030879.844346,
-    "ast_hash": "0de1ec477679d85ed9f21d0c0c294153",
+    "mtime": 1783148895.0666153,
+    "ast_hash": "8c91dd4795dfec119db68c0ec01fbe3c",
     "semantic_hash": ""
   },
   "SKILLS.md": {
@@ -210,8 +210,8 @@
     "semantic_hash": ""
   },
   "wiki/entities/kdx-minilm-tsdae-model.md": {
-    "mtime": 1782495364.6542683,
-    "ast_hash": "e1a280b1834e2f07197f7e136273a303",
+    "mtime": 1783112948.23293,
+    "ast_hash": "96bd4f19492f778fcf2e4024b48e17f5",
     "semantic_hash": ""
   },
   "wiki/entities/klpt.md": {
@@ -235,13 +235,13 @@
     "semantic_hash": ""
   },
   "wiki/index.md": {
-    "mtime": 1783031873.7028716,
-    "ast_hash": "f9bad8058a4cec31abe670ac05fea82b",
+    "mtime": 1783113068.657436,
+    "ast_hash": "1dd1f9dc5c6780824a9a7a2dba226f58",
     "semantic_hash": ""
   },
   "wiki/log.md": {
-    "mtime": 1783031887.929494,
-    "ast_hash": "0a1122d6269832717f9774522386c85c",
+    "mtime": 1783113092.396278,
+    "ast_hash": "1a62340de2b47892aaf4966ccff53d6b",
     "semantic_hash": ""
   },
   "wiki/sources/asosoft-text-corpus.md": {
@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "wiki/synthesis/kurdish-data-explorer-pipeline.md": {
-    "mtime": 1782480135.865448,
-    "ast_hash": "1390915c24c3879652d0d192f53aa837",
+    "mtime": 1783112965.691133,
+    "ast_hash": "8f26e79cf1d2343350c42caea5fccd3f",
     "semantic_hash": ""
   },
   "raw/sources/A Transformer-based Neural Network Machine Translation Model for the Kurdish Sorani Dialect.pdf": {
@@ -337,6 +337,41 @@
   "reports/proposal.pdf": {
     "mtime": 1781907428.1979532,
     "ast_hash": "2e983d92cb8cec705338da4903bd1dce",
+    "semantic_hash": ""
+  },
+  ".obsidian/app.json": {
+    "mtime": 1783095363.3848484,
+    "ast_hash": "99914b932bd37a50b983c5e7c90ae93b",
+    "semantic_hash": ""
+  },
+  ".obsidian/appearance.json": {
+    "mtime": 1783095363.3858485,
+    "ast_hash": "99914b932bd37a50b983c5e7c90ae93b",
+    "semantic_hash": ""
+  },
+  ".obsidian/core-plugins.json": {
+    "mtime": 1783095362.898818,
+    "ast_hash": "7c877bea49eaeabb100563bd157b9051",
+    "semantic_hash": ""
+  },
+  ".obsidian/graph.json": {
+    "mtime": 1783095454.589999,
+    "ast_hash": "442a8fab47ab85be1750a30562cd54bc",
+    "semantic_hash": ""
+  },
+  ".obsidian/workspace.json": {
+    "mtime": 1783095451.492157,
+    "ast_hash": "caadb783345fff8b2a95da175fe798ae",
+    "semantic_hash": ""
+  },
+  "_COMMUNITY_Soran Badawi.md": {
+    "mtime": 1783095447.203908,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "wiki/synthesis/project-presentation-overview.md": {
+    "mtime": 1783113039.9863303,
+    "ast_hash": "af5b7b53ee8cca778100410c6d5992ca",
     "semantic_hash": ""
   }
 }

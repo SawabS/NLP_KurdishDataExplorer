@@ -4,6 +4,16 @@
   "graph": {},
   "nodes": [
     {
+      "label": "app.json",
+      "file_type": "code",
+      "source_file": ".obsidian/app.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "obsidian_app",
+      "community": 46,
+      "norm_label": "app.json"
+    },
+    {
       "label": "streamlit_app.py",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
@@ -64,20 +74,20 @@
       "norm_label": "_first_run_for()"
     },
     {
-      "label": "_load()",
+      "label": "_load_all()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
       "source_location": "L98",
       "_origin": "ast",
-      "id": "app_streamlit_app_load",
+      "id": "app_streamlit_app_load_all",
       "community": 1,
-      "norm_label": "_load()"
+      "norm_label": "_load_all()"
     },
     {
       "label": "current_theme()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L124",
+      "source_location": "L125",
       "_origin": "ast",
       "id": "app_streamlit_app_current_theme",
       "community": 1,
@@ -87,7 +97,7 @@
       "label": "_flip_theme()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L128",
+      "source_location": "L129",
       "_origin": "ast",
       "id": "app_streamlit_app_flip_theme",
       "community": 1,
@@ -97,7 +107,7 @@
       "label": "render_theme_toggle()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L132",
+      "source_location": "L133",
       "_origin": "ast",
       "id": "app_streamlit_app_render_theme_toggle",
       "community": 1,
@@ -107,7 +117,7 @@
       "label": "render_table()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L142",
+      "source_location": "L143",
       "_origin": "ast",
       "id": "app_streamlit_app_render_table",
       "community": 1,
@@ -127,7 +137,7 @@
       "label": "apply_theme()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L166",
+      "source_location": "L167",
       "_origin": "ast",
       "id": "app_streamlit_app_apply_theme",
       "community": 1,
@@ -137,7 +147,7 @@
       "label": "themed()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L302",
+      "source_location": "L303",
       "_origin": "ast",
       "id": "app_streamlit_app_themed",
       "community": 1,
@@ -147,7 +157,7 @@
       "label": "accent_seq()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L339",
+      "source_location": "L340",
       "_origin": "ast",
       "id": "app_streamlit_app_accent_seq",
       "community": 1,
@@ -157,7 +167,7 @@
       "label": "heat_scale()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L345",
+      "source_location": "L346",
       "_origin": "ast",
       "id": "app_streamlit_app_heat_scale",
       "community": 1,
@@ -167,7 +177,7 @@
       "label": "topic_samples()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L357",
+      "source_location": "L358",
       "_origin": "ast",
       "id": "app_streamlit_app_topic_samples",
       "community": 1,
@@ -177,7 +187,7 @@
       "label": "dominant_categories()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L365",
+      "source_location": "L366",
       "_origin": "ast",
       "id": "app_streamlit_app_dominant_categories",
       "community": 1,
@@ -187,7 +197,7 @@
       "label": "keyword_string()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L376",
+      "source_location": "L377",
       "_origin": "ast",
       "id": "app_streamlit_app_keyword_string",
       "community": 1,
@@ -197,7 +207,7 @@
       "label": "build_tree_frame()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L381",
+      "source_location": "L382",
       "_origin": "ast",
       "id": "app_streamlit_app_build_tree_frame",
       "community": 1,
@@ -207,7 +217,7 @@
       "label": "main()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L415",
+      "source_location": "L416",
       "_origin": "ast",
       "id": "app_streamlit_app_main",
       "community": 1,
@@ -217,7 +227,7 @@
       "label": "render_tree_tab()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L508",
+      "source_location": "L511",
       "_origin": "ast",
       "id": "app_streamlit_app_render_tree_tab",
       "community": 1,
@@ -227,7 +237,7 @@
       "label": "render_map_tab()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L629",
+      "source_location": "L632",
       "_origin": "ast",
       "id": "app_streamlit_app_render_map_tab",
       "community": 1,
@@ -237,7 +247,7 @@
       "label": "render_baselines_tab()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L686",
+      "source_location": "L689",
       "_origin": "ast",
       "id": "app_streamlit_app_render_baselines_tab",
       "community": 1,
@@ -284,12 +294,22 @@
       "norm_label": "stable category -> pastel color, so a label looks the same in every chart."
     },
     {
+      "label": "Preload every fitted run so sidebar navigation never triggers fitting.",
+      "file_type": "rationale",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L99",
+      "_origin": "ast",
+      "id": "app_streamlit_app_rationale_99",
+      "community": 1,
+      "norm_label": "preload every fitted run so sidebar navigation never triggers fitting."
+    },
+    {
       "label": "A small borderless icon button (top-right) that flips light/dark.",
       "file_type": "rationale",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L133",
+      "source_location": "L134",
       "_origin": "ast",
-      "id": "app_streamlit_app_rationale_133",
+      "id": "app_streamlit_app_rationale_134",
       "community": 1,
       "norm_label": "a small borderless icon button (top-right) that flips light/dark."
     },
@@ -297,9 +317,9 @@
       "label": "Render a DataFrame as a fully theme-controlled, scrollable HTML table.      Stre",
       "file_type": "rationale",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L143",
+      "source_location": "L144",
       "_origin": "ast",
-      "id": "app_streamlit_app_rationale_143",
+      "id": "app_streamlit_app_rationale_144",
       "community": 1,
       "norm_label": "render a dataframe as a fully theme-controlled, scrollable html table.      stre"
     },
@@ -307,9 +327,9 @@
       "label": "Paint the whole page (chrome, widgets, tables, charts) for the chosen mode.",
       "file_type": "rationale",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L167",
+      "source_location": "L168",
       "_origin": "ast",
-      "id": "app_streamlit_app_rationale_167",
+      "id": "app_streamlit_app_rationale_168",
       "community": 1,
       "norm_label": "paint the whole page (chrome, widgets, tables, charts) for the chosen mode."
     },
@@ -317,9 +337,9 @@
       "label": "Match a Plotly figure to the chosen Light/Dark theme.      Uses a transparent ba",
       "file_type": "rationale",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L303",
+      "source_location": "L304",
       "_origin": "ast",
-      "id": "app_streamlit_app_rationale_303",
+      "id": "app_streamlit_app_rationale_304",
       "community": 1,
       "norm_label": "match a plotly figure to the chosen light/dark theme.      uses a transparent ba"
     },
@@ -327,9 +347,9 @@
       "label": "Single-color sequence so px bar charts take the theme accent at build time     (",
       "file_type": "rationale",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L340",
+      "source_location": "L341",
       "_origin": "ast",
-      "id": "app_streamlit_app_rationale_340",
+      "id": "app_streamlit_app_rationale_341",
       "community": 1,
       "norm_label": "single-color sequence so px bar charts take the theme accent at build time     ("
     },
@@ -337,9 +357,9 @@
       "label": "Sequential scale for density heatmaps that starts at the page surface color,",
       "file_type": "rationale",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L346",
+      "source_location": "L347",
       "_origin": "ast",
-      "id": "app_streamlit_app_rationale_346",
+      "id": "app_streamlit_app_rationale_347",
       "community": 1,
       "norm_label": "sequential scale for density heatmaps that starts at the page surface color,"
     },
@@ -347,9 +367,9 @@
       "label": "One short representative snippet per topic, for hover intuition.",
       "file_type": "rationale",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L358",
+      "source_location": "L359",
       "_origin": "ast",
-      "id": "app_streamlit_app_rationale_358",
+      "id": "app_streamlit_app_rationale_359",
       "community": 1,
       "norm_label": "one short representative snippet per topic, for hover intuition."
     },
@@ -357,9 +377,9 @@
       "label": "Most common human category per topic (labeled sources only).",
       "file_type": "rationale",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L366",
+      "source_location": "L367",
       "_origin": "ast",
-      "id": "app_streamlit_app_rationale_366",
+      "id": "app_streamlit_app_rationale_367",
       "community": 1,
       "norm_label": "most common human category per topic (labeled sources only)."
     },
@@ -367,9 +387,9 @@
       "label": "Map topic id -> a short space-joined keyword string (for hovers).",
       "file_type": "rationale",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L377",
+      "source_location": "L378",
       "_origin": "ast",
-      "id": "app_streamlit_app_rationale_377",
+      "id": "app_streamlit_app_rationale_378",
       "community": 1,
       "norm_label": "map topic id -> a short space-joined keyword string (for hovers)."
     },
@@ -377,9 +397,9 @@
       "label": "Turn saved hierarchy nodes into a Plotly icicle/treemap/sunburst frame.      Lea",
       "file_type": "rationale",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L382",
+      "source_location": "L383",
       "_origin": "ast",
-      "id": "app_streamlit_app_rationale_382",
+      "id": "app_streamlit_app_rationale_383",
       "community": 1,
       "norm_label": "turn saved hierarchy nodes into a plotly icicle/treemap/sunburst frame.      lea"
     },
@@ -547,7 +567,7 @@
       "label": "main()",
       "file_type": "code",
       "source_file": "scripts/run_pipeline.py",
-      "source_location": "L22",
+      "source_location": "L23",
       "_origin": "ast",
       "id": "scripts_run_pipeline_main",
       "community": 39,
@@ -1094,10 +1114,20 @@
       "norm_label": "available_model_options()"
     },
     {
-      "label": "artifact_dir()",
+      "label": "fitted_model_options()",
       "file_type": "code",
       "source_file": "src/kurdish_explorer/pipeline.py",
       "source_location": "L33",
+      "_origin": "ast",
+      "id": "src_kurdish_explorer_pipeline_fitted_model_options",
+      "community": 4,
+      "norm_label": "fitted_model_options()"
+    },
+    {
+      "label": "artifact_dir()",
+      "file_type": "code",
+      "source_file": "src/kurdish_explorer/pipeline.py",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "src_kurdish_explorer_pipeline_artifact_dir",
       "community": 4,
@@ -1107,7 +1137,7 @@
       "label": "PipelineResult",
       "file_type": "code",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L40",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "src_kurdish_explorer_pipeline_pipelineresult",
       "community": 4,
@@ -1117,7 +1147,7 @@
       "label": "run()",
       "file_type": "code",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L49",
+      "source_location": "L59",
       "_origin": "ast",
       "id": "src_kurdish_explorer_pipeline_run",
       "community": 4,
@@ -1127,7 +1157,7 @@
       "label": "run_on_texts()",
       "file_type": "code",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L80",
+      "source_location": "L90",
       "_origin": "ast",
       "id": "src_kurdish_explorer_pipeline_run_on_texts",
       "community": 4,
@@ -1137,7 +1167,7 @@
       "label": "run_on_dataframe()",
       "file_type": "code",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L115",
+      "source_location": "L125",
       "_origin": "ast",
       "id": "src_kurdish_explorer_pipeline_run_on_dataframe",
       "community": 4,
@@ -1147,7 +1177,7 @@
       "label": "_slugify()",
       "file_type": "code",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L222",
+      "source_location": "L232",
       "_origin": "ast",
       "id": "src_kurdish_explorer_pipeline_slugify",
       "community": 4,
@@ -1157,7 +1187,7 @@
       "label": "list_runs()",
       "file_type": "code",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L231",
+      "source_location": "L241",
       "_origin": "ast",
       "id": "src_kurdish_explorer_pipeline_list_runs",
       "community": 4,
@@ -1167,7 +1197,7 @@
       "label": "load_run()",
       "file_type": "code",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L241",
+      "source_location": "L251",
       "_origin": "ast",
       "id": "src_kurdish_explorer_pipeline_load_run",
       "community": 4,
@@ -1177,7 +1207,7 @@
       "label": "runs_by_source()",
       "file_type": "code",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L264",
+      "source_location": "L274",
       "_origin": "ast",
       "id": "src_kurdish_explorer_pipeline_runs_by_source",
       "community": 4,
@@ -1187,7 +1217,7 @@
       "label": "run_meta()",
       "file_type": "code",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L273",
+      "source_location": "L283",
       "_origin": "ast",
       "id": "src_kurdish_explorer_pipeline_run_meta",
       "community": 4,
@@ -1214,12 +1244,22 @@
       "norm_label": "return ui-ready model labels for a source, marking unfitted models explicitly."
     },
     {
+      "label": "Return UI-ready model labels for fitted artifacts only.",
+      "file_type": "rationale",
+      "source_file": "src/kurdish_explorer/pipeline.py",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "src_kurdish_explorer_pipeline_rationale_34",
+      "community": 4,
+      "norm_label": "return ui-ready model labels for fitted artifacts only."
+    },
+    {
       "label": "Fit the full pipeline for one (built-in source, embedding model).      Parameter",
       "file_type": "rationale",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L57",
+      "source_location": "L67",
       "_origin": "ast",
-      "id": "src_kurdish_explorer_pipeline_rationale_57",
+      "id": "src_kurdish_explorer_pipeline_rationale_67",
       "community": 4,
       "norm_label": "fit the full pipeline for one (built-in source, embedding model).      parameter"
     },
@@ -1227,9 +1267,9 @@
       "label": "Fit the pipeline on an arbitrary list of texts (uploads / any source).      This",
       "file_type": "rationale",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L91",
+      "source_location": "L101",
       "_origin": "ast",
-      "id": "src_kurdish_explorer_pipeline_rationale_91",
+      "id": "src_kurdish_explorer_pipeline_rationale_101",
       "community": 4,
       "norm_label": "fit the pipeline on an arbitrary list of texts (uploads / any source).      this"
     },
@@ -1237,9 +1277,9 @@
       "label": "Core pipeline over a unified-schema DataFrame (doc_id, source, text, label[, tex",
       "file_type": "rationale",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L125",
+      "source_location": "L135",
       "_origin": "ast",
-      "id": "src_kurdish_explorer_pipeline_rationale_125",
+      "id": "src_kurdish_explorer_pipeline_rationale_135",
       "community": 4,
       "norm_label": "core pipeline over a unified-schema dataframe (doc_id, source, text, label[, tex"
     },
@@ -1247,9 +1287,9 @@
       "label": "Available fitted runs, by '<source>__<model>' key.",
       "file_type": "rationale",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L232",
+      "source_location": "L242",
       "_origin": "ast",
-      "id": "src_kurdish_explorer_pipeline_rationale_232",
+      "id": "src_kurdish_explorer_pipeline_rationale_242",
       "community": 4,
       "norm_label": "available fitted runs, by '<source>__<model>' key."
     },
@@ -1257,9 +1297,9 @@
       "label": "Load all artifacts for a run key into a dict.",
       "file_type": "rationale",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L242",
+      "source_location": "L252",
       "_origin": "ast",
-      "id": "src_kurdish_explorer_pipeline_rationale_242",
+      "id": "src_kurdish_explorer_pipeline_rationale_252",
       "community": 4,
       "norm_label": "load all artifacts for a run key into a dict."
     },
@@ -1267,9 +1307,9 @@
       "label": "Group available run keys by source: {source: [model_key, ...]}.",
       "file_type": "rationale",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L265",
+      "source_location": "L275",
       "_origin": "ast",
-      "id": "src_kurdish_explorer_pipeline_rationale_265",
+      "id": "src_kurdish_explorer_pipeline_rationale_275",
       "community": 4,
       "norm_label": "group available run keys by source: {source: [model_key, ...]}."
     },
@@ -1277,9 +1317,9 @@
       "label": "Cheap read of just a run's meta.json (for source listings).",
       "file_type": "rationale",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L274",
+      "source_location": "L284",
       "_origin": "ast",
-      "id": "src_kurdish_explorer_pipeline_rationale_274",
+      "id": "src_kurdish_explorer_pipeline_rationale_284",
       "community": 4,
       "norm_label": "cheap read of just a run's meta.json (for source listings)."
     },
@@ -1542,6 +1582,16 @@
       "id": "tests_test_pipeline_model_options_test_available_model_options_includes_all_configured_models",
       "community": 4,
       "norm_label": "test_available_model_options_includes_all_configured_models()"
+    },
+    {
+      "label": "test_fitted_model_options_only_includes_precomputed_runs()",
+      "file_type": "code",
+      "source_file": "tests/test_pipeline_model_options.py",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "tests_test_pipeline_model_options_test_fitted_model_options_only_includes_precomputed_runs",
+      "community": 4,
+      "norm_label": "test_fitted_model_options_only_includes_precomputed_runs()"
     },
     {
       "label": "lint_wiki.py",
@@ -1857,7 +1907,7 @@
       "label": "Layout",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L32",
+      "source_location": "L44",
       "_origin": "ast",
       "id": "readme_layout",
       "community": 34,
@@ -1867,7 +1917,7 @@
       "label": "Embedding models",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L46",
+      "source_location": "L58",
       "_origin": "ast",
       "id": "readme_embedding_models",
       "community": 34,
@@ -1877,7 +1927,7 @@
       "label": "Research wiki",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L54",
+      "source_location": "L75",
       "_origin": "ast",
       "id": "readme_research_wiki",
       "community": 34,
@@ -2112,6 +2162,16 @@
       "id": "skills_reproducibility_rule",
       "community": 5,
       "norm_label": "reproducibility rule"
+    },
+    {
+      "label": "_COMMUNITY_Soran Badawi.md",
+      "file_type": "document",
+      "source_file": "_COMMUNITY_Soran Badawi.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "community_soran_badawi",
+      "community": 45,
+      "norm_label": "_community_soran badawi.md"
     },
     {
       "label": "ARCHITECTURE.md",
@@ -2590,7 +2650,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "wiki_concepts_central_kurdish_sorani_central_kurdish_sorani",
-      "community": 0,
+      "community": 28,
       "norm_label": "central kurdish (sorani)"
     },
     {
@@ -2600,7 +2660,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "wiki_concepts_central_kurdish_sorani_summary",
-      "community": 0,
+      "community": 28,
       "norm_label": "summary"
     },
     {
@@ -2610,7 +2670,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "wiki_concepts_central_kurdish_sorani_key_claims",
-      "community": 0,
+      "community": 28,
       "norm_label": "key claims"
     },
     {
@@ -2620,7 +2680,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "wiki_concepts_central_kurdish_sorani_evidence",
-      "community": 0,
+      "community": 28,
       "norm_label": "evidence"
     },
     {
@@ -2630,7 +2690,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "wiki_concepts_central_kurdish_sorani_connections",
-      "community": 0,
+      "community": 28,
       "norm_label": "connections"
     },
     {
@@ -2640,7 +2700,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "wiki_concepts_central_kurdish_sorani_open_questions",
-      "community": 0,
+      "community": 28,
       "norm_label": "open questions"
     },
     {
@@ -2650,7 +2710,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "wiki_concepts_central_kurdish_sorani_change_log",
-      "community": 0,
+      "community": 28,
       "norm_label": "change log"
     },
     {
@@ -2750,7 +2810,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "wiki_concepts_morphological_richness_morphological_richness",
-      "community": 0,
+      "community": 41,
       "norm_label": "morphological richness"
     },
     {
@@ -2760,7 +2820,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "wiki_concepts_morphological_richness_summary",
-      "community": 0,
+      "community": 41,
       "norm_label": "summary"
     },
     {
@@ -2770,7 +2830,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "wiki_concepts_morphological_richness_key_claims",
-      "community": 0,
+      "community": 41,
       "norm_label": "key claims"
     },
     {
@@ -2780,7 +2840,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "wiki_concepts_morphological_richness_evidence",
-      "community": 0,
+      "community": 41,
       "norm_label": "evidence"
     },
     {
@@ -2790,7 +2850,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "wiki_concepts_morphological_richness_connections",
-      "community": 0,
+      "community": 41,
       "norm_label": "connections"
     },
     {
@@ -2800,7 +2860,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "wiki_concepts_morphological_richness_open_questions",
-      "community": 0,
+      "community": 41,
       "norm_label": "open questions"
     },
     {
@@ -2810,7 +2870,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "wiki_concepts_morphological_richness_change_log",
-      "community": 0,
+      "community": 41,
       "norm_label": "change log"
     },
     {
@@ -2990,7 +3050,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "wiki_concepts_topic_modeling_topic_modeling",
-      "community": 28,
+      "community": 0,
       "norm_label": "topic modeling"
     },
     {
@@ -3000,7 +3060,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "wiki_concepts_topic_modeling_summary",
-      "community": 28,
+      "community": 0,
       "norm_label": "summary"
     },
     {
@@ -3010,7 +3070,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "wiki_concepts_topic_modeling_key_claims",
-      "community": 28,
+      "community": 0,
       "norm_label": "key claims"
     },
     {
@@ -3020,7 +3080,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "wiki_concepts_topic_modeling_evidence",
-      "community": 28,
+      "community": 0,
       "norm_label": "evidence"
     },
     {
@@ -3030,7 +3090,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "wiki_concepts_topic_modeling_connections",
-      "community": 28,
+      "community": 0,
       "norm_label": "connections"
     },
     {
@@ -3040,7 +3100,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "wiki_concepts_topic_modeling_open_questions",
-      "community": 28,
+      "community": 0,
       "norm_label": "open questions"
     },
     {
@@ -3050,7 +3110,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "wiki_concepts_topic_modeling_change_log",
-      "community": 28,
+      "community": 0,
       "norm_label": "change log"
     },
     {
@@ -3070,7 +3130,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_transformer_models",
-      "community": 9,
+      "community": 42,
       "norm_label": "transformer models"
     },
     {
@@ -3080,7 +3140,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_summary",
-      "community": 9,
+      "community": 42,
       "norm_label": "summary"
     },
     {
@@ -3090,7 +3150,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_key_claims",
-      "community": 9,
+      "community": 42,
       "norm_label": "key claims"
     },
     {
@@ -3100,7 +3160,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_evidence",
-      "community": 9,
+      "community": 42,
       "norm_label": "evidence"
     },
     {
@@ -3110,7 +3170,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_connections",
-      "community": 9,
+      "community": 42,
       "norm_label": "connections"
     },
     {
@@ -3120,7 +3180,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_open_questions",
-      "community": 9,
+      "community": 42,
       "norm_label": "open questions"
     },
     {
@@ -3130,7 +3190,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_change_log",
-      "community": 9,
+      "community": 42,
       "norm_label": "change log"
     },
     {
@@ -3310,7 +3370,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "wiki_entities_kdx_minilm_tsdae_model_kdx_minilm_tsdae_fine_tuned_embedder",
-      "community": 3,
+      "community": 43,
       "norm_label": "kdx-minilm-tsdae (fine-tuned embedder)"
     },
     {
@@ -3320,7 +3380,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "wiki_entities_kdx_minilm_tsdae_model_summary",
-      "community": 3,
+      "community": 43,
       "norm_label": "summary"
     },
     {
@@ -3330,7 +3390,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "wiki_entities_kdx_minilm_tsdae_model_how_it_was_trained_full_transparency",
-      "community": 3,
+      "community": 43,
       "norm_label": "how it was trained (full transparency)"
     },
     {
@@ -3340,7 +3400,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "wiki_entities_kdx_minilm_tsdae_model_evidence_evaluation",
-      "community": 3,
+      "community": 43,
       "norm_label": "evidence / evaluation"
     },
     {
@@ -3350,7 +3410,7 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "wiki_entities_kdx_minilm_tsdae_model_connections",
-      "community": 3,
+      "community": 43,
       "norm_label": "connections"
     },
     {
@@ -3360,17 +3420,17 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "wiki_entities_kdx_minilm_tsdae_model_open_questions",
-      "community": 3,
+      "community": 43,
       "norm_label": "open questions"
     },
     {
       "label": "Change log",
       "file_type": "document",
       "source_file": "wiki/entities/kdx-minilm-tsdae-model.md",
-      "source_location": "L84",
+      "source_location": "L86",
       "_origin": "ast",
       "id": "wiki_entities_kdx_minilm_tsdae_model_change_log",
-      "community": 3,
+      "community": 43,
       "norm_label": "change log"
     },
     {
@@ -3470,7 +3530,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "wiki_entities_kndh_kurdish_news_dataset_headlines_kndh",
-      "community": 0,
+      "community": 30,
       "norm_label": "kurdish news dataset headlines (kndh)"
     },
     {
@@ -3480,7 +3540,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "wiki_entities_kndh_summary",
-      "community": 0,
+      "community": 30,
       "norm_label": "summary"
     },
     {
@@ -3490,7 +3550,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "wiki_entities_kndh_key_claims",
-      "community": 0,
+      "community": 30,
       "norm_label": "key claims"
     },
     {
@@ -3500,7 +3560,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "wiki_entities_kndh_evidence",
-      "community": 0,
+      "community": 30,
       "norm_label": "evidence"
     },
     {
@@ -3510,7 +3570,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "wiki_entities_kndh_connections",
-      "community": 0,
+      "community": 30,
       "norm_label": "connections"
     },
     {
@@ -3520,7 +3580,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "wiki_entities_kndh_open_questions",
-      "community": 0,
+      "community": 30,
       "norm_label": "open questions"
     },
     {
@@ -3530,7 +3590,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "wiki_entities_kndh_change_log",
-      "community": 0,
+      "community": 30,
       "norm_label": "change log"
     },
     {
@@ -3630,7 +3690,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "wiki_entities_soran_badawi_soran_badawi",
-      "community": 31,
+      "community": 30,
       "norm_label": "soran badawi"
     },
     {
@@ -3640,7 +3700,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "wiki_entities_soran_badawi_summary",
-      "community": 31,
+      "community": 30,
       "norm_label": "summary"
     },
     {
@@ -3650,7 +3710,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "wiki_entities_soran_badawi_key_claims",
-      "community": 31,
+      "community": 30,
       "norm_label": "key claims"
     },
     {
@@ -3660,7 +3720,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "wiki_entities_soran_badawi_evidence",
-      "community": 31,
+      "community": 30,
       "norm_label": "evidence"
     },
     {
@@ -3670,7 +3730,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "wiki_entities_soran_badawi_connections",
-      "community": 31,
+      "community": 30,
       "norm_label": "connections"
     },
     {
@@ -3680,7 +3740,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "wiki_entities_soran_badawi_open_questions",
-      "community": 31,
+      "community": 30,
       "norm_label": "open questions"
     },
     {
@@ -3690,7 +3750,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "wiki_entities_soran_badawi_change_log",
-      "community": 31,
+      "community": 30,
       "norm_label": "change log"
     },
     {
@@ -3710,7 +3770,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "wiki_index_wiki_index",
-      "community": 3,
+      "community": 48,
       "norm_label": "wiki index"
     },
     {
@@ -3720,7 +3780,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "wiki_index_sources",
-      "community": 3,
+      "community": 48,
       "norm_label": "sources"
     },
     {
@@ -3730,7 +3790,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "wiki_index_entities",
-      "community": 3,
+      "community": 48,
       "norm_label": "entities"
     },
     {
@@ -3740,7 +3800,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "wiki_index_concepts",
-      "community": 3,
+      "community": 48,
       "norm_label": "concepts"
     },
     {
@@ -3750,7 +3810,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "wiki_index_questions",
-      "community": 3,
+      "community": 48,
       "norm_label": "questions"
     },
     {
@@ -3760,7 +3820,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "wiki_index_synthesis",
-      "community": 3,
+      "community": 48,
       "norm_label": "synthesis"
     },
     {
@@ -3784,10 +3844,20 @@
       "norm_label": "wiki log"
     },
     {
-      "label": "[2026-07-03] build | Streamlit UI polish, upload-read efficiency, and verification",
+      "label": "[2026-07-04] lint+ingest | Pre-presentation wiki review and consolidated overview",
       "file_type": "document",
       "source_file": "wiki/log.md",
       "source_location": "L3",
+      "_origin": "ast",
+      "id": "wiki_log_2026_07_04_lint_ingest_pre_presentation_wiki_review_and_consolidated_overview",
+      "community": 32,
+      "norm_label": "[2026-07-04] lint+ingest | pre-presentation wiki review and consolidated overview"
+    },
+    {
+      "label": "[2026-07-03] build | Streamlit UI polish, upload-read efficiency, and verification",
+      "file_type": "document",
+      "source_file": "wiki/log.md",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "wiki_log_2026_07_03_build_streamlit_ui_polish_upload_read_efficiency_and_verification",
       "community": 32,
@@ -3797,7 +3867,7 @@
       "label": "[2026-06-26] build | Drill-down topic tree, source isolation, and upload engine",
       "file_type": "document",
       "source_file": "wiki/log.md",
-      "source_location": "L28",
+      "source_location": "L59",
       "_origin": "ast",
       "id": "wiki_log_2026_06_26_build_drill_down_topic_tree_source_isolation_and_upload_engine",
       "community": 32,
@@ -3807,7 +3877,7 @@
       "label": "[2026-06-26] build | Pipeline implementation, BERTopic tuning, and TSDAE fine-tuning",
       "file_type": "document",
       "source_file": "wiki/log.md",
-      "source_location": "L52",
+      "source_location": "L83",
       "_origin": "ast",
       "id": "wiki_log_2026_06_26_build_pipeline_implementation_bertopic_tuning_and_tsdae_fine_tuning",
       "community": 32,
@@ -3817,7 +3887,7 @@
       "label": "[2026-06-26] eval | TSDAE fine-tuning comparison completed",
       "file_type": "document",
       "source_file": "wiki/log.md",
-      "source_location": "L81",
+      "source_location": "L112",
       "_origin": "ast",
       "id": "wiki_log_2026_06_26_eval_tsdae_fine_tuning_comparison_completed",
       "community": 32,
@@ -3827,7 +3897,7 @@
       "label": "[2026-06-26] ingest | Bootstrap wiki from 8 Kurdish NLP sources",
       "file_type": "document",
       "source_file": "wiki/log.md",
-      "source_location": "L96",
+      "source_location": "L127",
       "_origin": "ast",
       "id": "wiki_log_2026_06_26_ingest_bootstrap_wiki_from_8_kurdish_nlp_sources",
       "community": 32,
@@ -3840,7 +3910,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "wiki_sources_asosoft_text_corpus",
-      "community": 8,
+      "community": 0,
       "norm_label": "asosoft-text-corpus.md"
     },
     {
@@ -4240,7 +4310,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art",
-      "community": 8,
+      "community": 0,
       "norm_label": "kurdish-language-corpus-state-of-the-art.md"
     },
     {
@@ -4250,7 +4320,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art_the_kurdish_language_corpus_state_of_the_art_azzat_et_al_2023",
-      "community": 8,
+      "community": 47,
       "norm_label": "the kurdish language corpus: state of the art (azzat et al. 2023)"
     },
     {
@@ -4260,7 +4330,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art_summary",
-      "community": 8,
+      "community": 47,
       "norm_label": "summary"
     },
     {
@@ -4270,7 +4340,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art_key_claims",
-      "community": 8,
+      "community": 47,
       "norm_label": "key claims"
     },
     {
@@ -4280,7 +4350,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art_evidence",
-      "community": 8,
+      "community": 47,
       "norm_label": "evidence"
     },
     {
@@ -4290,7 +4360,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art_connections",
-      "community": 8,
+      "community": 47,
       "norm_label": "connections"
     },
     {
@@ -4300,7 +4370,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art_open_questions",
-      "community": 8,
+      "community": 47,
       "norm_label": "open questions"
     },
     {
@@ -4310,7 +4380,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art_change_log",
-      "community": 8,
+      "community": 47,
       "norm_label": "change log"
     },
     {
@@ -4690,7 +4760,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_kurdish_data_explorer_pipeline",
-      "community": 3,
+      "community": 44,
       "norm_label": "kurdish data explorer pipeline"
     },
     {
@@ -4700,7 +4770,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_summary",
-      "community": 3,
+      "community": 44,
       "norm_label": "summary"
     },
     {
@@ -4710,7 +4780,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_key_claims",
-      "community": 3,
+      "community": 44,
       "norm_label": "key claims"
     },
     {
@@ -4720,7 +4790,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_evidence_pipeline_stages",
-      "community": 3,
+      "community": 44,
       "norm_label": "evidence (pipeline stages)"
     },
     {
@@ -4730,7 +4800,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_connections",
-      "community": 3,
+      "community": 44,
       "norm_label": "connections"
     },
     {
@@ -4740,17 +4810,147 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_open_questions_risks",
-      "community": 3,
+      "community": 44,
       "norm_label": "open questions / risks"
     },
     {
       "label": "Change log",
       "file_type": "document",
       "source_file": "wiki/synthesis/kurdish-data-explorer-pipeline.md",
-      "source_location": "L81",
+      "source_location": "L87",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_change_log",
-      "community": 3,
+      "community": 44,
+      "norm_label": "change log"
+    },
+    {
+      "label": "project-presentation-overview.md",
+      "file_type": "document",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "wiki_synthesis_project_presentation_overview",
+      "community": 0,
+      "norm_label": "project-presentation-overview.md"
+    },
+    {
+      "label": "Project Presentation Overview",
+      "file_type": "document",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
+      "community": 31,
+      "norm_label": "project presentation overview"
+    },
+    {
+      "label": "1. The problem",
+      "file_type": "document",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "wiki_synthesis_project_presentation_overview_1_the_problem",
+      "community": 31,
+      "norm_label": "1. the problem"
+    },
+    {
+      "label": "2. The objective",
+      "file_type": "document",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "wiki_synthesis_project_presentation_overview_2_the_objective",
+      "community": 31,
+      "norm_label": "2. the objective"
+    },
+    {
+      "label": "3. Literature review \u2014 why each piece was chosen",
+      "file_type": "document",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L56",
+      "_origin": "ast",
+      "id": "wiki_synthesis_project_presentation_overview_3_literature_review_why_each_piece_was_chosen",
+      "community": 31,
+      "norm_label": "3. literature review \u2014 why each piece was chosen"
+    },
+    {
+      "label": "4. Methodology \u2014 how the pipeline actually works",
+      "file_type": "document",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L93",
+      "_origin": "ast",
+      "id": "wiki_synthesis_project_presentation_overview_4_methodology_how_the_pipeline_actually_works",
+      "community": 31,
+      "norm_label": "4. methodology \u2014 how the pipeline actually works"
+    },
+    {
+      "label": "5. Tuning \u2014 finding the right cluster granularity",
+      "file_type": "document",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L137",
+      "_origin": "ast",
+      "id": "wiki_synthesis_project_presentation_overview_5_tuning_finding_the_right_cluster_granularity",
+      "community": 31,
+      "norm_label": "5. tuning \u2014 finding the right cluster granularity"
+    },
+    {
+      "label": "6. Results \u2014 BERTopic vs. classical baselines, and the fine-tuning trade-off",
+      "file_type": "document",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L158",
+      "_origin": "ast",
+      "id": "wiki_synthesis_project_presentation_overview_6_results_bertopic_vs_classical_baselines_and_the_fine_tuning_trade_off",
+      "community": 31,
+      "norm_label": "6. results \u2014 bertopic vs. classical baselines, and the fine-tuning trade-off"
+    },
+    {
+      "label": "7. The application",
+      "file_type": "document",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L199",
+      "_origin": "ast",
+      "id": "wiki_synthesis_project_presentation_overview_7_the_application",
+      "community": 31,
+      "norm_label": "7. the application"
+    },
+    {
+      "label": "8. Honest limitations and open questions",
+      "file_type": "document",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L222",
+      "_origin": "ast",
+      "id": "wiki_synthesis_project_presentation_overview_8_honest_limitations_and_open_questions",
+      "community": 31,
+      "norm_label": "8. honest limitations and open questions"
+    },
+    {
+      "label": "9. Conclusion",
+      "file_type": "document",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L247",
+      "_origin": "ast",
+      "id": "wiki_synthesis_project_presentation_overview_9_conclusion",
+      "community": 31,
+      "norm_label": "9. conclusion"
+    },
+    {
+      "label": "Connections",
+      "file_type": "document",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L258",
+      "_origin": "ast",
+      "id": "wiki_synthesis_project_presentation_overview_connections",
+      "community": 31,
+      "norm_label": "connections"
+    },
+    {
+      "label": "Change log",
+      "file_type": "document",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L266",
+      "_origin": "ast",
+      "id": "wiki_synthesis_project_presentation_overview_change_log",
+      "community": 31,
       "norm_label": "change log"
     }
   ],
@@ -4759,7 +4959,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L339",
+      "source_location": "L340",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_accent_seq",
@@ -4769,7 +4969,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L166",
+      "source_location": "L167",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_apply_theme",
@@ -4779,7 +4979,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L381",
+      "source_location": "L382",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_build_tree_frame",
@@ -4799,7 +4999,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L124",
+      "source_location": "L125",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_current_theme",
@@ -4809,7 +5009,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L365",
+      "source_location": "L366",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_dominant_categories",
@@ -4829,7 +5029,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L128",
+      "source_location": "L129",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_flip_theme",
@@ -4849,7 +5049,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L345",
+      "source_location": "L346",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_heat_scale",
@@ -4859,7 +5059,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L376",
+      "source_location": "L377",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_keyword_string",
@@ -4882,14 +5082,14 @@
       "source_location": "L98",
       "weight": 1.0,
       "source": "app_streamlit_app",
-      "target": "app_streamlit_app_load",
+      "target": "app_streamlit_app_load_all",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L415",
+      "source_location": "L416",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_main",
@@ -4899,7 +5099,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L686",
+      "source_location": "L689",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_render_baselines_tab",
@@ -4909,7 +5109,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L629",
+      "source_location": "L632",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_render_map_tab",
@@ -4919,7 +5119,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L142",
+      "source_location": "L143",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_render_table",
@@ -4929,7 +5129,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L132",
+      "source_location": "L133",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_render_theme_toggle",
@@ -4939,7 +5139,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L508",
+      "source_location": "L511",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_render_tree_tab",
@@ -4959,7 +5159,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L302",
+      "source_location": "L303",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_themed",
@@ -4969,7 +5169,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L357",
+      "source_location": "L358",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_topic_samples",
@@ -5011,7 +5211,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L538",
+      "source_location": "L541",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_leaf_color",
@@ -5054,7 +5254,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L538",
+      "source_location": "L541",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_group_color",
@@ -5075,7 +5275,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L657",
+      "source_location": "L660",
       "weight": 1.0,
       "source": "app_streamlit_app_render_map_tab",
       "target": "app_streamlit_app_category_color_map",
@@ -5086,7 +5286,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L535",
+      "source_location": "L538",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_category_color_map",
@@ -5097,7 +5297,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L448",
+      "source_location": "L453",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_streamlit_app_source_meta",
@@ -5119,10 +5319,20 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L471",
+      "source_location": "L446",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
-      "target": "app_streamlit_app_load",
+      "target": "app_streamlit_app_load_all",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L99",
+      "weight": 1.0,
+      "source": "app_streamlit_app_rationale_99",
+      "target": "app_streamlit_app_load_all",
       "confidence_score": 1.0
     },
     {
@@ -5130,7 +5340,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L342",
+      "source_location": "L343",
       "weight": 1.0,
       "source": "app_streamlit_app_accent_seq",
       "target": "app_streamlit_app_current_theme",
@@ -5141,7 +5351,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L129",
+      "source_location": "L130",
       "weight": 1.0,
       "source": "app_streamlit_app_flip_theme",
       "target": "app_streamlit_app_current_theme",
@@ -5152,7 +5362,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L348",
+      "source_location": "L349",
       "weight": 1.0,
       "source": "app_streamlit_app_heat_scale",
       "target": "app_streamlit_app_current_theme",
@@ -5163,7 +5373,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L422",
+      "source_location": "L423",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_streamlit_app_current_theme",
@@ -5174,7 +5384,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L136",
+      "source_location": "L137",
       "weight": 1.0,
       "source": "app_streamlit_app_render_theme_toggle",
       "target": "app_streamlit_app_current_theme",
@@ -5185,7 +5395,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L309",
+      "source_location": "L310",
       "weight": 1.0,
       "source": "app_streamlit_app_themed",
       "target": "app_streamlit_app_current_theme",
@@ -5196,7 +5406,7 @@
       "context": "argument",
       "confidence": "INFERRED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L139",
+      "source_location": "L140",
       "weight": 1.0,
       "source": "app_streamlit_app_render_theme_toggle",
       "target": "app_streamlit_app_flip_theme",
@@ -5207,7 +5417,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L421",
+      "source_location": "L422",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_streamlit_app_render_theme_toggle",
@@ -5217,9 +5427,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L133",
+      "source_location": "L134",
       "weight": 1.0,
-      "source": "app_streamlit_app_rationale_133",
+      "source": "app_streamlit_app_rationale_134",
       "target": "app_streamlit_app_render_theme_toggle",
       "confidence_score": 1.0
     },
@@ -5227,9 +5437,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L143",
+      "source_location": "L144",
       "weight": 1.0,
-      "source": "app_streamlit_app_rationale_143",
+      "source": "app_streamlit_app_rationale_144",
       "target": "app_streamlit_app_render_table",
       "confidence_score": 1.0
     },
@@ -5238,7 +5448,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L707",
+      "source_location": "L710",
       "weight": 1.0,
       "source": "app_streamlit_app_render_baselines_tab",
       "target": "app_streamlit_app_render_table",
@@ -5249,7 +5459,7 @@
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L142",
+      "source_location": "L143",
       "weight": 1.0,
       "source": "app_streamlit_app_render_table",
       "target": "app_streamlit_app_py_dataframe",
@@ -5260,7 +5470,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L570",
+      "source_location": "L573",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_render_table",
@@ -5271,7 +5481,7 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L381",
+      "source_location": "L382",
       "weight": 1.0,
       "source": "app_streamlit_app_build_tree_frame",
       "target": "app_streamlit_app_py_dataframe",
@@ -5282,7 +5492,7 @@
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L365",
+      "source_location": "L366",
       "weight": 1.0,
       "source": "app_streamlit_app_dominant_categories",
       "target": "app_streamlit_app_py_dataframe",
@@ -5293,117 +5503,10 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L691",
-      "weight": 1.0,
-      "source": "app_streamlit_app_render_baselines_tab",
-      "target": "app_streamlit_app_py_dataframe",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/streamlit_app.py",
-      "source_location": "L586",
-      "weight": 1.0,
-      "source": "app_streamlit_app_render_tree_tab",
-      "target": "app_streamlit_app_py_dataframe",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "context": "parameter_type",
-      "confidence": "EXTRACTED",
-      "source_file": "app/streamlit_app.py",
-      "source_location": "L357",
-      "weight": 1.0,
-      "source": "app_streamlit_app_topic_samples",
-      "target": "app_streamlit_app_py_dataframe",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/streamlit_app.py",
-      "source_location": "L422",
-      "weight": 1.0,
-      "source": "app_streamlit_app_main",
-      "target": "app_streamlit_app_apply_theme",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "app/streamlit_app.py",
-      "source_location": "L167",
-      "weight": 1.0,
-      "source": "app_streamlit_app_rationale_167",
-      "target": "app_streamlit_app_apply_theme",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "app/streamlit_app.py",
-      "source_location": "L303",
-      "weight": 1.0,
-      "source": "app_streamlit_app_rationale_303",
-      "target": "app_streamlit_app_themed",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/streamlit_app.py",
-      "source_location": "L695",
-      "weight": 1.0,
-      "source": "app_streamlit_app_render_baselines_tab",
-      "target": "app_streamlit_app_themed",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/streamlit_app.py",
-      "source_location": "L678",
-      "weight": 1.0,
-      "source": "app_streamlit_app_render_map_tab",
-      "target": "app_streamlit_app_themed",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/streamlit_app.py",
-      "source_location": "L566",
-      "weight": 1.0,
-      "source": "app_streamlit_app_render_tree_tab",
-      "target": "app_streamlit_app_themed",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "app/streamlit_app.py",
-      "source_location": "L340",
-      "weight": 1.0,
-      "source": "app_streamlit_app_rationale_340",
-      "target": "app_streamlit_app_accent_seq",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/streamlit_app.py",
       "source_location": "L694",
       "weight": 1.0,
       "source": "app_streamlit_app_render_baselines_tab",
-      "target": "app_streamlit_app_accent_seq",
+      "target": "app_streamlit_app_py_dataframe",
       "confidence_score": 1.0
     },
     {
@@ -5414,6 +5517,113 @@
       "source_location": "L589",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
+      "target": "app_streamlit_app_py_dataframe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L358",
+      "weight": 1.0,
+      "source": "app_streamlit_app_topic_samples",
+      "target": "app_streamlit_app_py_dataframe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L423",
+      "weight": 1.0,
+      "source": "app_streamlit_app_main",
+      "target": "app_streamlit_app_apply_theme",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L168",
+      "weight": 1.0,
+      "source": "app_streamlit_app_rationale_168",
+      "target": "app_streamlit_app_apply_theme",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L304",
+      "weight": 1.0,
+      "source": "app_streamlit_app_rationale_304",
+      "target": "app_streamlit_app_themed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L698",
+      "weight": 1.0,
+      "source": "app_streamlit_app_render_baselines_tab",
+      "target": "app_streamlit_app_themed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L681",
+      "weight": 1.0,
+      "source": "app_streamlit_app_render_map_tab",
+      "target": "app_streamlit_app_themed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L569",
+      "weight": 1.0,
+      "source": "app_streamlit_app_render_tree_tab",
+      "target": "app_streamlit_app_themed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L341",
+      "weight": 1.0,
+      "source": "app_streamlit_app_rationale_341",
+      "target": "app_streamlit_app_accent_seq",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L697",
+      "weight": 1.0,
+      "source": "app_streamlit_app_render_baselines_tab",
+      "target": "app_streamlit_app_accent_seq",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L592",
+      "weight": 1.0,
+      "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_accent_seq",
       "confidence_score": 1.0
     },
@@ -5421,9 +5631,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L346",
+      "source_location": "L347",
       "weight": 1.0,
-      "source": "app_streamlit_app_rationale_346",
+      "source": "app_streamlit_app_rationale_347",
       "target": "app_streamlit_app_heat_scale",
       "confidence_score": 1.0
     },
@@ -5432,31 +5642,10 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L607",
+      "source_location": "L610",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_heat_scale",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "app/streamlit_app.py",
-      "source_location": "L388",
-      "weight": 1.0,
-      "source": "app_streamlit_app_build_tree_frame",
-      "target": "app_streamlit_app_topic_samples",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "app/streamlit_app.py",
-      "source_location": "L358",
-      "weight": 1.0,
-      "source": "app_streamlit_app_rationale_358",
-      "target": "app_streamlit_app_topic_samples",
       "confidence_score": 1.0
     },
     {
@@ -5467,6 +5656,27 @@
       "source_location": "L389",
       "weight": 1.0,
       "source": "app_streamlit_app_build_tree_frame",
+      "target": "app_streamlit_app_topic_samples",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L359",
+      "weight": 1.0,
+      "source": "app_streamlit_app_rationale_359",
+      "target": "app_streamlit_app_topic_samples",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L390",
+      "weight": 1.0,
+      "source": "app_streamlit_app_build_tree_frame",
       "target": "app_streamlit_app_dominant_categories",
       "confidence_score": 1.0
     },
@@ -5474,9 +5684,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L366",
+      "source_location": "L367",
       "weight": 1.0,
-      "source": "app_streamlit_app_rationale_366",
+      "source": "app_streamlit_app_rationale_367",
       "target": "app_streamlit_app_dominant_categories",
       "confidence_score": 1.0
     },
@@ -5484,9 +5694,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L377",
+      "source_location": "L378",
       "weight": 1.0,
-      "source": "app_streamlit_app_rationale_377",
+      "source": "app_streamlit_app_rationale_378",
       "target": "app_streamlit_app_keyword_string",
       "confidence_score": 1.0
     },
@@ -5495,7 +5705,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L647",
+      "source_location": "L650",
       "weight": 1.0,
       "source": "app_streamlit_app_render_map_tab",
       "target": "app_streamlit_app_keyword_string",
@@ -5505,9 +5715,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L382",
+      "source_location": "L383",
       "weight": 1.0,
-      "source": "app_streamlit_app_rationale_382",
+      "source": "app_streamlit_app_rationale_383",
       "target": "app_streamlit_app_build_tree_frame",
       "confidence_score": 1.0
     },
@@ -5516,7 +5726,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L519",
+      "source_location": "L522",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_build_tree_frame",
@@ -5527,7 +5737,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L502",
+      "source_location": "L505",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_streamlit_app_render_baselines_tab",
@@ -5538,7 +5748,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L501",
+      "source_location": "L504",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_streamlit_app_render_map_tab",
@@ -5549,7 +5759,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L500",
+      "source_location": "L503",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_streamlit_app_render_tree_tab",
@@ -5561,7 +5771,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/streamlit_app.py",
-      "source_location": "L432",
+      "source_location": "L433",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_upload_page_render_upload"
@@ -5572,7 +5782,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/streamlit_app.py",
-      "source_location": "L487",
+      "source_location": "L490",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "path"
@@ -5801,7 +6011,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "scripts/run_pipeline.py",
-      "source_location": "L22",
+      "source_location": "L23",
       "weight": 1.0,
       "source": "scripts_run_pipeline",
       "target": "scripts_run_pipeline_main",
@@ -6706,7 +6916,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L33",
+      "source_location": "L43",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline",
       "target": "src_kurdish_explorer_pipeline_artifact_dir",
@@ -6726,10 +6936,10 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L231",
+      "source_location": "L33",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline",
-      "target": "src_kurdish_explorer_pipeline_list_runs",
+      "target": "src_kurdish_explorer_pipeline_fitted_model_options",
       "confidence_score": 1.0
     },
     {
@@ -6739,6 +6949,16 @@
       "source_location": "L241",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline",
+      "target": "src_kurdish_explorer_pipeline_list_runs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/kurdish_explorer/pipeline.py",
+      "source_location": "L251",
+      "weight": 1.0,
+      "source": "src_kurdish_explorer_pipeline",
       "target": "src_kurdish_explorer_pipeline_load_run",
       "confidence_score": 1.0
     },
@@ -6746,7 +6966,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L40",
+      "source_location": "L50",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline",
       "target": "src_kurdish_explorer_pipeline_pipelineresult",
@@ -6756,7 +6976,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L49",
+      "source_location": "L59",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline",
       "target": "src_kurdish_explorer_pipeline_run",
@@ -6776,7 +6996,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L273",
+      "source_location": "L283",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline",
       "target": "src_kurdish_explorer_pipeline_run_meta",
@@ -6786,7 +7006,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L115",
+      "source_location": "L125",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline",
       "target": "src_kurdish_explorer_pipeline_run_on_dataframe",
@@ -6796,7 +7016,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L80",
+      "source_location": "L90",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline",
       "target": "src_kurdish_explorer_pipeline_run_on_texts",
@@ -6806,7 +7026,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L264",
+      "source_location": "L274",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline",
       "target": "src_kurdish_explorer_pipeline_runs_by_source",
@@ -6816,7 +7036,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L222",
+      "source_location": "L232",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline",
       "target": "src_kurdish_explorer_pipeline_slugify",
@@ -6870,7 +7090,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L34",
+      "source_location": "L44",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline_artifact_dir",
       "target": "src_kurdish_explorer_pipeline_run_key",
@@ -6913,7 +7133,39 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L177",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "src_kurdish_explorer_pipeline_fitted_model_options",
+      "target": "src_kurdish_explorer_pipeline_runs_by_source",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src/kurdish_explorer/pipeline.py",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "src_kurdish_explorer_pipeline_rationale_34",
+      "target": "src_kurdish_explorer_pipeline_fitted_model_options",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_pipeline_model_options.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "tests_test_pipeline_model_options_test_fitted_model_options_only_includes_precomputed_runs",
+      "target": "src_kurdish_explorer_pipeline_fitted_model_options"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/kurdish_explorer/pipeline.py",
+      "source_location": "L187",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline_run_on_dataframe",
       "target": "src_kurdish_explorer_pipeline_artifact_dir",
@@ -6924,7 +7176,7 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L49",
+      "source_location": "L59",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline_run",
       "target": "src_kurdish_explorer_pipeline_pipelineresult",
@@ -6935,7 +7187,7 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L115",
+      "source_location": "L125",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline_run_on_dataframe",
       "target": "src_kurdish_explorer_pipeline_pipelineresult",
@@ -6946,7 +7198,7 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L80",
+      "source_location": "L90",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline_run_on_texts",
       "target": "src_kurdish_explorer_pipeline_pipelineresult",
@@ -6956,9 +7208,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L57",
+      "source_location": "L67",
       "weight": 1.0,
-      "source": "src_kurdish_explorer_pipeline_rationale_57",
+      "source": "src_kurdish_explorer_pipeline_rationale_67",
       "target": "src_kurdish_explorer_pipeline_run",
       "confidence_score": 1.0
     },
@@ -6967,7 +7219,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L73",
+      "source_location": "L83",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline_run",
       "target": "src_kurdish_explorer_pipeline_run_on_dataframe",
@@ -6977,9 +7229,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L91",
+      "source_location": "L101",
       "weight": 1.0,
-      "source": "src_kurdish_explorer_pipeline_rationale_91",
+      "source": "src_kurdish_explorer_pipeline_rationale_101",
       "target": "src_kurdish_explorer_pipeline_run_on_texts",
       "confidence_score": 1.0
     },
@@ -6988,7 +7240,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L108",
+      "source_location": "L118",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline_run_on_texts",
       "target": "src_kurdish_explorer_pipeline_run_on_dataframe",
@@ -6999,7 +7251,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L99",
+      "source_location": "L109",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline_run_on_texts",
       "target": "src_kurdish_explorer_pipeline_slugify",
@@ -7009,31 +7261,10 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L125",
+      "source_location": "L135",
       "weight": 1.0,
-      "source": "src_kurdish_explorer_pipeline_rationale_125",
+      "source": "src_kurdish_explorer_pipeline_rationale_135",
       "target": "src_kurdish_explorer_pipeline_run_on_dataframe",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L232",
-      "weight": 1.0,
-      "source": "src_kurdish_explorer_pipeline_rationale_232",
-      "target": "src_kurdish_explorer_pipeline_list_runs",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L267",
-      "weight": 1.0,
-      "source": "src_kurdish_explorer_pipeline_runs_by_source",
-      "target": "src_kurdish_explorer_pipeline_list_runs",
       "confidence_score": 1.0
     },
     {
@@ -7043,6 +7274,27 @@
       "source_location": "L242",
       "weight": 1.0,
       "source": "src_kurdish_explorer_pipeline_rationale_242",
+      "target": "src_kurdish_explorer_pipeline_list_runs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/kurdish_explorer/pipeline.py",
+      "source_location": "L277",
+      "weight": 1.0,
+      "source": "src_kurdish_explorer_pipeline_runs_by_source",
+      "target": "src_kurdish_explorer_pipeline_list_runs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "src/kurdish_explorer/pipeline.py",
+      "source_location": "L252",
+      "weight": 1.0,
+      "source": "src_kurdish_explorer_pipeline_rationale_252",
       "target": "src_kurdish_explorer_pipeline_load_run",
       "confidence_score": 1.0
     },
@@ -7050,9 +7302,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L265",
+      "source_location": "L275",
       "weight": 1.0,
-      "source": "src_kurdish_explorer_pipeline_rationale_265",
+      "source": "src_kurdish_explorer_pipeline_rationale_275",
       "target": "src_kurdish_explorer_pipeline_runs_by_source",
       "confidence_score": 1.0
     },
@@ -7060,9 +7312,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "src/kurdish_explorer/pipeline.py",
-      "source_location": "L274",
+      "source_location": "L284",
       "weight": 1.0,
-      "source": "src_kurdish_explorer_pipeline_rationale_274",
+      "source": "src_kurdish_explorer_pipeline_rationale_284",
       "target": "src_kurdish_explorer_pipeline_run_meta",
       "confidence_score": 1.0
     },
@@ -7400,6 +7652,16 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "tests/test_pipeline_model_options.py",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "tests_test_pipeline_model_options",
+      "target": "tests_test_pipeline_model_options_test_fitted_model_options_only_includes_precomputed_runs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "tools/lint_wiki.py",
       "source_location": "L49",
       "weight": 1.0,
@@ -7695,7 +7957,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L46",
+      "source_location": "L58",
       "weight": 1.0,
       "source": "readme_kurdish_data_explorer",
       "target": "readme_embedding_models",
@@ -7705,7 +7967,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L32",
+      "source_location": "L44",
       "weight": 1.0,
       "source": "readme_kurdish_data_explorer",
       "target": "readme_layout",
@@ -7725,7 +7987,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L54",
+      "source_location": "L75",
       "weight": 1.0,
       "source": "readme_kurdish_data_explorer",
       "target": "readme_research_wiki",
@@ -9255,7 +9517,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/entities/kdx-minilm-tsdae-model.md",
-      "source_location": "L84",
+      "source_location": "L86",
       "weight": 1.0,
       "source": "wiki_entities_kdx_minilm_tsdae_model_kdx_minilm_tsdae_fine_tuned_embedder",
       "target": "wiki_entities_kdx_minilm_tsdae_model_change_log",
@@ -9762,6 +10024,16 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/index.md",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "wiki_index",
+      "target": "wiki_synthesis_project_presentation_overview",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/index.md",
@@ -9825,7 +10097,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L28",
+      "source_location": "L59",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
       "target": "wiki_log_2026_06_26_build_drill_down_topic_tree_source_isolation_and_upload_engine",
@@ -9835,7 +10107,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L52",
+      "source_location": "L83",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
       "target": "wiki_log_2026_06_26_build_pipeline_implementation_bertopic_tuning_and_tsdae_fine_tuning",
@@ -9845,7 +10117,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L81",
+      "source_location": "L112",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
       "target": "wiki_log_2026_06_26_eval_tsdae_fine_tuning_comparison_completed",
@@ -9855,7 +10127,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L96",
+      "source_location": "L127",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
       "target": "wiki_log_2026_06_26_ingest_bootstrap_wiki_from_8_kurdish_nlp_sources",
@@ -9865,10 +10137,20 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L3",
+      "source_location": "L34",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
       "target": "wiki_log_2026_07_03_build_streamlit_ui_polish_upload_read_efficiency_and_verification",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/log.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "wiki_log_wiki_log",
+      "target": "wiki_log_2026_07_04_lint_ingest_pre_presentation_wiki_review_and_consolidated_overview",
       "confidence_score": 1.0
     },
     {
@@ -10462,6 +10744,16 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "wiki_synthesis_project_presentation_overview",
+      "target": "wiki_synthesis_implementation_and_methodology",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/synthesis/implementation-and-methodology.md",
@@ -10652,10 +10944,20 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "wiki_synthesis_project_presentation_overview",
+      "target": "wiki_synthesis_kurdish_data_explorer_pipeline",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/synthesis/kurdish-data-explorer-pipeline.md",
-      "source_location": "L81",
+      "source_location": "L87",
       "weight": 1.0,
       "source": "wiki_synthesis_kurdish_data_explorer_pipeline_kurdish_data_explorer_pipeline",
       "target": "wiki_synthesis_kurdish_data_explorer_pipeline_change_log",
@@ -10710,8 +11012,128 @@
       "source": "wiki_synthesis_kurdish_data_explorer_pipeline_kurdish_data_explorer_pipeline",
       "target": "wiki_synthesis_kurdish_data_explorer_pipeline_summary",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "wiki_synthesis_project_presentation_overview",
+      "target": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
+      "target": "wiki_synthesis_project_presentation_overview_1_the_problem",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
+      "target": "wiki_synthesis_project_presentation_overview_2_the_objective",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
+      "target": "wiki_synthesis_project_presentation_overview_3_literature_review_why_each_piece_was_chosen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L93",
+      "weight": 1.0,
+      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
+      "target": "wiki_synthesis_project_presentation_overview_4_methodology_how_the_pipeline_actually_works",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L137",
+      "weight": 1.0,
+      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
+      "target": "wiki_synthesis_project_presentation_overview_5_tuning_finding_the_right_cluster_granularity",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L158",
+      "weight": 1.0,
+      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
+      "target": "wiki_synthesis_project_presentation_overview_6_results_bertopic_vs_classical_baselines_and_the_fine_tuning_trade_off",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L199",
+      "weight": 1.0,
+      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
+      "target": "wiki_synthesis_project_presentation_overview_7_the_application",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L222",
+      "weight": 1.0,
+      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
+      "target": "wiki_synthesis_project_presentation_overview_8_honest_limitations_and_open_questions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L247",
+      "weight": 1.0,
+      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
+      "target": "wiki_synthesis_project_presentation_overview_9_conclusion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L266",
+      "weight": 1.0,
+      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
+      "target": "wiki_synthesis_project_presentation_overview_change_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "wiki/synthesis/project-presentation-overview.md",
+      "source_location": "L258",
+      "weight": 1.0,
+      "source": "wiki_synthesis_project_presentation_overview_project_presentation_overview",
+      "target": "wiki_synthesis_project_presentation_overview_connections",
+      "confidence_score": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "63b210ea338477ce21953f5fc89aa842209fa4c0"
+  "built_at_commit": "a52f0545d197efd1eef962ce2c3791790d5ac08a"
 }

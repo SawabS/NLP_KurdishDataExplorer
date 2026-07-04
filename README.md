@@ -18,16 +18,41 @@ pip install -r requirements.txt
 # 2. Prepare the built-in corpora (KNDH, AsoSoft) into data/processed/
 python scripts/prepare_data.py
 
-# 3. Fit a run (writes lightweight artifacts to artifacts/<source>__<model>/)
-python scripts/run_pipeline.py --source kndh --model minilm
+# 3. Fast start: precompute one source/model pair
+#    (writes artifacts/<source>__<model>/)
+python scripts/run_pipeline.py --source kndh --model minilm --no-baselines
 
-# 4. Explore
+# 4. Launch the app after at least one artifact exists
 streamlit run app/streamlit_app.py
 ```
 
-The app never re-fits on load: it reads the precomputed artifacts, so it stays
-responsive. Use the in-app **Upload & explore** mode to run the pipeline on
-your own text; the result becomes a selectable source next to the built-ins.
+The app preloads the fitted artifacts at startup and the model dropdown only
+shows models that already have artifacts for the selected source. The fast-start
+path above launches sooner because it fits only MiniLM for KNDH; you can explore
+immediately, but only that fitted model is selectable.
+
+For instant switching across every registered model, precompute all models
+before launching Streamlit:
+
+```bash
+# KNDH, all registered embedding models
+python scripts/run_pipeline.py --source kndh --all-models --no-baselines
+
+# Optional: AsoSoft, all registered embedding models.
+# AsoSoft is rawer text, so normalize it.
+python scripts/run_pipeline.py --source asosoft --all-models --normalize --no-baselines
+
+streamlit run app/streamlit_app.py
+```
+
+Use the in-app **Upload & explore** mode to run the pipeline on your own text;
+the result becomes a selectable source next to the built-ins.
+
+To add just one model/source pair later, run:
+
+```bash
+python scripts/run_pipeline.py --source kndh --model mpnet --no-baselines
+```
 
 ## Layout
 
@@ -48,8 +73,17 @@ your own text; the result becomes a selectable source next to the built-ins.
 Registered in `src/kurdish_explorer/config.py` (`EMBEDDING_MODELS`):
 MiniLM (default, fast), DistilUSE, MPNet, multilingual-E5-base, and
 `kdx-minilm-tsdae` — a TSDAE domain-adapted MiniLM fine-tuned on Sorani text
-(`scripts/finetune_tsdae.py`). Models not yet fitted for a corpus appear in the
-app marked "fit required" and can be fitted from the sidebar.
+(`scripts/finetune_tsdae.py`). The `--all-models` flag fits every registered
+model for the selected source. If the local TSDAE directory does not exist yet,
+create it first:
+
+```bash
+python scripts/finetune_tsdae.py
+```
+
+Models not yet fitted for a corpus are not selectable in the explorer. Run
+`scripts/run_pipeline.py` before launching or rerunning Streamlit to make them
+available for instant switching.
 
 ## Research wiki
 

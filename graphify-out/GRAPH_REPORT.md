@@ -1,16 +1,16 @@
 # Graph Report - NLP_KurdishDataExplorer  (2026-07-04)
 
 ## Corpus Check
-- 64 files · ~26,062 words
+- 64 files · ~26,367 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 491 nodes · 599 edges · 47 communities (45 shown, 2 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.74)
+- 495 nodes · 605 edges · 49 communities (47 shown, 2 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 6 edges (avg confidence: 0.75)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `203e2af7`
+- Built from commit: `a52f0545`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -57,6 +57,8 @@
 - [[_COMMUNITY_Transformer Models|Transformer Models]]
 - [[_COMMUNITY_KDX-MiniLM-TSDAE (fine-tuned embedder)|KDX-MiniLM-TSDAE (fine-tuned embedder)]]
 - [[_COMMUNITY_Kurdish Data Explorer Pipeline|Kurdish Data Explorer Pipeline]]
+- [[_COMMUNITY_The Kurdish Language Corpus State of the Art (Azzat et al. 2023)|The Kurdish Language Corpus: State of the Art (Azzat et al. 2023)]]
+- [[_COMMUNITY_Wiki Index|Wiki Index]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `LaTeX Document Generation Reference` - 21 edges
@@ -75,25 +77,25 @@
   scripts/tune_bertopic.py → src/kurdish_explorer/preprocess.py
 - `test_available_model_options_includes_all_configured_models()` --calls--> `available_model_options()`  [INFERRED]
   tests/test_pipeline_model_options.py → src/kurdish_explorer/pipeline.py
+- `test_fitted_model_options_only_includes_precomputed_runs()` --calls--> `fitted_model_options()`  [INFERRED]
+  tests/test_pipeline_model_options.py → src/kurdish_explorer/pipeline.py
 - `main()` --calls--> `render_upload()`  [INFERRED]
   app/streamlit_app.py → app/upload_page.py
 - `fit_lda()` --calls--> `build_vectorizer()`  [EXTRACTED]
-  src/kurdish_explorer/baselines.py → src/kurdish_explorer/preprocess.py
-- `fit_nmf()` --calls--> `build_vectorizer()`  [EXTRACTED]
   src/kurdish_explorer/baselines.py → src/kurdish_explorer/preprocess.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (47 total, 2 thin omitted)
+## Communities (49 total, 2 thin omitted)
 
 ### Community 0 - "index.md"
-Cohesion: 0.09
-Nodes (20): Central Kurdish (Sorani), Change log, Connections, Evidence, Key claims, Open questions, Summary, Change log (+12 more)
+Cohesion: 0.10
+Nodes (14): Change log, Connections, Evidence, Key claims, Open questions, Summary, Text Normalization, Change log (+6 more)
 
 ### Community 1 - "streamlit_app.py"
-Cohesion: 0.11
-Nodes (37): accent_seq(), apply_theme(), build_tree_frame(), category_color_map(), current_theme(), dominant_categories(), _first_run_for(), _flip_theme() (+29 more)
+Cohesion: 0.10
+Nodes (38): accent_seq(), apply_theme(), build_tree_frame(), category_color_map(), current_theme(), dominant_categories(), _first_run_for(), _flip_theme() (+30 more)
 
 ### Community 2 - "preprocess.py"
 Cohesion: 0.09
@@ -104,8 +106,8 @@ Cohesion: 0.29
 Nodes (7): AsoSoft Text Corpus, Change log, Connections, Evidence, Key claims, Open questions, Summary
 
 ### Community 4 - "pipeline.py"
-Cohesion: 0.12
-Nodes (22): artifact_dir(), available_model_options(), list_runs(), load_run(), PipelineResult, End-to-end pipeline: load -> normalize -> embed -> BERTopic + baselines -> evalu, Core pipeline over a unified-schema DataFrame (doc_id, source, text, label[, tex, Return UI-ready model labels for a source, marking unfitted models explicitly. (+14 more)
+Cohesion: 0.11
+Nodes (25): artifact_dir(), available_model_options(), fitted_model_options(), list_runs(), load_run(), PipelineResult, End-to-end pipeline: load -> normalize -> embed -> BERTopic + baselines -> evalu, Fit the pipeline on an arbitrary list of texts (uploads / any source).      This (+17 more)
 
 ### Community 5 - "LaTeX Document Generation Reference"
 Cohesion: 0.09
@@ -120,8 +122,8 @@ Cohesion: 0.11
 Nodes (16): Change log, Connections, Core rule, Directory structure, Evidence, graphify, Ingest workflow, Key claims (+8 more)
 
 ### Community 8 - "Toward Kurdish Language Processing: The AsoSoft Text Corpus (Veisi et al. 2019)"
-Cohesion: 0.12
-Nodes (14): Change log, Connections, Evidence, Key claims, Open questions, Summary, Toward Kurdish Language Processing: The AsoSoft Text Corpus (Veisi et al. 2019), Change log (+6 more)
+Cohesion: 0.29
+Nodes (7): Change log, Connections, Evidence, Key claims, Open questions, Summary, Toward Kurdish Language Processing: The AsoSoft Text Corpus (Veisi et al. 2019)
 
 ### Community 9 - "Text Classification"
 Cohesion: 0.29
@@ -201,7 +203,7 @@ Nodes (7): Change log, Connections, Evidence, Key claims, Low-Resource Languages
 
 ### Community 28 - "Topic Modeling"
 Cohesion: 0.29
-Nodes (7): Change log, Connections, Evidence, Key claims, Open questions, Summary, Topic Modeling
+Nodes (7): Central Kurdish (Sorani), Change log, Connections, Evidence, Key claims, Open questions, Summary
 
 ### Community 29 - "BERTopic"
 Cohesion: 0.29
@@ -247,6 +249,14 @@ Nodes (7): Change log, Connections, Evidence / evaluation, How it was trained (f
 Cohesion: 0.29
 Nodes (7): Change log, Connections, Evidence (pipeline stages), Key claims, Kurdish Data Explorer Pipeline, Open questions / risks, Summary
 
+### Community 47 - "The Kurdish Language Corpus: State of the Art (Azzat et al. 2023)"
+Cohesion: 0.29
+Nodes (7): Change log, Connections, Evidence, Key claims, Open questions, Summary, The Kurdish Language Corpus: State of the Art (Azzat et al. 2023)
+
+### Community 48 - "Wiki Index"
+Cohesion: 0.33
+Nodes (6): Concepts, Entities, Questions, Sources, Synthesis, Wiki Index
+
 ## Knowledge Gaps
 - **250 isolated node(s):** `Core rule`, `Directory structure`, `Page format`, `Summary`, `Key claims` (+245 more)
   These have ≤1 connection - possible missing edges or undocumented components.
@@ -259,13 +269,13 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Why does `Project Presentation Overview` connect `Soran Badawi` to `index.md`?**
   _High betweenness centrality (0.020) - this node is a cross-community bridge._
+- **Why does `Central Kurdish (Sorani)` connect `Topic Modeling` to `index.md`?**
+  _High betweenness centrality (0.011) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `main()` (e.g. with `render_upload()` and `Path`) actually correct?**
   _`main()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Kurdish Data Explorer: interactive Streamlit app.  Reads precomputed artifacts f`, `Pastel blue for unlabeled leaves, tuned per theme.`, `Neutral grey for internal (non-leaf) tree nodes, tuned per theme.` to the rest of the system?**
-  _302 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _304 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `index.md` be split into smaller, more focused modules?**
-  _Cohesion score 0.08558558558558559 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10227272727272728 - nodes in this community are weakly interconnected._
 - **Should `streamlit_app.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.10810810810810811 - nodes in this community are weakly interconnected._
-- **Should `preprocess.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.08907563025210084 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.1039136302294197 - nodes in this community are weakly interconnected._
