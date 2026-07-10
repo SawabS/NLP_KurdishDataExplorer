@@ -1,5 +1,38 @@
 # Wiki Log
 
+## [2026-07-10] update | "One clear model" cleanup: KDX becomes the single production embedder
+
+The app had drifted vague: five registered embedding models (E5-base never even
+fitted), a model dropdown, and no in-app statement of what the model is or what it
+was trained on. Unified around one model with a clear story:
+
+- `config.EMBEDDING_MODELS` reduced to `kdx-minilm-tsdae` (production) + `minilm`
+  (evaluation comparison only); DistilUSE / MPNet / E5-base unregistered (all
+  negative NPMI on KNDH; artifacts left on disk). Default flipped to KDX with a
+  `default_model_key()` base-MiniLM fallback for fresh clones.
+- Explorer sidebar: model dropdown and "fit required" notices removed; the embedder
+  is chosen automatically per source. Upload page likewise always uses KDX.
+- "Baselines" tab replaced by **Model & evaluation**: states the model, its TSDAE
+  training data (~110k KNDH + AsoSoft sentences, seed 42), the NMI trade-off, and
+  one NPMI chart (KDX vs base MiniLM vs LDA/NMF).
+- Updated [[KDX-MiniLM-TSDAE (fine-tuned embedder)]] and
+  [[Implementation and Methodology]] to record the decision; README rewritten to
+  the single-model story.
+- Visualization pass (same day): the topic tree now propagates each node's
+  dominant category up from its descendant leaves (internal boxes were all grey
+  at the default depth); the topic×category heatmap is row-normalized to
+  %-of-topic (the 27k-doc mega-topic was stretching the raw-count scale so every
+  other row rendered near-white), raw counts moved to hover; the upload page's
+  auto granularity now scales min_cluster_size ≈ docs/100 (clamped 15–250)
+  instead of silently using the 50k-doc default, which collapsed small uploads
+  into 2 topics.
+- Known open issue (disclosed, not fixed): the shipped `kndh__kdx-minilm-tsdae`
+  run has two mega-topics (27,220 + 16,058 docs = 86% of the corpus) with a long
+  tail of small ones — a property of the dense TSDAE embedding space (see the
+  tuning sweep in `artifacts/tuning_kndh_kdx-minilm-tsdae.json`). Candidate
+  remedies to evaluate: different UMAP n_neighbors/n_components, HDBSCAN
+  min_samples, or `cluster_selection_method="leaf"`.
+
 ## [2026-07-04] lint+ingest | Pre-presentation wiki review and consolidated overview
 
 User is presenting the project tomorrow and generating a NotebookLM podcast from

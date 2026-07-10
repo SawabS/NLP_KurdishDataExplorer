@@ -5,8 +5,11 @@ Reads precomputed artifacts from ``artifacts/<source>__<model>/`` (produced by
 without re-fitting models.
 
 Design principles the user asked for:
-- **Source-first, no mixing.** You pick a *source* (KNDH, AsoSoft, an upload),
-  then an embedding model. A run only ever shows one source's documents.
+- **Source-first, no mixing.** You pick a *source* (KNDH, AsoSoft, an upload);
+  a run only ever shows one source's documents.
+- **One model.** Every source is explored with the KDX Sorani embedder
+  (TSDAE-adapted MiniLM); the base MiniLM exists only as the evaluation
+  comparison in the Model & evaluation tab.
 - **Drill-down topic tree.** Topics are shown as a hierarchy you can expand from
   broad clusters into specific sub-topics, with per-node document counts and
   example text for intuition.
@@ -363,17 +366,6 @@ def topic_samples(docs: pd.DataFrame) -> dict[int, str]:
     return out
 
 
-def dominant_categories(docs: pd.DataFrame, has_labels: bool) -> dict[int, str]:
-    """Most common human category per topic (labeled sources only)."""
-    if not has_labels:
-        return {}
-    g = docs[docs["topic"] != -1].dropna(subset=["label"])
-    if g.empty:
-        return {}
-    agg = g.groupby("topic")["label"].agg(lambda s: s.value_counts().idxmax())
-    return {int(k): str(v) for k, v in agg.items()}
-
-
 def keyword_string(topic_words: dict, n: int = 4) -> dict[int, str]:
     """Map topic id -> a short space-joined keyword string (for hovers)."""
     return {int(k): " ".join(w for w, _ in v[:n]) for k, v in topic_words.items()}
@@ -382,19 +374,48 @@ def keyword_string(topic_words: dict, n: int = 4) -> dict[int, str]:
 def build_tree_frame(hierarchy: list[dict], docs: pd.DataFrame, has_labels: bool) -> pd.DataFrame:
     """Turn saved hierarchy nodes into a Plotly icicle/treemap/sunburst frame.
 
-    Leaves carry their dominant human category (labeled sources) so the tree's
-    color shows how discovered topics line up with the human labels; internal
-    'group' nodes are neutral grey.
+    Every node carries a dominant human category (labeled sources): leaves from
+    their own documents, internal 'group' nodes aggregated over their descendant
+    leaves — so the tree stays category-colored at every drill-down depth
+    instead of showing grey internal boxes.
     """
     samples = topic_samples(docs)
-    dom = dominant_categories(docs, has_labels)
+
+    leaf_counts: dict[int, dict] = {}
+    if has_labels:
+        labeled = docs[(docs["topic"] != -1) & docs["label"].notna()]
+        leaf_counts = {int(t): g["label"].value_counts().to_dict()
+                       for t, g in labeled.groupby("topic")}
+
+    node_by_id = {n["id"]: n for n in hierarchy}
+    children: dict[str, list[str]] = {}
+    for n in hierarchy:
+        if n["parent"] in node_by_id:
+            children.setdefault(n["parent"], []).append(n["id"])
+
+    memo: dict[str, dict] = {}
+
+    def label_counts(nid: str) -> dict:
+        if nid not in memo:
+            n = node_by_id[nid]
+            if n["is_leaf"]:
+                memo[nid] = leaf_counts.get(int(n["topic_id"]), {})
+            else:
+                agg: dict[str, int] = {}
+                for child in children.get(nid, []):
+                    for lab, cnt in label_counts(child).items():
+                        agg[lab] = agg.get(lab, 0) + cnt
+                memo[nid] = agg
+        return memo[nid]
+
     rows = []
     for node in hierarchy:
         tid = node.get("topic_id")
         is_leaf = node["is_leaf"]
         sample = samples.get(int(tid), "") if tid is not None else ""
-        if is_leaf and has_labels:
-            category = dom.get(int(tid), "(unlabeled)")
+        if has_labels:
+            counts = label_counts(node["id"])
+            category = max(counts, key=counts.get) if counts else "(unlabeled)"
         else:
             category = "(group)"
         rows.append({
@@ -446,7 +467,7 @@ def main() -> None:
         loaded_runs = _load_all(all_runs)
 
     # ---- Source-first navigation (never mixes sources) ----
-    st.sidebar.markdown("### 1 · Source")
+    st.sidebar.markdown("### Source")
     sources = sorted(runs_by_source)
     source = st.sidebar.selectbox(
         "Corpus to explore", sources,
@@ -454,28 +475,15 @@ def main() -> None:
     )
     sinfo = source_meta(source)
 
-    st.sidebar.markdown("### 2 · Embedding model")
-    model_options = pipeline.fitted_model_options(source, runs_by_source)
-    missing_models = [
-        key for key in config.EMBEDDING_MODELS
-        if key not in set(runs_by_source.get(source, []))
-    ]
-    if missing_models:
-        st.sidebar.info(
-            f"{len(missing_models)} registered model(s) are not precomputed for this source. "
-            f"Run `python scripts/run_pipeline.py --source {source} --all-models` "
-            "before launching the app to make every model switchable."
-        )
-    if not model_options:
-        st.warning(
-            "This source has no artifacts for the currently registered embedding models. "
-            f"Run `python scripts/run_pipeline.py --source {source} --all-models` and rerun the app."
-        )
-        st.stop()
-    model_labels = [label for label, _ in model_options]
-    selected_label = st.sidebar.selectbox("Embedding model", model_labels)
-    model = next(key for label, key in model_options if label == selected_label)
+    # One model, chosen automatically: the KDX Sorani embedder when fitted for
+    # this source, else the first fitted registered model, else whatever run
+    # exists on disk (old uploads). No dropdown — see the Model & evaluation tab.
+    fitted = runs_by_source.get(source, [])
+    registered = [k for k in config.EMBEDDING_MODELS if k in fitted]
+    model = (registered or fitted)[0]
     run = f"{source}__{model}"
+    st.sidebar.caption("Embedder: "
+                       f"**{config.EMBEDDING_MODEL_LABELS.get(model, model)}**")
 
     art = loaded_runs[run]
     meta, docs = art["meta"], art["documents"]
@@ -505,10 +513,10 @@ def main() -> None:
         if chosen != "(all)":
             view = docs[docs["label"] == chosen]
 
-    tab_tree, tab_map, tab_eval = st.tabs(["Topic tree", "Map", "Baselines"])
+    tab_tree, tab_map, tab_eval = st.tabs(["Topic tree", "Document map", "Model & evaluation"])
     render_tree_tab(tab_tree, hierarchy, docs, view, topic_info, topic_words, has_labels)
     render_map_tab(tab_map, view, topic_words, has_labels)
-    render_baselines_tab(tab_eval, meta, art)
+    render_eval_tab(tab_eval, source, model, meta, art, loaded_runs, runs_by_source)
 
 
 # ---------------------------------------------------------------------------
@@ -609,17 +617,27 @@ def render_tree_tab(container, hierarchy, docs, view, topic_info, topic_words, h
         st.divider()
         st.subheader("Distribution")
         if has_labels:
-            ct = (docs[docs["topic"] != -1]
-                  .groupby(["topic", "label"]).size().reset_index(name="n"))
-            ct["topic"] = ct["topic"].astype(str)
-            fig2 = px.density_heatmap(ct, x="label", y="topic", z="n",
-                                      color_continuous_scale=heat_scale(),
-                                      labels={"n": "docs"},
-                                      title="Documents per (topic, category)")
+            # Per-topic share, not raw counts: one huge topic would otherwise
+            # stretch the color scale and leave every other row near-white.
+            ct = (docs[(docs["topic"] != -1) & docs["label"].notna()]
+                  .groupby(["topic", "label"]).size().unstack(fill_value=0))
+            share = ct.div(ct.sum(axis=1), axis=0).mul(100)
+            share.index = share.index.astype(str)
+            fig2 = px.imshow(share, aspect="auto",
+                             color_continuous_scale=heat_scale(),
+                             labels=dict(x="category", y="topic", color="% of topic"),
+                             title="Category share within each topic")
+            fig2.update_traces(
+                customdata=ct.values,
+                hovertemplate=("topic %{y} · %{x}<br>%{z:.0f}% of this topic "
+                               "(%{customdata:,} docs)<extra></extra>"),
+            )
             fig2.update_layout(margin=dict(l=10, r=10, t=40, b=10),
-                               coloraxis_colorbar_title_text="docs")
+                               coloraxis_colorbar_title_text="% of topic")
             st.plotly_chart(themed(fig2, height=520), width="stretch")
-            st.caption("Where each discovered topic's documents fall across the human categories.")
+            st.caption("Each row is one discovered topic, normalized to 100%: "
+                       "darker = more of that topic's documents in that category. "
+                       "Hover for raw counts.")
         else:
             sizes = (docs[docs["topic"] != -1].groupby("topic").size()
                      .reset_index(name="count").nlargest(25, "count"))
@@ -690,20 +708,65 @@ def render_map_tab(container, view, topic_words, has_labels) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Tab: Baselines
+# Tab: Model & evaluation
 # ---------------------------------------------------------------------------
-def render_baselines_tab(container, meta, art) -> None:
+_KDX_KEY = "kdx-minilm-tsdae"
+
+_MODEL_STORY = """
+#### The model
+
+Topics come from **BERTopic** (sentence embeddings → UMAP → HDBSCAN →
+c-TF-IDF) on top of **KDX MiniLM**, our Sorani-adapted embedder:
+
+- **Base:** `paraphrase-multilingual-MiniLM-L12-v2` (sentence-transformers).
+- **Adaptation:** unsupervised **TSDAE** denoising fine-tuning
+  (`scripts/finetune_tsdae.py`) — no labels used.
+- **Training data:** ~110k Sorani sentences — the 50k KNDH news headlines
+  (Badawi et al. 2023) plus sentence-split AsoSoft running text
+  (Veisi et al. 2019), deduplicated and shuffled (seed 42).
+- **Why this model:** on KNDH it beats the unadapted base on every intrinsic
+  metric (coherence, topic diversity, unassigned documents 36 → 2), at the cost
+  of somewhat looser alignment with the human news categories (NMI 0.22 → 0.16).
+"""
+
+
+def render_eval_tab(container, source, model, meta, art, loaded_runs, runs_by_source) -> None:
     with container:
-        st.subheader("Topic coherence (NPMI), higher is better")
-        coh = meta.get("coherence_npmi", {})
-        if coh:
-            cdf = pd.DataFrame({"model": list(coh), "NPMI": list(coh.values())})
-            fig = px.bar(cdf, x="model", y="NPMI", text_auto=".3f",
-                         title="BERTopic vs LDA vs NMF",
-                         color_discrete_sequence=accent_seq())
-            st.plotly_chart(themed(fig, height=380), width="stretch")
+        if model == _KDX_KEY:
+            st.markdown(_MODEL_STORY)
         else:
-            st.info("No coherence scores stored for this run.")
+            friendly = config.EMBEDDING_MODEL_LABELS.get(model, meta.get("model_name", model))
+            st.markdown(f"#### The model\n\nThis run uses **{friendly}** with BERTopic "
+                        "(sentence embeddings → UMAP → HDBSCAN → c-TF-IDF).")
+
+        # ---- One chart: our model vs the base embedder vs classical baselines ----
+        st.subheader("Topic coherence (NPMI), higher is better")
+        rows = []
+        for mkey in runs_by_source.get(source, []):
+            if mkey not in config.EMBEDDING_MODELS:
+                continue
+            m = loaded_runs.get(f"{source}__{mkey}", {}).get("meta", {})
+            npmi = m.get("coherence_npmi", {}).get("BERTopic")
+            if npmi is not None:
+                name = ("BERTopic · KDX MiniLM (ours)" if mkey == _KDX_KEY
+                        else "BERTopic · base MiniLM")
+                rows.append({"model": name, "NPMI": npmi})
+        for name in ("LDA", "NMF"):
+            v = meta.get("coherence_npmi", {}).get(name)
+            if v is not None:
+                rows.append({"model": f"{name} (classical baseline)", "NPMI": v})
+        if rows:
+            cdf = pd.DataFrame(rows)
+            fig = px.bar(cdf, x="model", y="NPMI", text_auto=".3f",
+                         color_discrete_sequence=accent_seq())
+            fig.update_layout(xaxis_title=None, margin=dict(l=10, r=10, t=20, b=10))
+            st.plotly_chart(themed(fig, height=380), width="stretch")
+            st.caption("NPMI topic coherence on this source. Bars appear as their runs "
+                       "exist: fit the base model too (`run_pipeline.py --source "
+                       f"{source} --model minilm`) to compare; LDA/NMF come from runs "
+                       "without `--no-baselines`.")
+        else:
+            st.info("No coherence scores stored for this source's runs.")
 
         if art["baseline_topics"]:
             st.subheader("Baseline topic keywords")
@@ -715,7 +778,8 @@ def render_baselines_tab(container, meta, art) -> None:
             })
             render_table(tidy, height=380)
         else:
-            st.caption("Baselines were not computed for this run.")
+            st.caption("LDA/NMF baselines were not computed for this run "
+                       "(fit with `run_pipeline.py` without `--no-baselines`).")
 
 
 if __name__ == "__main__":

@@ -21,7 +21,7 @@ def test_available_model_options_includes_all_configured_models() -> None:
 def test_fitted_model_options_only_includes_precomputed_runs() -> None:
     options = fitted_model_options("kndh", {"kndh": ["minilm", "mpnet"]})
 
+    # mpnet is fitted on disk but no longer registered, so only minilm shows.
     assert options == [
         (config.EMBEDDING_MODEL_LABELS["minilm"], "minilm"),
-        (config.EMBEDDING_MODEL_LABELS["mpnet"], "mpnet"),
     ]

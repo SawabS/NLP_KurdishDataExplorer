@@ -32,27 +32,35 @@ KNDH_CATEGORIES = ["economic", "health", "science & technology", "social", "spor
 # ---------------------------------------------------------------------------
 # Embedding model registry
 # ---------------------------------------------------------------------------
-# The three multilingual sentence-transformers from Medvecki et al. (2024),
-# plus multilingual-e5-base as a strong additional option.
+# The project presents ONE model: KDX MiniLM — multilingual MiniLM domain-
+# adapted to Sorani with TSDAE (scripts/finetune_tsdae.py, trained on KNDH
+# headlines + AsoSoft sentences). The off-the-shelf base MiniLM stays
+# registered only as the evaluation comparison point. Earlier experiments
+# (DistilUSE, MPNet, E5-base) scored worse on NPMI coherence and were
+# unregistered; their artifacts remain on disk but are not shown in the app.
 EMBEDDING_MODELS: dict[str, str] = {
-    "minilm": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
-    "distiluse": "sentence-transformers/distiluse-base-multilingual-cased-v2",
-    "mpnet": "sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
-    "e5-base": "intfloat/multilingual-e5-base",
     # Domain-adapted (TSDAE) MiniLM — produced by scripts/finetune_tsdae.py.
     "kdx-minilm-tsdae": str(ARTIFACTS_DIR / "models" / "kdx-minilm-tsdae"),
+    "minilm": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
 }
-DEFAULT_EMBEDDING_MODEL = "minilm"
+DEFAULT_EMBEDDING_MODEL = "kdx-minilm-tsdae"
 
 # Human-readable model names for the UI. Keys mirror EMBEDDING_MODELS; the
 # raw HF ids / local paths above stay the single source of truth for loading.
 EMBEDDING_MODEL_LABELS: dict[str, str] = {
-    "minilm": "MiniLM · multilingual, fast (recommended)",
-    "distiluse": "DistilUSE · multilingual, balanced",
-    "mpnet": "MPNet · multilingual, highest quality",
-    "e5-base": "E5-base · multilingual, strong retrieval",
-    "kdx-minilm-tsdae": "KDX MiniLM · TSDAE domain-adapted for Sorani",
+    "kdx-minilm-tsdae": "KDX MiniLM · TSDAE domain-adapted for Sorani (ours)",
+    "minilm": "Base MiniLM · off-the-shelf comparison",
 }
+
+
+def default_model_key() -> str:
+    """The KDX embedder when its local directory exists, else the base model.
+
+    Keeps a fresh clone usable before scripts/finetune_tsdae.py has been run.
+    """
+    if Path(EMBEDDING_MODELS[DEFAULT_EMBEDDING_MODEL]).exists():
+        return DEFAULT_EMBEDDING_MODEL
+    return "minilm"
 
 # ---------------------------------------------------------------------------
 # Modeling defaults

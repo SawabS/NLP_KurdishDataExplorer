@@ -1,11 +1,11 @@
 # Graph Report - NLP_KurdishDataExplorer  (2026-07-10)
 
 ## Corpus Check
-- 65 files · ~27,595 words
+- 64 files · ~27,054 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 501 nodes · 609 edges · 50 communities (48 shown, 2 thin omitted)
+- 498 nodes · 609 edges · 49 communities (47 shown, 2 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 7 edges (avg confidence: 0.76)
 - Token cost: 0 input · 0 output
 
@@ -59,7 +59,6 @@
 - [[_COMMUNITY_Kurdish Data Explorer Pipeline|Kurdish Data Explorer Pipeline]]
 - [[_COMMUNITY_The Kurdish Language Corpus State of the Art (Azzat et al. 2023)|The Kurdish Language Corpus: State of the Art (Azzat et al. 2023)]]
 - [[_COMMUNITY_Wiki Index|Wiki Index]]
-- [[_COMMUNITY_Verifying the Kurdish Data Explorer|Verifying the Kurdish Data Explorer]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `LaTeX Document Generation Reference` - 21 edges
@@ -88,15 +87,15 @@
 ## Import Cycles
 - None detected.
 
-## Communities (50 total, 2 thin omitted)
+## Communities (49 total, 2 thin omitted)
 
 ### Community 0 - "index.md"
-Cohesion: 0.09
-Nodes (20): Change log, Connections, Evidence, Key claims, Open questions, Summary, Text Normalization, Change log (+12 more)
+Cohesion: 0.11
+Nodes (13): AsoSoft Text Corpus, Change log, Connections, Evidence, Key claims, Open questions, Summary, Concepts (+5 more)
 
 ### Community 1 - "streamlit_app.py"
-Cohesion: 0.11
-Nodes (36): accent_seq(), apply_theme(), build_tree_frame(), category_color_map(), current_theme(), _first_run_for(), _flip_theme(), _group_color() (+28 more)
+Cohesion: 0.10
+Nodes (38): accent_seq(), apply_theme(), build_tree_frame(), category_color_map(), current_theme(), dominant_categories(), _first_run_for(), _flip_theme() (+30 more)
 
 ### Community 2 - "preprocess.py"
 Cohesion: 0.09
@@ -104,7 +103,7 @@ Nodes (30): CountVectorizer, BaselineResult, fit_lda(), fit_nmf(), ndarray, Clas
 
 ### Community 3 - "AsoSoft Text Corpus"
 Cohesion: 0.29
-Nodes (7): Change log, Connections, Evidence, Key claims, Open questions, Summary, Transformer Models
+Nodes (7): Change log, Connections, Evidence, Key claims, Open questions, Summary, Text Normalization
 
 ### Community 4 - "pipeline.py"
 Cohesion: 0.11
@@ -123,8 +122,8 @@ Cohesion: 0.11
 Nodes (16): Change log, Connections, Core rule, Directory structure, Evidence, graphify, Ingest workflow, Key claims (+8 more)
 
 ### Community 8 - "Toward Kurdish Language Processing: The AsoSoft Text Corpus (Veisi et al. 2019)"
-Cohesion: 0.12
-Nodes (14): Change log, Connections, Evidence, Key claims, Open questions, Summary, Toward Kurdish Language Processing: The AsoSoft Text Corpus (Veisi et al. 2019), Change log (+6 more)
+Cohesion: 0.29
+Nodes (7): Change log, Connections, Evidence, Key claims, Open questions, Summary, Toward Kurdish Language Processing: The AsoSoft Text Corpus (Veisi et al. 2019)
 
 ### Community 9 - "Text Classification"
 Cohesion: 0.29
@@ -183,8 +182,8 @@ Cohesion: 0.25
 Nodes (7): Change log, Connections, Evidence, Idiom Detection in Sorani Kurdish Texts (Omer & Hassani 2025), Key claims, Open questions, Summary
 
 ### Community 23 - "KLPT – Kurdish Language Processing Toolkit (Ahmadi 2020)"
-Cohesion: 0.25
-Nodes (7): Change log, Connections, Evidence, Key claims, KLPT – Kurdish Language Processing Toolkit (Ahmadi 2020), Open questions, Summary
+Cohesion: 0.12
+Nodes (14): Change log, Connections, Evidence, Key claims, Open questions, Summary, Transformer Models, Change log (+6 more)
 
 ### Community 24 - "Kurdish News Dataset Headlines (KNDH) — Multiclass Classification (Badawi et al. 2023)"
 Cohesion: 0.25
@@ -215,8 +214,8 @@ Cohesion: 0.29
 Nodes (7): Change log, Connections, Evidence, Key claims, KLPT, Open questions, Summary
 
 ### Community 31 - "Soran Badawi"
-Cohesion: 0.17
-Nodes (12): 1. The problem, 2. The objective, 3. Literature review — why each piece was chosen, 4. Methodology — how the pipeline actually works, 5. Tuning — finding the right cluster granularity, 6. Results — BERTopic vs. classical baselines, and the fine-tuning trade-off, 7. The application, 8. Honest limitations and open questions (+4 more)
+Cohesion: 0.10
+Nodes (19): Change log, Connections, Evidence (pipeline stages), Key claims, Kurdish Data Explorer Pipeline, Open questions / risks, Summary, 1. The problem (+11 more)
 
 ### Community 32 - "Wiki Log"
 Cohesion: 0.22
@@ -240,7 +239,7 @@ Nodes (7): Change log, Connections, Evidence, Key claims, Morphological Richness
 
 ### Community 42 - "Transformer Models"
 Cohesion: 0.29
-Nodes (7): AsoSoft Text Corpus, Change log, Connections, Evidence, Key claims, Open questions, Summary
+Nodes (7): Change log, Connections, Evidence, Key claims, Open questions, Summary, Topic Modeling
 
 ### Community 43 - "KDX-MiniLM-TSDAE (fine-tuned embedder)"
 Cohesion: 0.29
@@ -252,18 +251,14 @@ Nodes (7): Change log, Connections, Evidence, Key claims, Kurdish News Dataset H
 
 ### Community 47 - "The Kurdish Language Corpus: State of the Art (Azzat et al. 2023)"
 Cohesion: 0.29
-Nodes (7): Change log, Connections, Evidence (pipeline stages), Key claims, Kurdish Data Explorer Pipeline, Open questions / risks, Summary
+Nodes (7): Change log, Connections, Evidence, Key claims, Open questions, Summary, The Kurdish Language Corpus: State of the Art (Azzat et al. 2023)
 
 ### Community 48 - "Wiki Index"
 Cohesion: 0.29
 Nodes (7): Change log, Connections, Evidence, Key claims, Open questions, Soran Badawi, Summary
 
-### Community 49 - "Verifying the Kurdish Data Explorer"
-Cohesion: 0.40
-Nodes (4): Drive (Playwright, installed in the env), Fast checks, Launch, Verifying the Kurdish Data Explorer
-
 ## Knowledge Gaps
-- **254 isolated node(s):** `Launch`, `Drive (Playwright, installed in the env)`, `Fast checks`, `Core rule`, `Directory structure` (+249 more)
+- **251 isolated node(s):** `Core rule`, `Directory structure`, `Page format`, `Summary`, `Key claims` (+246 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -271,16 +266,16 @@ Nodes (4): Drive (Playwright, installed in the env), Fast checks, Launch, Verify
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `default_model_key()` connect `upload_page.py` to `preprocess.py`?**
-  _High betweenness centrality (0.039) - this node is a cross-community bridge._
+  _High betweenness centrality (0.041) - this node is a cross-community bridge._
 - **Why does `main()` connect `streamlit_app.py` to `upload_page.py`?**
-  _High betweenness centrality (0.033) - this node is a cross-community bridge._
+  _High betweenness centrality (0.035) - this node is a cross-community bridge._
 - **Why does `Implementation and Methodology` connect `Implementation and Methodology` to `index.md`?**
   _High betweenness centrality (0.031) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `main()` (e.g. with `render_upload()` and `Path`) actually correct?**
   _`main()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Kurdish Data Explorer: interactive Streamlit app.  Reads precomputed artifacts f`, `Pastel blue for unlabeled leaves, tuned per theme.`, `Neutral grey for internal (non-leaf) tree nodes, tuned per theme.` to the rest of the system?**
-  _308 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _306 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `index.md` be split into smaller, more focused modules?**
-  _Cohesion score 0.08558558558558559 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10685483870967742 - nodes in this community are weakly interconnected._
 - **Should `streamlit_app.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.10960960960960961 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.1039136302294197 - nodes in this community are weakly interconnected._

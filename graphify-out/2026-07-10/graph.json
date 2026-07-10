@@ -184,10 +184,20 @@
       "norm_label": "topic_samples()"
     },
     {
-      "label": "keyword_string()",
+      "label": "dominant_categories()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
       "source_location": "L369",
+      "_origin": "ast",
+      "id": "app_streamlit_app_dominant_categories",
+      "community": 1,
+      "norm_label": "dominant_categories()"
+    },
+    {
+      "label": "keyword_string()",
+      "file_type": "code",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L380",
       "_origin": "ast",
       "id": "app_streamlit_app_keyword_string",
       "community": 1,
@@ -197,7 +207,7 @@
       "label": "build_tree_frame()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L374",
+      "source_location": "L385",
       "_origin": "ast",
       "id": "app_streamlit_app_build_tree_frame",
       "community": 1,
@@ -207,7 +217,7 @@
       "label": "main()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L437",
+      "source_location": "L419",
       "_origin": "ast",
       "id": "app_streamlit_app_main",
       "community": 1,
@@ -217,7 +227,7 @@
       "label": "render_tree_tab()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L525",
+      "source_location": "L507",
       "_origin": "ast",
       "id": "app_streamlit_app_render_tree_tab",
       "community": 1,
@@ -227,7 +237,7 @@
       "label": "render_map_tab()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L656",
+      "source_location": "L628",
       "_origin": "ast",
       "id": "app_streamlit_app_render_map_tab",
       "community": 1,
@@ -237,7 +247,7 @@
       "label": "render_eval_tab()",
       "file_type": "code",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L733",
+      "source_location": "L705",
       "_origin": "ast",
       "id": "app_streamlit_app_render_eval_tab",
       "community": 1,
@@ -364,24 +374,34 @@
       "norm_label": "one short representative snippet per topic, for hover intuition."
     },
     {
-      "label": "Map topic id -> a short space-joined keyword string (for hovers).",
+      "label": "Most common human category per topic (labeled sources only).",
       "file_type": "rationale",
       "source_file": "app/streamlit_app.py",
       "source_location": "L370",
       "_origin": "ast",
       "id": "app_streamlit_app_rationale_370",
       "community": 1,
+      "norm_label": "most common human category per topic (labeled sources only)."
+    },
+    {
+      "label": "Map topic id -> a short space-joined keyword string (for hovers).",
+      "file_type": "rationale",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L381",
+      "_origin": "ast",
+      "id": "app_streamlit_app_rationale_381",
+      "community": 1,
       "norm_label": "map topic id -> a short space-joined keyword string (for hovers)."
     },
     {
-      "label": "Turn saved hierarchy nodes into a Plotly icicle/treemap/sunburst frame.      Eve",
+      "label": "Turn saved hierarchy nodes into a Plotly icicle/treemap/sunburst frame.      Lea",
       "file_type": "rationale",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L375",
+      "source_location": "L386",
       "_origin": "ast",
-      "id": "app_streamlit_app_rationale_375",
+      "id": "app_streamlit_app_rationale_386",
       "community": 1,
-      "norm_label": "turn saved hierarchy nodes into a plotly icicle/treemap/sunburst frame.      eve"
+      "norm_label": "turn saved hierarchy nodes into a plotly icicle/treemap/sunburst frame.      lea"
     },
     {
       "label": "upload_page.py",
@@ -1672,56 +1692,6 @@
       "id": "tools_search_wiki_main",
       "community": 40,
       "norm_label": "main()"
-    },
-    {
-      "label": "SKILL.md",
-      "file_type": "document",
-      "source_file": ".claude/skills/verify/SKILL.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "claude_skills_verify_skill",
-      "community": 49,
-      "norm_label": "skill.md"
-    },
-    {
-      "label": "Verifying the Kurdish Data Explorer",
-      "file_type": "document",
-      "source_file": ".claude/skills/verify/SKILL.md",
-      "source_location": "L6",
-      "_origin": "ast",
-      "id": "claude_skills_verify_skill_verifying_the_kurdish_data_explorer",
-      "community": 49,
-      "norm_label": "verifying the kurdish data explorer"
-    },
-    {
-      "label": "Launch",
-      "file_type": "document",
-      "source_file": ".claude/skills/verify/SKILL.md",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "claude_skills_verify_skill_launch",
-      "community": 49,
-      "norm_label": "launch"
-    },
-    {
-      "label": "Drive (Playwright, installed in the env)",
-      "file_type": "document",
-      "source_file": ".claude/skills/verify/SKILL.md",
-      "source_location": "L21",
-      "_origin": "ast",
-      "id": "claude_skills_verify_skill_drive_playwright_installed_in_the_env",
-      "community": 49,
-      "norm_label": "drive (playwright, installed in the env)"
-    },
-    {
-      "label": "Fast checks",
-      "file_type": "document",
-      "source_file": ".claude/skills/verify/SKILL.md",
-      "source_location": "L37",
-      "_origin": "ast",
-      "id": "claude_skills_verify_skill_fast_checks",
-      "community": 49,
-      "norm_label": "fast checks"
     },
     {
       "label": "AGENTS.md",
@@ -3020,7 +2990,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "wiki_concepts_text_normalization_text_normalization",
-      "community": 0,
+      "community": 3,
       "norm_label": "text normalization"
     },
     {
@@ -3030,7 +3000,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "wiki_concepts_text_normalization_summary",
-      "community": 0,
+      "community": 3,
       "norm_label": "summary"
     },
     {
@@ -3040,7 +3010,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "wiki_concepts_text_normalization_key_claims",
-      "community": 0,
+      "community": 3,
       "norm_label": "key claims"
     },
     {
@@ -3050,7 +3020,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "wiki_concepts_text_normalization_evidence",
-      "community": 0,
+      "community": 3,
       "norm_label": "evidence"
     },
     {
@@ -3060,7 +3030,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "wiki_concepts_text_normalization_connections",
-      "community": 0,
+      "community": 3,
       "norm_label": "connections"
     },
     {
@@ -3070,7 +3040,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "wiki_concepts_text_normalization_open_questions",
-      "community": 0,
+      "community": 3,
       "norm_label": "open questions"
     },
     {
@@ -3080,7 +3050,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "wiki_concepts_text_normalization_change_log",
-      "community": 0,
+      "community": 3,
       "norm_label": "change log"
     },
     {
@@ -3100,7 +3070,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "wiki_concepts_topic_modeling_topic_modeling",
-      "community": 0,
+      "community": 42,
       "norm_label": "topic modeling"
     },
     {
@@ -3110,7 +3080,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "wiki_concepts_topic_modeling_summary",
-      "community": 0,
+      "community": 42,
       "norm_label": "summary"
     },
     {
@@ -3120,7 +3090,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "wiki_concepts_topic_modeling_key_claims",
-      "community": 0,
+      "community": 42,
       "norm_label": "key claims"
     },
     {
@@ -3130,7 +3100,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "wiki_concepts_topic_modeling_evidence",
-      "community": 0,
+      "community": 42,
       "norm_label": "evidence"
     },
     {
@@ -3140,7 +3110,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "wiki_concepts_topic_modeling_connections",
-      "community": 0,
+      "community": 42,
       "norm_label": "connections"
     },
     {
@@ -3150,7 +3120,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "wiki_concepts_topic_modeling_open_questions",
-      "community": 0,
+      "community": 42,
       "norm_label": "open questions"
     },
     {
@@ -3160,7 +3130,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "wiki_concepts_topic_modeling_change_log",
-      "community": 0,
+      "community": 42,
       "norm_label": "change log"
     },
     {
@@ -3180,7 +3150,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_transformer_models",
-      "community": 3,
+      "community": 23,
       "norm_label": "transformer models"
     },
     {
@@ -3190,7 +3160,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_summary",
-      "community": 3,
+      "community": 23,
       "norm_label": "summary"
     },
     {
@@ -3200,7 +3170,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_key_claims",
-      "community": 3,
+      "community": 23,
       "norm_label": "key claims"
     },
     {
@@ -3210,7 +3180,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_evidence",
-      "community": 3,
+      "community": 23,
       "norm_label": "evidence"
     },
     {
@@ -3220,7 +3190,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_connections",
-      "community": 3,
+      "community": 23,
       "norm_label": "connections"
     },
     {
@@ -3230,7 +3200,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_open_questions",
-      "community": 3,
+      "community": 23,
       "norm_label": "open questions"
     },
     {
@@ -3240,7 +3210,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "wiki_concepts_transformer_models_change_log",
-      "community": 3,
+      "community": 23,
       "norm_label": "change log"
     },
     {
@@ -3260,7 +3230,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "wiki_entities_asosoft_text_corpus_asosoft_text_corpus",
-      "community": 42,
+      "community": 0,
       "norm_label": "asosoft text corpus"
     },
     {
@@ -3270,7 +3240,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "wiki_entities_asosoft_text_corpus_summary",
-      "community": 42,
+      "community": 0,
       "norm_label": "summary"
     },
     {
@@ -3280,7 +3250,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "wiki_entities_asosoft_text_corpus_key_claims",
-      "community": 42,
+      "community": 0,
       "norm_label": "key claims"
     },
     {
@@ -3290,7 +3260,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "wiki_entities_asosoft_text_corpus_evidence",
-      "community": 42,
+      "community": 0,
       "norm_label": "evidence"
     },
     {
@@ -3300,7 +3270,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "wiki_entities_asosoft_text_corpus_connections",
-      "community": 42,
+      "community": 0,
       "norm_label": "connections"
     },
     {
@@ -3310,7 +3280,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "wiki_entities_asosoft_text_corpus_open_questions",
-      "community": 42,
+      "community": 0,
       "norm_label": "open questions"
     },
     {
@@ -3320,7 +3290,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "wiki_entities_asosoft_text_corpus_change_log",
-      "community": 42,
+      "community": 0,
       "norm_label": "change log"
     },
     {
@@ -3907,7 +3877,7 @@
       "label": "[2026-07-04] lint+ingest | Pre-presentation wiki review and consolidated overview",
       "file_type": "document",
       "source_file": "wiki/log.md",
-      "source_location": "L36",
+      "source_location": "L22",
       "_origin": "ast",
       "id": "wiki_log_2026_07_04_lint_ingest_pre_presentation_wiki_review_and_consolidated_overview",
       "community": 32,
@@ -3917,7 +3887,7 @@
       "label": "[2026-07-03] build | Streamlit UI polish, upload-read efficiency, and verification",
       "file_type": "document",
       "source_file": "wiki/log.md",
-      "source_location": "L67",
+      "source_location": "L53",
       "_origin": "ast",
       "id": "wiki_log_2026_07_03_build_streamlit_ui_polish_upload_read_efficiency_and_verification",
       "community": 32,
@@ -3927,7 +3897,7 @@
       "label": "[2026-06-26] build | Drill-down topic tree, source isolation, and upload engine",
       "file_type": "document",
       "source_file": "wiki/log.md",
-      "source_location": "L92",
+      "source_location": "L78",
       "_origin": "ast",
       "id": "wiki_log_2026_06_26_build_drill_down_topic_tree_source_isolation_and_upload_engine",
       "community": 32,
@@ -3937,7 +3907,7 @@
       "label": "[2026-06-26] build | Pipeline implementation, BERTopic tuning, and TSDAE fine-tuning",
       "file_type": "document",
       "source_file": "wiki/log.md",
-      "source_location": "L116",
+      "source_location": "L102",
       "_origin": "ast",
       "id": "wiki_log_2026_06_26_build_pipeline_implementation_bertopic_tuning_and_tsdae_fine_tuning",
       "community": 32,
@@ -3947,7 +3917,7 @@
       "label": "[2026-06-26] eval | TSDAE fine-tuning comparison completed",
       "file_type": "document",
       "source_file": "wiki/log.md",
-      "source_location": "L145",
+      "source_location": "L131",
       "_origin": "ast",
       "id": "wiki_log_2026_06_26_eval_tsdae_fine_tuning_comparison_completed",
       "community": 32,
@@ -3957,7 +3927,7 @@
       "label": "[2026-06-26] ingest | Bootstrap wiki from 8 Kurdish NLP sources",
       "file_type": "document",
       "source_file": "wiki/log.md",
-      "source_location": "L160",
+      "source_location": "L146",
       "_origin": "ast",
       "id": "wiki_log_2026_06_26_ingest_bootstrap_wiki_from_8_kurdish_nlp_sources",
       "community": 32,
@@ -3970,7 +3940,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "wiki_sources_asosoft_text_corpus",
-      "community": 8,
+      "community": 0,
       "norm_label": "asosoft-text-corpus.md"
     },
     {
@@ -4370,7 +4340,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art",
-      "community": 8,
+      "community": 0,
       "norm_label": "kurdish-language-corpus-state-of-the-art.md"
     },
     {
@@ -4380,7 +4350,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art_the_kurdish_language_corpus_state_of_the_art_azzat_et_al_2023",
-      "community": 8,
+      "community": 47,
       "norm_label": "the kurdish language corpus: state of the art (azzat et al. 2023)"
     },
     {
@@ -4390,7 +4360,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art_summary",
-      "community": 8,
+      "community": 47,
       "norm_label": "summary"
     },
     {
@@ -4400,7 +4370,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art_key_claims",
-      "community": 8,
+      "community": 47,
       "norm_label": "key claims"
     },
     {
@@ -4410,7 +4380,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art_evidence",
-      "community": 8,
+      "community": 47,
       "norm_label": "evidence"
     },
     {
@@ -4420,7 +4390,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art_connections",
-      "community": 8,
+      "community": 47,
       "norm_label": "connections"
     },
     {
@@ -4430,7 +4400,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art_open_questions",
-      "community": 8,
+      "community": 47,
       "norm_label": "open questions"
     },
     {
@@ -4440,7 +4410,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "wiki_sources_kurdish_language_corpus_state_of_the_art_change_log",
-      "community": 8,
+      "community": 47,
       "norm_label": "change log"
     },
     {
@@ -4820,7 +4790,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_kurdish_data_explorer_pipeline",
-      "community": 47,
+      "community": 31,
       "norm_label": "kurdish data explorer pipeline"
     },
     {
@@ -4830,7 +4800,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_summary",
-      "community": 47,
+      "community": 31,
       "norm_label": "summary"
     },
     {
@@ -4840,7 +4810,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_key_claims",
-      "community": 47,
+      "community": 31,
       "norm_label": "key claims"
     },
     {
@@ -4850,7 +4820,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_evidence_pipeline_stages",
-      "community": 47,
+      "community": 31,
       "norm_label": "evidence (pipeline stages)"
     },
     {
@@ -4860,7 +4830,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_connections",
-      "community": 47,
+      "community": 31,
       "norm_label": "connections"
     },
     {
@@ -4870,7 +4840,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_open_questions_risks",
-      "community": 47,
+      "community": 31,
       "norm_label": "open questions / risks"
     },
     {
@@ -4880,7 +4850,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "wiki_synthesis_kurdish_data_explorer_pipeline_change_log",
-      "community": 47,
+      "community": 31,
       "norm_label": "change log"
     },
     {
@@ -5039,7 +5009,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L374",
+      "source_location": "L385",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_build_tree_frame",
@@ -5063,6 +5033,16 @@
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_current_theme",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L369",
+      "weight": 1.0,
+      "source": "app_streamlit_app",
+      "target": "app_streamlit_app_dominant_categories",
       "confidence_score": 1.0
     },
     {
@@ -5109,7 +5089,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L369",
+      "source_location": "L380",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_keyword_string",
@@ -5139,7 +5119,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L437",
+      "source_location": "L419",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_main",
@@ -5149,7 +5129,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L733",
+      "source_location": "L705",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_render_eval_tab",
@@ -5159,7 +5139,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L656",
+      "source_location": "L628",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_render_map_tab",
@@ -5189,7 +5169,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L525",
+      "source_location": "L507",
       "weight": 1.0,
       "source": "app_streamlit_app",
       "target": "app_streamlit_app_render_tree_tab",
@@ -5261,7 +5241,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L555",
+      "source_location": "L537",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_leaf_color",
@@ -5304,7 +5284,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L555",
+      "source_location": "L537",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_group_color",
@@ -5325,7 +5305,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L684",
+      "source_location": "L656",
       "weight": 1.0,
       "source": "app_streamlit_app_render_map_tab",
       "target": "app_streamlit_app_category_color_map",
@@ -5336,7 +5316,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L552",
+      "source_location": "L534",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_category_color_map",
@@ -5347,7 +5327,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L474",
+      "source_location": "L456",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_streamlit_app_source_meta",
@@ -5369,7 +5349,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L467",
+      "source_location": "L449",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_streamlit_app_load_all",
@@ -5423,7 +5403,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L444",
+      "source_location": "L426",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_streamlit_app_current_theme",
@@ -5467,7 +5447,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L443",
+      "source_location": "L425",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_streamlit_app_render_theme_toggle",
@@ -5498,7 +5478,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L779",
+      "source_location": "L751",
       "weight": 1.0,
       "source": "app_streamlit_app_render_eval_tab",
       "target": "app_streamlit_app_render_table",
@@ -5520,7 +5500,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L587",
+      "source_location": "L569",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_render_table",
@@ -5531,9 +5511,20 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L374",
+      "source_location": "L385",
       "weight": 1.0,
       "source": "app_streamlit_app_build_tree_frame",
+      "target": "app_streamlit_app_py_dataframe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L369",
+      "weight": 1.0,
+      "source": "app_streamlit_app_dominant_categories",
       "target": "app_streamlit_app_py_dataframe",
       "confidence_score": 1.0
     },
@@ -5542,7 +5533,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L759",
+      "source_location": "L731",
       "weight": 1.0,
       "source": "app_streamlit_app_render_eval_tab",
       "target": "app_streamlit_app_py_dataframe",
@@ -5553,7 +5544,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L603",
+      "source_location": "L585",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_py_dataframe",
@@ -5575,7 +5566,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L444",
+      "source_location": "L426",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_streamlit_app_apply_theme",
@@ -5606,7 +5597,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L763",
+      "source_location": "L735",
       "weight": 1.0,
       "source": "app_streamlit_app_render_eval_tab",
       "target": "app_streamlit_app_themed",
@@ -5617,7 +5608,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L705",
+      "source_location": "L677",
       "weight": 1.0,
       "source": "app_streamlit_app_render_map_tab",
       "target": "app_streamlit_app_themed",
@@ -5628,7 +5619,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L583",
+      "source_location": "L565",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_themed",
@@ -5649,7 +5640,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L761",
+      "source_location": "L733",
       "weight": 1.0,
       "source": "app_streamlit_app_render_eval_tab",
       "target": "app_streamlit_app_accent_seq",
@@ -5660,7 +5651,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L606",
+      "source_location": "L588",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_accent_seq",
@@ -5681,7 +5672,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L627",
+      "source_location": "L606",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_heat_scale",
@@ -5692,7 +5683,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L382",
+      "source_location": "L392",
       "weight": 1.0,
       "source": "app_streamlit_app_build_tree_frame",
       "target": "app_streamlit_app_topic_samples",
@@ -5709,12 +5700,33 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L393",
+      "weight": 1.0,
+      "source": "app_streamlit_app_build_tree_frame",
+      "target": "app_streamlit_app_dominant_categories",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
       "source_location": "L370",
       "weight": 1.0,
       "source": "app_streamlit_app_rationale_370",
+      "target": "app_streamlit_app_dominant_categories",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "app/streamlit_app.py",
+      "source_location": "L381",
+      "weight": 1.0,
+      "source": "app_streamlit_app_rationale_381",
       "target": "app_streamlit_app_keyword_string",
       "confidence_score": 1.0
     },
@@ -5723,7 +5735,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L674",
+      "source_location": "L646",
       "weight": 1.0,
       "source": "app_streamlit_app_render_map_tab",
       "target": "app_streamlit_app_keyword_string",
@@ -5733,9 +5745,9 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L375",
+      "source_location": "L386",
       "weight": 1.0,
-      "source": "app_streamlit_app_rationale_375",
+      "source": "app_streamlit_app_rationale_386",
       "target": "app_streamlit_app_build_tree_frame",
       "confidence_score": 1.0
     },
@@ -5744,7 +5756,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L536",
+      "source_location": "L518",
       "weight": 1.0,
       "source": "app_streamlit_app_render_tree_tab",
       "target": "app_streamlit_app_build_tree_frame",
@@ -5755,7 +5767,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L519",
+      "source_location": "L501",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_streamlit_app_render_eval_tab",
@@ -5766,7 +5778,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L518",
+      "source_location": "L500",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_streamlit_app_render_map_tab",
@@ -5777,7 +5789,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/streamlit_app.py",
-      "source_location": "L517",
+      "source_location": "L499",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_streamlit_app_render_tree_tab",
@@ -5789,7 +5801,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/streamlit_app.py",
-      "source_location": "L454",
+      "source_location": "L436",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "app_upload_page_render_upload"
@@ -5800,7 +5812,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "app/streamlit_app.py",
-      "source_location": "L504",
+      "source_location": "L486",
       "weight": 1.0,
       "source": "app_streamlit_app_main",
       "target": "path"
@@ -5957,7 +5969,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/upload_page.py",
-      "source_location": "L177",
+      "source_location": "L174",
       "weight": 1.0,
       "source": "app_upload_page_render_upload",
       "target": "app_upload_page_read_text_documents",
@@ -5968,7 +5980,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "app/upload_page.py",
-      "source_location": "L179",
+      "source_location": "L176",
       "weight": 1.0,
       "source": "app_upload_page_render_upload",
       "target": "app_upload_page_read_table_documents",
@@ -7810,46 +7822,6 @@
       "weight": 1.0,
       "source": "tools_search_wiki",
       "target": "tools_search_wiki_main",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": ".claude/skills/verify/SKILL.md",
-      "source_location": "L6",
-      "weight": 1.0,
-      "source": "claude_skills_verify_skill",
-      "target": "claude_skills_verify_skill_verifying_the_kurdish_data_explorer",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": ".claude/skills/verify/SKILL.md",
-      "source_location": "L21",
-      "weight": 1.0,
-      "source": "claude_skills_verify_skill_verifying_the_kurdish_data_explorer",
-      "target": "claude_skills_verify_skill_drive_playwright_installed_in_the_env",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": ".claude/skills/verify/SKILL.md",
-      "source_location": "L37",
-      "weight": 1.0,
-      "source": "claude_skills_verify_skill_verifying_the_kurdish_data_explorer",
-      "target": "claude_skills_verify_skill_fast_checks",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": ".claude/skills/verify/SKILL.md",
-      "source_location": "L11",
-      "weight": 1.0,
-      "source": "claude_skills_verify_skill_verifying_the_kurdish_data_explorer",
-      "target": "claude_skills_verify_skill_launch",
       "confidence_score": 1.0
     },
     {
@@ -10186,7 +10158,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L92",
+      "source_location": "L78",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
       "target": "wiki_log_2026_06_26_build_drill_down_topic_tree_source_isolation_and_upload_engine",
@@ -10196,7 +10168,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L116",
+      "source_location": "L102",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
       "target": "wiki_log_2026_06_26_build_pipeline_implementation_bertopic_tuning_and_tsdae_fine_tuning",
@@ -10206,7 +10178,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L145",
+      "source_location": "L131",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
       "target": "wiki_log_2026_06_26_eval_tsdae_fine_tuning_comparison_completed",
@@ -10216,7 +10188,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L160",
+      "source_location": "L146",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
       "target": "wiki_log_2026_06_26_ingest_bootstrap_wiki_from_8_kurdish_nlp_sources",
@@ -10226,7 +10198,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L67",
+      "source_location": "L53",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
       "target": "wiki_log_2026_07_03_build_streamlit_ui_polish_upload_read_efficiency_and_verification",
@@ -10236,7 +10208,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "wiki/log.md",
-      "source_location": "L36",
+      "source_location": "L22",
       "weight": 1.0,
       "source": "wiki_log_wiki_log",
       "target": "wiki_log_2026_07_04_lint_ingest_pre_presentation_wiki_review_and_consolidated_overview",

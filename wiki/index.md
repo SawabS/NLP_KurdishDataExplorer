@@ -25,7 +25,7 @@ the synthesis page for how the sources fit together.
 - [BERTopic](entities/bertopic.md) — transformer-based topic modeling method (primary modeling tool).
 - [KuBERT](entities/kubert.md) — Kurdish BERT variant.
 - [Soran Badawi](entities/soran-badawi.md) — author of KNDH and the Sorani NMT model.
-- [KDX-MiniLM-TSDAE (fine-tuned embedder)](entities/kdx-minilm-tsdae-model.md) — our domain-adapted Kurdish embedder.
+- [KDX-MiniLM-TSDAE (fine-tuned embedder)](entities/kdx-minilm-tsdae-model.md) — our domain-adapted Kurdish embedder; the app's single production model since 2026-07-10.
 
 ## Concepts
 

@@ -151,14 +151,18 @@ def render_upload() -> None:
             st.error(f"Unsupported file type: {ext}")
             st.stop()
 
-        st.markdown("#### Model & topics")
-        model = st.selectbox("Embedding model", list(config.EMBEDDING_MODELS),
-                             index=list(config.EMBEDDING_MODELS).index(config.DEFAULT_EMBEDDING_MODEL),
-                             format_func=lambda k: config.EMBEDDING_MODEL_LABELS.get(k, k))
+        st.markdown("#### Topics")
+        # One model for the whole app: the KDX Sorani embedder (base MiniLM
+        # fallback until scripts/finetune_tsdae.py has produced it).
+        model = config.default_model_key()
+        st.caption(f"Embedder: **{config.EMBEDDING_MODEL_LABELS.get(model, model)}**")
         normalize = st.checkbox("KLPT-normalize (recommended for raw Sorani)", value=True)
         max_docs = st.number_input("Documents to embed (sample cap for live runs)",
                                    500, 200000, 20000, step=500)
-        auto_mcs = st.checkbox("Auto cluster granularity", value=True)
+        auto_mcs = st.checkbox("Auto cluster granularity (scales with corpus size)", value=True,
+                               help="min_cluster_size ≈ docs/100, clamped to 15–250. "
+                                    "The pipeline default of 250 is tuned for ~50k docs and "
+                                    "collapses small uploads into one or two topics.")
         mcs = None if auto_mcs else st.slider("min_cluster_size", 10, 500, 50, step=10)
         with_baselines = st.checkbox("Also compute LDA/NMF baselines (slower)", value=False)
 
@@ -187,6 +191,11 @@ def render_upload() -> None:
         labels = [labels[i] for i in idx] if labels is not None else None
         st.warning(f"Sampled {max_docs:,} of {total:,} documents for this live run "
                    "(raise the cap or use the offline script for the full corpus).")
+
+    # Auto granularity: scale HDBSCAN's min_cluster_size with the corpus that
+    # will actually be embedded (the config default of 250 fits ~50k docs).
+    if mcs is None:
+        mcs = max(15, min(250, len(texts) // 100))
 
     # ---- Run ----
     prog = st.progress(0.0, text="Starting…")

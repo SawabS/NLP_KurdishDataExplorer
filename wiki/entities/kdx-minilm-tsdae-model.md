@@ -2,7 +2,7 @@
 title: "KDX-MiniLM-TSDAE (fine-tuned embedder)"
 type: entity
 created: 2026-06-26
-updated: 2026-07-04
+updated: 2026-07-10
 status: stable
 tags: [model, embedding, tsdae, fine-tuning, domain-adaptation, sorani, minilm]
 sources: ["raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf"]
@@ -64,8 +64,11 @@ that gives base MiniLM its topics yields too few here, so it was re-tuned to
 `min_cluster_size=50`. (These are the shipped artifacts; topic counts move a few
 between runs because UMAP/HDBSCAN are stochastic.)
 
-Practical guidance: base MiniLM for category-faithful exploration; KDX-MiniLM-TSDAE
-for finer, more coherent semantic clustering. Both are selectable in the app.
+Status in the app (since 2026-07-10): **KDX-MiniLM-TSDAE is the single production
+embedder** — the explorer and the upload engine always use it (no model dropdown).
+Base MiniLM stays registered only as the comparison bar in the Model & evaluation
+tab; the category-alignment trade-off above is disclosed there. DistilUSE / MPNet /
+E5-base were unregistered from `config.EMBEDDING_MODELS` (all negative NPMI).
 
 ## Connections
 
@@ -89,3 +92,6 @@ for finer, more coherent semantic clustering. Both are selectable in the app.
 - 2026-07-04: Evaluation complete (see table above); marked stable. Status/change
   log had lagged the actual finished results — caught during a pre-presentation
   wiki review.
+- 2026-07-10: Promoted to the app's single production embedder ("one clear model"
+  cleanup); base MiniLM demoted to evaluation-comparison only, other embedders
+  unregistered.

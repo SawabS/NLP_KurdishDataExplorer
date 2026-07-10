@@ -2,7 +2,7 @@
 title: "Implementation and Methodology"
 type: synthesis
 created: 2026-06-26
-updated: 2026-07-03
+updated: 2026-07-10
 status: stable
 tags: [implementation, methodology, reproducibility, bertopic, tsdae, pipeline, transparency]
 sources: ["raw/sources/KLPT – Kurdish Language Processing Toolkit.pdf", "raw/sources/Kurdish News Dataset Headlines (KNDH) through multiclass classification.pdf", "raw/sources/Toward Kurdish language processing: Experiments in collecting and processing the AsoSoft text corpus.pdf", "raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf"]
@@ -149,9 +149,11 @@ outliers fall sharply; only 2 documents remain unassigned vs 36). But it *reduce
 alignment with the 5 human news categories* (NMI 0.224 → 0.159), because the
 unsupervised reconstruction objective does not track those domains. It also needs
 its own granularity (mcs=250 gave too few topics on the denser space; re-tuned to
-50). Neither model dominates the human-label axis, so both ship and are selectable
-in the app — base MiniLM for category-faithful exploration, the fine-tuned model for
-finer / more coherent semantic clustering.
+50). Decision (2026-07-10, "one clear model" cleanup): **KDX-MiniLM-TSDAE is the
+app's single production embedder** — it wins every intrinsic metric and is the
+project's own contribution. Base MiniLM stays registered only as the evaluation
+comparison point (Model & evaluation tab); DistilUSE / MPNet / E5-base were
+unregistered (all scored negative NPMI; artifacts remain on disk).
 
 ## Topic hierarchy (the drill-down tree)
 
@@ -173,9 +175,9 @@ shows "how many documents are here", the keyword bars, and example texts. The
 ## Source isolation and transparency
 
 The user explores **one source at a time and sources are never mixed** unless they
-ask. Navigation is source-first: pick a corpus (KNDH, AsoSoft, or an upload), then an
-embedding model; the run key is `<source>__<model>` so each run only ever contains
-one corpus's documents. Every source shows a provenance banner (what it is, size,
+ask. Navigation is source-first: pick a corpus (KNDH, AsoSoft, or an upload); the
+embedder is chosen automatically (KDX when fitted, no dropdown). The run key is
+`<source>__<model>` so each run only ever contains one corpus's documents. Every source shows a provenance banner (what it is, size,
 labeled/unlabeled, origin). Shipped runs:
 
 | Source | Docs | Topics | NPMI | Notes |
@@ -209,8 +211,9 @@ Scaling provisions for hundreds-of-MB inputs:
 ## Application
 
 `app/streamlit_app.py` reads precomputed artifacts (no model refit). Two modes:
-**Explore a source** (source-first nav → Topic tree, Map, Baselines)
-and **Upload & explore** (the generic engine above).
+**Explore a source** (source-first nav → Topic tree, Document map, Model &
+evaluation) and **Upload & explore** (the generic engine above, always using the
+KDX embedder with base-MiniLM fallback via `config.default_model_key()`).
 
 ### UI polish and verification (2026-07-03)
 
