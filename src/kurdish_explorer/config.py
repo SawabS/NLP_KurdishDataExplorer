@@ -75,6 +75,20 @@ UMAP_PARAMS = dict(n_neighbors=15, n_components=5, min_dist=0.0, metric="cosine"
 # min_samples keeps native outliers down before c-TF-IDF outlier reassignment.
 HDBSCAN_PARAMS = dict(min_cluster_size=250, min_samples=10, metric="euclidean", prediction_data=True)
 
+# Per-model fit overrides, merged over the defaults above at fit time.
+# The KDX (TSDAE) space is highly anisotropic (mean random-pair cosine 0.95 vs
+# 0.17 for base MiniLM), so with the default EOM selection HDBSCAN grows one
+# junk mega-cluster holding half the corpus. Leaf selection over a wider UMAP
+# neighborhood breaks the blob: on KNDH the largest topic drops 54% -> 6%,
+# NMI vs labels rises 0.159 -> 0.212, and NPMI rises +0.038 -> +0.057
+# (diagnosed 2026-07-11; sweep in the wiki change log).
+MODEL_FIT_OVERRIDES: dict[str, dict] = {
+    "kdx-minilm-tsdae": {
+        "umap": dict(n_neighbors=50),
+        "hdbscan": dict(min_cluster_size=100, cluster_selection_method="leaf"),
+    },
+}
+
 # Token pattern keeps Unicode word characters (works for Arabic-script Kurdish).
 TOKEN_PATTERN = r"(?u)\b\w\w+\b"
 

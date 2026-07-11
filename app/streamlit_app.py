@@ -857,9 +857,13 @@ c-TF-IDF) on top of **KDX MiniLM**, our Sorani-adapted embedder:
 - **Training data:** ~110k Sorani sentences — the 50k KNDH news headlines
   (Badawi et al. 2023) plus sentence-split AsoSoft running text
   (Veisi et al. 2019), deduplicated and shuffled (seed 42).
-- **Why this model:** on KNDH it beats the unadapted base on every intrinsic
-  metric (coherence, topic diversity, unassigned documents 36 → 2), at the cost
-  of somewhat looser alignment with the human news categories (NMI 0.22 → 0.16).
+- **Anisotropy-aware fit:** the TSDAE space is highly anisotropic (random
+  documents share cosine ≈ 0.95), so KDX runs cluster with a wider UMAP
+  neighborhood and HDBSCAN *leaf* selection. On KNDH this removes the former
+  junk mega-topic (largest topic 54% → 6% of the corpus).
+- **Why this model:** on KNDH it beats the unadapted base on topic coherence
+  (NPMI −0.047 → +0.057) with comparable category alignment
+  (NMI 0.212 vs 0.232) and balanced topic sizes.
 """
 
 

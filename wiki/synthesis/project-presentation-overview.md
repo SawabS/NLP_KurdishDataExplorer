@@ -2,7 +2,7 @@
 title: "Project Presentation Overview"
 type: synthesis
 created: 2026-07-04
-updated: 2026-07-04
+updated: 2026-07-11
 status: stable
 tags: [presentation, overview, narrative, bertopic, kurdish, sorani, podcast-source]
 sources: ["raw/sources/KLPT – Kurdish Language Processing Toolkit.pdf", "raw/sources/Kurdish News Dataset Headlines (KNDH) through multiclass classification.pdf", "raw/sources/Toward Kurdish language processing: Experiments in collecting and processing the AsoSoft text corpus.pdf", "raw/sources/THE KURDISH LANGUAGE CORPUS: STATE OF THE ART.pdf", "raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf", "raw/sources/Idiom Detection in Sorani Kurdish Texts.pdf", "raw/sources/A Transformer-based Neural Network Machine Translation Model for the Kurdish Sorani Dialect.pdf", "raw/sources/Morphological Feature Extraction for Fine-Grained Sorani Kurdish Dialect.pdf"]
@@ -161,7 +161,7 @@ number substantially (see §6's production comparison).
 
 | Model | NPMI | Topics | Notes |
 |---|---|---|---|
-| **BERTopic (tuned)** | **-0.056** | 48 | 36 outliers (0.07%); beats LDA, near NMF |
+| **BERTopic (base MiniLM, tuned)** | **-0.047** | 46 | 39 outliers (0.08%); beats LDA, near NMF |
 | LDA | -0.149 | 20 | |
 | NMF | +0.107 | 20 | NPMI structurally favors bag-of-words |
 
@@ -181,20 +181,21 @@ minutes). Unsupervised was a deliberate choice over supervised fine-tuning on th
 5 KNDH labels — supervised fine-tuning would sharpen category alignment but bias
 the embedder away from the project's generic, size-unbounded goal.
 
-| Model (tuned) | Topics | Outliers | NPMI | Diversity | NMI vs categories |
+| Model (tuned) | Topics | Largest topic | NPMI | Diversity | NMI vs categories |
 |---|---|---|---|---|---|
-| Base MiniLM (mcs=250) | 48 | 36 | -0.056 | 0.838 | **0.224** |
-| KDX-MiniLM-TSDAE (mcs=50) | 45 | **2** | **+0.038** | **0.847** | 0.159 |
+| Base MiniLM (mcs=250) | 46 | 7% | -0.047 | **0.859** | **0.232** |
+| KDX old fit (eom, mcs=50) | 45 | 54% junk topic | +0.038 | 0.847 | 0.159 |
+| KDX anisotropy-aware fit (leaf, UMAP n=50, mcs=100) | 46 | **6%** | **+0.057** | 0.737 | 0.212 |
 
-This is a genuine trade-off, not a clean win, and the project records it as such:
-TSDAE improves every intrinsic metric (coherence flips positive, diversity rises
-slightly, native HDBSCAN outliers drop from 36 to 2), but it *reduces* alignment
-with the human-assigned news categories, because unsupervised reconstruction has
-no reason to track those specific 5 labels. It also needs its own cluster
-granularity — the same `min_cluster_size=250` that works for base MiniLM
-over-merges the TSDAE embedding space, so it was re-tuned to 50. Both models ship
-in the app and are user-selectable: base MiniLM for category-faithful
-exploration, TSDAE for finer, more internally-coherent clusters.
+This is a genuine trade-off, not a clean win, and the project records it as such.
+The important July 2026 correction is that the KDX embedding space is highly
+anisotropic: random KNDH documents have mean cosine similarity around 0.951, so
+the default HDBSCAN EOM fit created a 27k-document junk topic. A wider UMAP
+neighborhood plus HDBSCAN leaf selection fixes that KDX-specific failure (largest
+topic 54% → 6%; NPMI +0.038 → +0.057). KDX now gives the best shipped BERTopic
+coherence, while base MiniLM remains slightly stronger on category alignment and
+keyword diversity. The app presents KDX as the single production embedder, with
+base MiniLM retained only as the evaluation comparison bar.
 
 ## 7. The application
 
@@ -229,14 +230,17 @@ Stated directly, for a presentation Q&A:
   frequency-based topic models. Diversity, outlier rate, and qualitative topic
   read-out matter alongside it.
 - **Domain-adapted embeddings are a trade-off, not a strict improvement**
-  (§6) — better coherence and cluster confidence, worse label alignment.
+  (§6) — KDX has better BERTopic coherence and no longer forms the junk
+  mega-topic, while base MiniLM has slightly better label alignment and keyword
+  diversity.
 - **Kurdish-specific transformer encoders (e.g. KuBERT) were never wired into the
   embedding stage** — only multilingual sentence-transformers were used and
   compared against each other. Whether a Kurdish-specific encoder would
   outperform multilingual ones for this clustering task is untested.
-- **AsoSoft's Large split (75M tokens) and its topic-annotated subset are not yet
-  ingested** (the annotated set ships as a RAR requiring `unrar`); only the
-  ~4.9M-token "Small" version is used.
+- **AsoSoft's Large split (75M tokens) is extracted locally for upload-path
+  testing but is not yet a built-in shipped source**; only the ~4.9M-token
+  "Small" version is used in the precomputed source selector. The topic-annotated
+  subset still needs separate handling.
 - **Scaling beyond ~150k documents needs architectural changes** not yet built:
   UMAP is roughly O(n^1.5) and HDBSCAN is memory-heavy, so the plan
   (`docs/ARCHITECTURE.md`) is GPU-accelerated cuML, or incremental/online
@@ -267,3 +271,5 @@ that acknowledges the current ceiling rather than glossing over it.
 
 - 2026-07-04: Created as a single consolidated narrative ahead of a project
   presentation, to serve as the primary NotebookLM source document.
+- 2026-07-11: Refreshed the KDX section after the anisotropy diagnosis and leaf
+  clustering fix; updated KNDH/AsoSoft result numbers and Large-corpus status.

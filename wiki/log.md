@@ -1,5 +1,34 @@
 # Wiki Log
 
+## [2026-07-11] research | Anisotropy diagnosis: the mega-topics were a fit bug, now fixed
+
+User reported the model "performing bad". Root-caused and fixed:
+
+- **Diagnosis:** the KDX (TSDAE) embedding space is severely anisotropic — mean
+  cosine between *random* KNDH documents is **0.951** (base MiniLM: 0.171).
+  The shipped run's topic 0 (27,220 docs) was a junk cluster: near-uniform
+  label mix (27% social / 23% economic / 23% health / 20% sci-tech / 7% sport).
+  Mean-centering and PCA-whitening restore isotropy in the metric (0.951 →
+  0.004) but NOT the cluster structure — the blob survives, so the collapse is
+  geometric, not just a common mean direction.
+- **Remedy sweep** (cached embeddings, HDBSCAN on shared UMAP reductions):
+  EOM selection always grows a ~50% mega-cluster; **leaf selection over a wider
+  UMAP neighborhood (n_neighbors=50, min_cluster_size=100)** yields 46 native
+  topics (largest 3%) with ~70% native outliers that c-TF-IDF reassignment
+  distributes cleanly: final largest topic 6%, NMI 0.159 → **0.212** (base:
+  0.232), NPMI +0.038 → **+0.057**. Better than the old KDX fit on every
+  tracked KDX diagnostic.
+- **Shipped:** `config.MODEL_FIT_OVERRIDES` applies per-model UMAP/HDBSCAN
+  overrides at fit time (explicit `--min-cluster-size` still wins). Refit
+  `kndh__kdx-minilm-tsdae` (46 topics, NPMI +0.057, LDA/NMF baselines kept) and
+  `asosoft__kdx-minilm-tsdae` (5 → 10 topics, NPMI +0.049 — long-doc
+  under-segmentation is reduced but not solved).
+- **Upload-path verification:** restarted Streamlit and submitted the 54.0 MB
+  AsoSoft Small raw text through the server-path upload flow. The UI processed
+  7,108 line-documents with KDX + normalization and returned 12 topics, NPMI
+  +0.063, in 51.7 seconds.
+- The 2026-07-10 "known open issue" (mega-topics) is now resolved for KNDH.
+
 ## [2026-07-11] update | "Ask the corpus" semantic search + AsoSoft refits
 
 - New explorer tab **Ask the corpus**: one-click example questions (three Sorani,

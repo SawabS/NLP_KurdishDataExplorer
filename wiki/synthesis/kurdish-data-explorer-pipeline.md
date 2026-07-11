@@ -2,7 +2,7 @@
 title: "Kurdish Data Explorer Pipeline"
 type: synthesis
 created: 2026-06-26
-updated: 2026-06-26
+updated: 2026-07-11
 status: stable
 tags: [synthesis, project, pipeline, topic-modeling, streamlit, sorani]
 sources: ["raw/sources/KLPT – Kurdish Language Processing Toolkit.pdf", "raw/sources/Kurdish News Dataset Headlines (KNDH) through multiclass classification.pdf", "raw/sources/Toward Kurdish language processing: Experiments in collecting and processing the AsoSoft text corpus.pdf", "raw/sources/THE KURDISH LANGUAGE CORPUS: STATE OF THE ART.pdf", "raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf", "raw/sources/Idiom Detection in Sorani Kurdish Texts.pdf", "raw/sources/A Transformer-based Neural Network Machine Translation Model for the Kurdish Sorani Dialect.pdf", "raw/sources/Morphological Feature Extraction for Fine-Grained Sorani Kurdish Dialect.pdf"]
@@ -72,10 +72,11 @@ models transfer to low-resource settings:
   accuracy are strong claims on small data; cite them as encouraging, not decisive.
 - **Data availability — resolved:** both KNDH and AsoSoft (Small) were ingested
   successfully; see provenance in [[Implementation and Methodology]]. AsoSoft Large
-  (75M tokens) and its topic-annotated RAR remain optional/not yet ingested.
+  (75M tokens) is extracted locally for upload-path testing but is not a built-in
+  shipped source; the topic-annotated subset remains optional/not yet ingested.
 - **Topic–label alignment — answered empirically:** unsupervised BERTopic on full
-  KNDH reaches NMI 0.224 against the 5 human categories (base MiniLM), vs 0.159 for
-  the TSDAE-adapted embedder — topics partially but not fully recover the human
+  KNDH reaches NMI 0.232 against the 5 human categories (base MiniLM), vs 0.212 for
+  the anisotropy-aware TSDAE-adapted embedder — topics partially but not fully recover the human
   labels; full sweep in [[Implementation and Methodology]].
 - **Embedding backbone — narrowed, not fully closed:** the shipped pipeline uses
   multilingual sentence-transformers (MiniLM, DistilUSE, MPNet, E5-base) plus a

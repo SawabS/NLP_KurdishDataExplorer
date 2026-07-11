@@ -12,7 +12,8 @@ from . import config
 from .preprocess import build_vectorizer
 
 
-def build_bertopic(embedding_model=None, hdbscan_overrides: dict | None = None):
+def build_bertopic(embedding_model=None, hdbscan_overrides: dict | None = None,
+                   umap_overrides: dict | None = None):
     """Construct a configured (unfitted) BERTopic model."""
     from bertopic import BERTopic
     from bertopic.representation import MaximalMarginalRelevance
@@ -23,8 +24,11 @@ def build_bertopic(embedding_model=None, hdbscan_overrides: dict | None = None):
     hdbscan_params = dict(config.HDBSCAN_PARAMS)
     if hdbscan_overrides:
         hdbscan_params.update(hdbscan_overrides)
+    umap_params = dict(config.UMAP_PARAMS)
+    if umap_overrides:
+        umap_params.update(umap_overrides)
 
-    umap_model = UMAP(random_state=config.SEED, **config.UMAP_PARAMS)
+    umap_model = UMAP(random_state=config.SEED, **umap_params)
     hdbscan_model = HDBSCAN(**hdbscan_params)
     vectorizer_model = build_vectorizer(kind="ctfidf")
     ctfidf_model = ClassTfidfTransformer(reduce_frequent_words=True)
@@ -49,6 +53,7 @@ def fit_bertopic(
     embeddings: np.ndarray,
     embedding_model=None,
     hdbscan_overrides: dict | None = None,
+    umap_overrides: dict | None = None,
     reduce_outliers: bool = True,
 ):
     """Fit BERTopic on precomputed embeddings.
@@ -59,7 +64,9 @@ def fit_bertopic(
 
     Returns ``(model, topics)`` where ``topics`` is the per-document topic id.
     """
-    model = build_bertopic(embedding_model=embedding_model, hdbscan_overrides=hdbscan_overrides)
+    model = build_bertopic(embedding_model=embedding_model,
+                           hdbscan_overrides=hdbscan_overrides,
+                           umap_overrides=umap_overrides)
     topics, _ = model.fit_transform(docs, embeddings=embeddings)
     if reduce_outliers and (np.asarray(topics) == -1).any():
         new_topics = model.reduce_outliers(docs, topics, strategy="c-tf-idf")

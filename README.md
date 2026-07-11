@@ -72,10 +72,13 @@ The project presents a single embedding model, registered in
   comparison point.
 
 On KNDH, KDX MiniLM is the only embedder that reaches positive NPMI topic
-coherence (+0.038 vs −0.047 for base MiniLM; earlier DistilUSE/MPNet
-experiments also scored negative and were unregistered). If the local TSDAE
-directory does not exist yet, the app and uploader fall back to base MiniLM;
-create it with:
+coherence (+0.057 vs −0.047 for base MiniLM; earlier DistilUSE/MPNet
+experiments also scored negative and were unregistered). Because the TSDAE
+space is anisotropic, KDX runs use per-model fit overrides
+(`config.MODEL_FIT_OVERRIDES`: wider UMAP neighborhood + HDBSCAN leaf
+selection) — without them HDBSCAN grows a junk mega-cluster. If the local
+TSDAE directory does not exist yet, the app and uploader fall back to base
+MiniLM; create it with:
 
 ```bash
 python scripts/finetune_tsdae.py

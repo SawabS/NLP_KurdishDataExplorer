@@ -1,16 +1,16 @@
 # Graph Report - NLP_KurdishDataExplorer  (2026-07-11)
 
 ## Corpus Check
-- 65 files · ~28,586 words
+- 65 files · ~29,357 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 509 nodes · 626 edges · 50 communities (48 shown, 2 thin omitted)
+- 510 nodes · 627 edges · 50 communities (48 shown, 2 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 8 edges (avg confidence: 0.72)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `a48870e7`
+- Built from commit: `639fea7c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -70,8 +70,8 @@
 6. `render_tree_tab()` - 11 edges
 7. `build_vectorizer()` - 11 edges
 8. `current_theme()` - 10 edges
-9. `render_search_tab()` - 9 edges
-10. `Wiki Log` - 9 edges
+9. `Wiki Log` - 10 edges
+10. `render_search_tab()` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `main()` --calls--> `build_vectorizer()`  [INFERRED]
@@ -219,8 +219,8 @@ Cohesion: 0.10
 Nodes (19): Change log, Connections, Evidence (pipeline stages), Key claims, Kurdish Data Explorer Pipeline, Open questions / risks, Summary, 1. The problem (+11 more)
 
 ### Community 32 - "Wiki Log"
-Cohesion: 0.20
-Nodes (9): [2026-06-26] build | Drill-down topic tree, source isolation, and upload engine, [2026-06-26] build | Pipeline implementation, BERTopic tuning, and TSDAE fine-tuning, [2026-06-26] eval | TSDAE fine-tuning comparison completed, [2026-06-26] ingest | Bootstrap wiki from 8 Kurdish NLP sources, [2026-07-03] build | Streamlit UI polish, upload-read efficiency, and verification, [2026-07-04] lint+ingest | Pre-presentation wiki review and consolidated overview, [2026-07-10] update | "One clear model" cleanup: KDX becomes the single production embedder, [2026-07-11] update | "Ask the corpus" semantic search + AsoSoft refits (+1 more)
+Cohesion: 0.18
+Nodes (10): [2026-06-26] build | Drill-down topic tree, source isolation, and upload engine, [2026-06-26] build | Pipeline implementation, BERTopic tuning, and TSDAE fine-tuning, [2026-06-26] eval | TSDAE fine-tuning comparison completed, [2026-06-26] ingest | Bootstrap wiki from 8 Kurdish NLP sources, [2026-07-03] build | Streamlit UI polish, upload-read efficiency, and verification, [2026-07-04] lint+ingest | Pre-presentation wiki review and consolidated overview, [2026-07-10] update | "One clear model" cleanup: KDX becomes the single production embedder, [2026-07-11] research | Anisotropy diagnosis: the mega-topics were a fit bug, now fixed (+2 more)
 
 ### Community 33 - "Architecture & Scaling Plan"
 Cohesion: 0.33
@@ -263,7 +263,7 @@ Cohesion: 0.40
 Nodes (4): Drive (Playwright, installed in the env), Fast checks, Launch, Verifying the Kurdish Data Explorer
 
 ## Knowledge Gaps
-- **255 isolated node(s):** `Launch`, `Drive (Playwright, installed in the env)`, `Fast checks`, `Core rule`, `Directory structure` (+250 more)
+- **256 isolated node(s):** `Launch`, `Drive (Playwright, installed in the env)`, `Fast checks`, `Core rule`, `Directory structure` (+251 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -279,7 +279,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Are the 2 inferred relationships involving `main()` (e.g. with `render_upload()` and `Path`) actually correct?**
   _`main()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Kurdish Data Explorer: interactive Streamlit app.  Reads precomputed artifacts f`, `Pastel blue for unlabeled leaves, tuned per theme.`, `Neutral grey for internal (non-leaf) tree nodes, tuned per theme.` to the rest of the system?**
-  _311 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _312 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `index.md` be split into smaller, more focused modules?**
   _Cohesion score 0.10227272727272728 - nodes in this community are weakly interconnected._
 - **Should `streamlit_app.py` be split into smaller, more focused modules?**

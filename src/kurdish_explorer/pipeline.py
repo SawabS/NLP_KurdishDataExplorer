@@ -149,10 +149,18 @@ def run_on_dataframe(
     _say(f"Embedding {len(docs):,} documents…")
     embeddings = embed.embed_documents(docs, model_key=model_key)
     embedder = embed.get_embedder(model_key)
-    hdbscan_overrides = {"min_cluster_size": min_cluster_size} if min_cluster_size else None
+    # Per-model fit overrides (e.g. leaf selection for the anisotropic KDX
+    # space); an explicit min_cluster_size from the caller wins over them.
+    model_overrides = config.MODEL_FIT_OVERRIDES.get(model_key, {})
+    hdbscan_overrides = dict(model_overrides.get("hdbscan", {}))
+    if min_cluster_size:
+        hdbscan_overrides["min_cluster_size"] = min_cluster_size
+    umap_overrides = model_overrides.get("umap") or None
     _say("Clustering into topics (UMAP → HDBSCAN → c-TF-IDF)…")
     bt_model, bt_topics = topics.fit_bertopic(
-        docs, embeddings, embedding_model=embedder, hdbscan_overrides=hdbscan_overrides
+        docs, embeddings, embedding_model=embedder,
+        hdbscan_overrides=hdbscan_overrides or None,
+        umap_overrides=umap_overrides,
     )
     _say("Projecting documents to 2D map…")
     coords = embed.project_2d(embeddings)

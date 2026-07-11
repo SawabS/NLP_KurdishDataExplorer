@@ -2,7 +2,7 @@
 title: "Implementation and Methodology"
 type: synthesis
 created: 2026-06-26
-updated: 2026-07-10
+updated: 2026-07-11
 status: stable
 tags: [implementation, methodology, reproducibility, bertopic, tsdae, pipeline, transparency]
 sources: ["raw/sources/KLPT – Kurdish Language Processing Toolkit.pdf", "raw/sources/Kurdish News Dataset Headlines (KNDH) through multiclass classification.pdf", "raw/sources/Toward Kurdish language processing: Experiments in collecting and processing the AsoSoft text corpus.pdf", "raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf"]
@@ -112,7 +112,7 @@ final number substantially — see below.)
 
 | Model | NPMI | Topics | Notes |
 |---|---|---|---|
-| **BERTopic (tuned)** | **-0.056** | 48 | 36 outliers (0.07%); beats LDA, near NMF |
+| **BERTopic (base MiniLM, tuned)** | **-0.047** | 46 | 39 outliers (0.08%); beats LDA, near NMF |
 | LDA | -0.149 | 20 | |
 | NMF | +0.107 | 20 | NPMI structurally favors bag-of-words |
 
@@ -137,23 +137,24 @@ labels, was rejected as it would bias the generic engine).
 Comparison on full KNDH (production configs, post outlier-reduction; the shipped
 artifacts):
 
-| Model (tuned) | Topics | Outliers | NPMI | Diversity | NMI vs categories |
-|---|---|---|---|---|---|
-| Base MiniLM (mcs=250) | 48 | 36 | -0.056 | 0.838 | **0.224** |
-| KDX-MiniLM-TSDAE (mcs=50) | 45 | **2** | **+0.038** | **0.847** | 0.159 |
+| Model (tuned) | Topics | Outliers | Largest topic | NPMI | Diversity | NMI vs categories |
+|---|---|---|---|---|---|---|
+| Base MiniLM (mcs=250) | 46 | 39 | 7% | -0.047 | **0.859** | **0.232** |
+| KDX old fit (eom, mcs=50) | 45 | 2 | 54% | +0.038 | 0.847 | 0.159 |
+| KDX anisotropy-aware fit (leaf, UMAP n=50, mcs=100) | 46 | 199 | **6%** | **+0.057** | 0.737 | 0.212 |
 
-**Finding (honest trade-off):** at comparable granularity, TSDAE wins on every
-*intrinsic* metric — coherence (NPMI -0.056 → +0.038, now positive and beating LDA),
-diversity (0.838 → 0.847), and especially cluster confidence (native HDBSCAN
-outliers fall sharply; only 2 documents remain unassigned vs 36). But it *reduces
-alignment with the 5 human news categories* (NMI 0.224 → 0.159), because the
-unsupervised reconstruction objective does not track those domains. It also needs
-its own granularity (mcs=250 gave too few topics on the denser space; re-tuned to
-50). Decision (2026-07-10, "one clear model" cleanup): **KDX-MiniLM-TSDAE is the
-app's single production embedder** — it wins every intrinsic metric and is the
-project's own contribution. Base MiniLM stays registered only as the evaluation
-comparison point (Model & evaluation tab); DistilUSE / MPNet / E5-base were
-unregistered (all scored negative NPMI; artifacts remain on disk).
+**Finding (honest trade-off):** KDX is not a universal win over base MiniLM. It
+does give the best shipped BERTopic coherence on KNDH and, after the 2026-07-11
+anisotropy fix, no longer creates the former 27k-document junk topic. Base MiniLM
+still has slightly better category alignment and keyword diversity. The decisive
+result is narrower: the leaf/UMAP override is a strict improvement over the old
+KDX fit (largest topic 54% → 6%, NMI 0.159 → 0.212, NPMI +0.038 → +0.057).
+Decision (2026-07-10, "one clear model" cleanup, retained after the fix):
+**KDX-MiniLM-TSDAE is the app's single production embedder** because it is the
+project-specific Sorani adaptation and gives the highest KDX/BERTopic coherence.
+Base MiniLM stays registered only as the evaluation comparison point (Model &
+evaluation tab); DistilUSE / MPNet / E5-base were unregistered (all scored
+negative NPMI; artifacts remain on disk).
 
 ## Topic hierarchy (the drill-down tree)
 
@@ -182,10 +183,10 @@ labeled/unlabeled, origin). Shipped runs:
 
 | Source | Docs | Topics | NPMI | Notes |
 |---|---|---|---|---|
-| `kndh__minilm` | 50,000 | 48 | -0.056 | labeled, 5 categories |
-| `kndh__kdx-minilm-tsdae` | 50,000 | 45 | +0.038 | labeled, fine-tuned embedder |
+| `kndh__minilm` | 50,000 | 46 | -0.047 | labeled, 5 categories; largest topic 7%, NMI 0.232 |
+| `kndh__kdx-minilm-tsdae` | 50,000 | 46 | +0.057 | labeled; anisotropy-aware fit (leaf, UMAP n=50), largest topic 6%, NMI 0.212 |
 | `asosoft__minilm` | 7,108 | 47 | +0.081 | unlabeled running text (mcs=25) |
-| `asosoft__kdx-minilm-tsdae` | 7,108 | 5 | +0.086 | KDX under-segments long docs (see [[KDX-MiniLM-TSDAE (fine-tuned embedder)]]) |
+| `asosoft__kdx-minilm-tsdae` | 7,108 | 10 | +0.049 | KDX still under-segments long docs (see [[KDX-MiniLM-TSDAE (fine-tuned embedder)]]) |
 
 ## Generic upload engine (size-unbounded goal)
 
@@ -242,8 +243,9 @@ per-topic centroids from the cached document embeddings.
 ```bash
 conda run -n ai python scripts/prepare_data.py
 conda run -n ai python scripts/run_pipeline.py --source kndh --model minilm --min-cluster-size 250
-conda run -n ai python scripts/run_pipeline.py --source kndh --model kdx-minilm-tsdae --min-cluster-size 50
+conda run -n ai python scripts/run_pipeline.py --source kndh --model kdx-minilm-tsdae
 conda run -n ai python scripts/run_pipeline.py --source asosoft --model minilm --normalize --min-cluster-size 25
+conda run -n ai python scripts/run_pipeline.py --source asosoft --model kdx-minilm-tsdae --normalize --no-baselines
 conda run -n ai python scripts/tune_bertopic.py --model minilm
 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
   conda run -n ai python scripts/finetune_tsdae.py --base minilm --max-sentences 110000 --batch-size 8
@@ -268,3 +270,6 @@ conda run -n ai streamlit run app/streamlit_app.py
   runs (base MiniLM 48 topics / NPMI -0.056 / NMI 0.224; TSDAE 45 / +0.038 / 0.159).
 - 2026-07-03: Polished Streamlit selectors, chart theming, topic-tree defaults, and
   upload table reads; verified the live app with Playwright in light and dark modes.
+- 2026-07-11: Diagnosed KDX anisotropy (mean random-pair cosine 0.951) and shipped
+  per-model UMAP/HDBSCAN overrides for KDX. Refit KNDH and AsoSoft KDX artifacts;
+  refreshed tables to current artifact values.

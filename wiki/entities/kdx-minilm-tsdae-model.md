@@ -2,7 +2,7 @@
 title: "KDX-MiniLM-TSDAE (fine-tuned embedder)"
 type: entity
 created: 2026-06-26
-updated: 2026-07-10
+updated: 2026-07-11
 status: stable
 tags: [model, embedding, tsdae, fine-tuning, domain-adaptation, sorani, minilm]
 sources: ["raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf"]
@@ -48,21 +48,29 @@ Training converged in ~45 min (train_loss 11.54). Evaluated by re-running the fu
 KNDH pipeline and comparing against base MiniLM (production configs, post
 outlier-reduction):
 
-| Model (tuned) | Topics | Outliers | NPMI | Diversity | NMI vs categories |
-|---|---|---|---|---|---|
-| Base MiniLM (`min_cluster_size=250`) | 48 | 36 | -0.056 | 0.838 | **0.224** |
-| **KDX-MiniLM-TSDAE** (`min_cluster_size=50`) | 45 | **2** | **+0.038** | **0.847** | 0.159 |
+| Model (tuned) | Topics | Largest topic | NPMI | NMI vs categories |
+|---|---|---|---|---|
+| Base MiniLM (`min_cluster_size=250`) | 46 | 7% | -0.047 | **0.232** |
+| KDX, old fit (eom, `mcs=50`) | 45 | 54% (junk mix) | +0.038 | 0.159 |
+| **KDX, anisotropy-aware fit** (leaf, `mcs=100`, UMAP n=50) | 46 | **6%** | **+0.057** | 0.212 |
 
-**Honest finding (a trade-off, not a clean win):** at comparable granularity, TSDAE
-adaptation *wins on every intrinsic metric* — coherence (NPMI -0.056 → +0.038, now
-positive and beating LDA), diversity (0.838 → 0.847), and cluster confidence (only 2
-documents stay unassigned vs 36; native HDBSCAN outliers drop sharply in the sweeps).
-But it *reduces* alignment with the 5 human news categories (NMI 0.224 → 0.159),
-because the unsupervised reconstruction objective does not track those domains.
-Different embedding geometry also needs its own granularity: the same HDBSCAN setting
-that gives base MiniLM its topics yields too few here, so it was re-tuned to
-`min_cluster_size=50`. (These are the shipped artifacts; topic counts move a few
-between runs because UMAP/HDBSCAN are stochastic.)
+**Anisotropy (2026-07-11):** the TSDAE space is severely anisotropic — mean
+cosine between random documents is 0.951 (base MiniLM: 0.171). With default EOM
+cluster selection HDBSCAN grew a junk mega-cluster (27,220 docs, near-uniform
+label mix). Centering/whitening fixes the metric but not the cluster structure;
+**leaf selection over a wider UMAP neighborhood** does (sweep in the wiki log).
+Shipped as `config.MODEL_FIT_OVERRIDES["kdx-minilm-tsdae"]`.
+
+**Honest finding (a trade-off, not a clean win):** the corrected KDX fit beats base
+MiniLM on KNDH topic coherence (NPMI -0.047 → +0.057) and fixes the KDX-specific
+mega-topic failure. It does **not** dominate every metric: base MiniLM still has
+slightly stronger category alignment (NMI 0.232 vs 0.212) and higher keyword
+diversity in the current artifact (0.859 vs 0.737). The leaf/UMAP override is a
+clear win over the old KDX fit (largest topic 54% → 6%, NMI 0.159 → 0.212, NPMI
++0.038 → +0.057), not a claim that TSDAE is universally better than the base
+embedder. KDX remains the production model because it is the project-specific
+Sorani adaptation and gives the best shipped BERTopic coherence while avoiding the
+bad cluster collapse.
 
 Status in the app (since 2026-07-10): **KDX-MiniLM-TSDAE is the single production
 embedder** — the explorer and the upload engine always use it (no model dropdown).
@@ -80,16 +88,16 @@ E5-base were unregistered from `config.EMBEDDING_MODELS` (all negative NPMI).
 
 ## Open questions
 
-- **Answered:** domain adaptation does improve intrinsic topic quality (NPMI,
-  diversity, outlier rate) but trades away category alignment (NMI) — see
-  the trade-off table above. Not a clean win; both models ship.
+- **Answered:** domain adaptation improves KNDH BERTopic coherence and, with the
+  anisotropy-aware fit, removes the old junk mega-topic. It still trades away some
+  category alignment and keyword diversity versus base MiniLM — see the table above.
 - **Known limitation (2026-07-11):** the KDX space collapses **long
-  running-text documents** — on AsoSoft (7,108 docs, avg ~700 tokens) HDBSCAN
-  finds only 4–5 topics at any granularity (mcs 10/15/25 swept), largest
-  cluster 2,671 docs, while base MiniLM separates 47 topics at mcs=25. TSDAE
-  was adapted on sentence-length text, so long documents average toward the
-  corpus mean. KDX stays the production embedder for sentence/headline-scale
-  text (the app's primary use case: dataset text columns, descriptions).
+  running-text documents** — on AsoSoft Small (7,108 docs, avg ~700 tokens), the
+  leaf/UMAP override improves KDX from 5 to 10 topics, but base MiniLM still
+  separates 47 topics at `mcs=25`. TSDAE was adapted on sentence-length text, so
+  long documents average toward the corpus mean. KDX stays the production embedder
+  for sentence/headline-scale text (the app's primary use case: dataset text
+  columns, descriptions).
 - Still open: would more epochs / a larger sentence corpus (full AsoSoft 75M)
   narrow or widen the NMI gap versus base MiniLM? Would sentence-level
   chunk-then-pool embedding fix the long-document collapse?
@@ -103,3 +111,6 @@ E5-base were unregistered from `config.EMBEDDING_MODELS` (all negative NPMI).
 - 2026-07-10: Promoted to the app's single production embedder ("one clear model"
   cleanup); base MiniLM demoted to evaluation-comparison only, other embedders
   unregistered.
+- 2026-07-11: Diagnosed KDX anisotropy and shipped per-model fit overrides
+  (UMAP n=50 + HDBSCAN leaf). Refit KNDH to 46 topics / NPMI +0.057 / largest
+  topic 6%, and AsoSoft Small to 10 topics / NPMI +0.049.

@@ -1,96 +1,96 @@
 {
   ".claude/settings.json": {
-    "mtime": 1783093471.2707856,
+    "mtime": 1783755036.0257468,
     "ast_hash": "e51077b6a7f1f67afc748f1a32a1557d",
     "semantic_hash": ""
   },
   ".codex/hooks.json": {
-    "mtime": 1783093471.3149679,
+    "mtime": 1783755036.0264452,
     "ast_hash": "c2271d18fbaf556c6c2debacc561e709",
     "semantic_hash": ""
   },
   ".vscode/settings.json": {
-    "mtime": 1782504734.6896796,
+    "mtime": 1783755036.0265915,
     "ast_hash": "da5dd46cc9015eadbd3b6e5e2af45682",
     "semantic_hash": ""
   },
   "app/streamlit_app.py": {
-    "mtime": 1783754884.8848593,
-    "ast_hash": "2276c9fdc2a32cb571d18ea49e3bdfba",
+    "mtime": 1783756923.6601317,
+    "ast_hash": "f8f92279defe221fd30b758c210482ed",
     "semantic_hash": ""
   },
   "app/upload_page.py": {
-    "mtime": 1783710937.0789213,
+    "mtime": 1783755036.0270522,
     "ast_hash": "552b08b014dc7eac75e2506859a04514",
     "semantic_hash": ""
   },
   "scripts/finetune_tsdae.py": {
-    "mtime": 1782478067.1397824,
+    "mtime": 1783755036.0341384,
     "ast_hash": "c08ce6dd5c8b506ae8df2a7c9ca23021",
     "semantic_hash": ""
   },
   "scripts/prepare_data.py": {
-    "mtime": 1782472176.6582882,
+    "mtime": 1783755036.0341651,
     "ast_hash": "43e928fe1418482946cd2e23bb8af567",
     "semantic_hash": ""
   },
   "scripts/run_pipeline.py": {
-    "mtime": 1783148873.5626967,
+    "mtime": 1783755036.034193,
     "ast_hash": "728144ab13e1390bb55a3e0ea0960652",
     "semantic_hash": ""
   },
   "scripts/tune_bertopic.py": {
-    "mtime": 1782475614.304388,
+    "mtime": 1783755036.0342295,
     "ast_hash": "237f6d3650fbdea0b8a8bf8aa97c62ef",
     "semantic_hash": ""
   },
   "src/kurdish_explorer/__init__.py": {
-    "mtime": 1782473237.431176,
+    "mtime": 1783755036.0342557,
     "ast_hash": "09efdf32dcf2fa541c572854987824a5",
     "semantic_hash": ""
   },
   "src/kurdish_explorer/baselines.py": {
-    "mtime": 1782475535.8702574,
+    "mtime": 1783755036.034281,
     "ast_hash": "afc968053780a1041f99da166ddedfc7",
     "semantic_hash": ""
   },
   "src/kurdish_explorer/config.py": {
-    "mtime": 1783705511.0150483,
-    "ast_hash": "7cbbb9906e1fa52c553377b1a78e78c5",
+    "mtime": 1783756153.1083062,
+    "ast_hash": "78f28acb473da6890cfe18ab62f51d08",
     "semantic_hash": ""
   },
   "src/kurdish_explorer/data.py": {
-    "mtime": 1782473269.796247,
+    "mtime": 1783755036.0343392,
     "ast_hash": "be7befcc3badb2bba36d305022d12715",
     "semantic_hash": ""
   },
   "src/kurdish_explorer/embed.py": {
-    "mtime": 1782478208.8373034,
+    "mtime": 1783755036.0343652,
     "ast_hash": "1f5b512e1515656e7d2e5c3038df705d",
     "semantic_hash": ""
   },
   "src/kurdish_explorer/evaluate.py": {
-    "mtime": 1782475557.127571,
+    "mtime": 1783755036.0343895,
     "ast_hash": "d989a2222b0ca89cceb354070b13f0e6",
     "semantic_hash": ""
   },
   "src/kurdish_explorer/pipeline.py": {
-    "mtime": 1783148836.097244,
-    "ast_hash": "8734f83803fa0a6c8d02b21431a727d7",
+    "mtime": 1783756210.4525607,
+    "ast_hash": "50a12116fa391ddc9ec410d87e2d2098",
     "semantic_hash": ""
   },
   "src/kurdish_explorer/preprocess.py": {
-    "mtime": 1782475492.0118217,
+    "mtime": 1783755036.0344694,
     "ast_hash": "1560e33dcc23b1af4239b7be23499795",
     "semantic_hash": ""
   },
   "src/kurdish_explorer/topics.py": {
-    "mtime": 1782494212.2671614,
-    "ast_hash": "44531cfc4a640ad9d8302e50178117c9",
+    "mtime": 1783756172.7520583,
+    "ast_hash": "54fedbc764a5ebeccdbe89a7089ce814",
     "semantic_hash": ""
   },
   "tests/test_pipeline_model_options.py": {
-    "mtime": 1783705520.0305758,
+    "mtime": 1783755036.0345318,
     "ast_hash": "18b60a2aa59f22638ddfc9e754c79452",
     "semantic_hash": ""
   },
@@ -105,18 +105,18 @@
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1783093471.3147845,
+    "mtime": 1783755036.0267012,
     "ast_hash": "2f600d00e6ff0d802630a3425e187b1f",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1783093471.2706401,
+    "mtime": 1783755036.0267274,
     "ast_hash": "82efb97a359f5c7290bf2513d14686be",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1783754951.4239426,
-    "ast_hash": "6305ca9f508de01dedbd37b719bd693c",
+    "mtime": 1783756466.5380716,
+    "ast_hash": "fed09999a8aed08d17716896641e0124",
     "semantic_hash": ""
   },
   "SKILLS.md": {
@@ -125,7 +125,7 @@
     "semantic_hash": ""
   },
   "docs/ARCHITECTURE.md": {
-    "mtime": 1782475371.4807606,
+    "mtime": 1783755036.0270743,
     "ast_hash": "af446167715dcc874b53fa1f3bdf4045",
     "semantic_hash": ""
   },
@@ -135,7 +135,7 @@
     "semantic_hash": ""
   },
   "requirements.txt": {
-    "mtime": 1782473472.334166,
+    "mtime": 1783755036.0340962,
     "ast_hash": "8be4686671899cd76dd411774ba4f69a",
     "semantic_hash": ""
   },
@@ -165,133 +165,133 @@
     "semantic_hash": ""
   },
   "wiki/concepts/central-kurdish-sorani.md": {
-    "mtime": 1782467885.2727213,
+    "mtime": 1783755036.0345626,
     "ast_hash": "b6050b2a5ce12f92e5349c104feea1dd",
     "semantic_hash": ""
   },
   "wiki/concepts/low-resource-languages.md": {
-    "mtime": 1782467898.0604389,
+    "mtime": 1783755036.0345893,
     "ast_hash": "69d610a4323f8ede1acb8c5b65e4ab1a",
     "semantic_hash": ""
   },
   "wiki/concepts/morphological-richness.md": {
-    "mtime": 1782467928.3611586,
+    "mtime": 1783755036.0346146,
     "ast_hash": "6e8ab9602b6279d616e38952dd25e742",
     "semantic_hash": ""
   },
   "wiki/concepts/text-classification.md": {
-    "mtime": 1782467965.2322712,
+    "mtime": 1783755036.034639,
     "ast_hash": "776193e61cc630980de8879a3f38a596",
     "semantic_hash": ""
   },
   "wiki/concepts/text-normalization.md": {
-    "mtime": 1782467939.8064198,
+    "mtime": 1783755036.0346646,
     "ast_hash": "7b8446db2c5d73994ee2989dedc06b0d",
     "semantic_hash": ""
   },
   "wiki/concepts/topic-modeling.md": {
-    "mtime": 1782467909.946465,
+    "mtime": 1783755036.0346963,
     "ast_hash": "bf99d1abc8e7a927cb0d1e3a04ef1b27",
     "semantic_hash": ""
   },
   "wiki/concepts/transformer-models.md": {
-    "mtime": 1782467953.5441709,
+    "mtime": 1783755036.0347276,
     "ast_hash": "c32d434d3a155af345ce947ddef92b53",
     "semantic_hash": ""
   },
   "wiki/entities/asosoft-text-corpus.md": {
-    "mtime": 1782467831.9261417,
+    "mtime": 1783755036.0347555,
     "ast_hash": "d5b321ab3d3cbb59ca58883b924abc31",
     "semantic_hash": ""
   },
   "wiki/entities/bertopic.md": {
-    "mtime": 1782467843.593355,
+    "mtime": 1783755036.034781,
     "ast_hash": "48a5f66d6cfbfb33c8257833a66287a8",
     "semantic_hash": ""
   },
   "wiki/entities/kdx-minilm-tsdae-model.md": {
-    "mtime": 1783754975.0833826,
-    "ast_hash": "578ed4a0401b01b0cfbb8bc3420044dd",
+    "mtime": 1783756923.764135,
+    "ast_hash": "3aa162d5afb63a8ba421a27af8b51e6e",
     "semantic_hash": ""
   },
   "wiki/entities/klpt.md": {
-    "mtime": 1782467810.4227953,
+    "mtime": 1783755036.034851,
     "ast_hash": "67b4f3b00aac802bae1183f4dc7a86e7",
     "semantic_hash": ""
   },
   "wiki/entities/kndh.md": {
-    "mtime": 1782480046.582798,
+    "mtime": 1783755036.0348756,
     "ast_hash": "98020ce2a4dc5a9d22be380fcf1a64d2",
     "semantic_hash": ""
   },
   "wiki/entities/kubert.md": {
-    "mtime": 1782467853.6530814,
+    "mtime": 1783755036.0348985,
     "ast_hash": "b14fe49b9ebf6ecb6ce19dfa87150106",
     "semantic_hash": ""
   },
   "wiki/entities/soran-badawi.md": {
-    "mtime": 1782467864.5963888,
+    "mtime": 1783755036.034922,
     "ast_hash": "57366e36b4666fefe1acb6f66fe56fcb",
     "semantic_hash": ""
   },
   "wiki/index.md": {
-    "mtime": 1783705782.4076786,
-    "ast_hash": "3bc6e318b78e7c4ac54f1bda568b6f7c",
+    "mtime": 1783756981.845025,
+    "ast_hash": "a1f102a2c502d5278f0f190ee31cd67d",
     "semantic_hash": ""
   },
   "wiki/log.md": {
-    "mtime": 1783754960.4316823,
-    "ast_hash": "01d8121e26c533ed4f1b2152f7522f43",
+    "mtime": 1783757747.9095542,
+    "ast_hash": "acba9dc39d6ef1e0e8a2422f6167713d",
     "semantic_hash": ""
   },
   "wiki/sources/asosoft-text-corpus.md": {
-    "mtime": 1782468074.0598013,
+    "mtime": 1783755036.035077,
     "ast_hash": "7200e8a247ee03cdd79b5d5a394148ba",
     "semantic_hash": ""
   },
   "wiki/sources/bertopic-short-text-serbian.md": {
-    "mtime": 1782468078.0287278,
+    "mtime": 1783755036.035106,
     "ast_hash": "216073da0701f143a5139389caa227e1",
     "semantic_hash": ""
   },
   "wiki/sources/idiom-detection-sorani.md": {
-    "mtime": 1782468079.2826645,
+    "mtime": 1783755036.0351331,
     "ast_hash": "c50c0055ae8c634130f46d1f5cd9cbfe",
     "semantic_hash": ""
   },
   "wiki/sources/klpt-kurdish-language-processing-toolkit.md": {
-    "mtime": 1782468070.8002713,
+    "mtime": 1783755036.035165,
     "ast_hash": "3c2d53431d73e1c3497b07fcbc8add5a",
     "semantic_hash": ""
   },
   "wiki/sources/kndh-kurdish-news-dataset-headlines.md": {
-    "mtime": 1782480024.2463179,
+    "mtime": 1783755036.0351937,
     "ast_hash": "c09a84c7028b96927145767882e3feae",
     "semantic_hash": ""
   },
   "wiki/sources/kurdish-language-corpus-state-of-the-art.md": {
-    "mtime": 1782468076.0134993,
+    "mtime": 1783755036.0352216,
     "ast_hash": "f94f9876c7980e07f51d10ce104e364e",
     "semantic_hash": ""
   },
   "wiki/sources/morphological-feature-extraction-sorani.md": {
-    "mtime": 1782468082.7300825,
+    "mtime": 1783755036.0352497,
     "ast_hash": "964c4239be83d6d84f8a85679fe99e62",
     "semantic_hash": ""
   },
   "wiki/sources/transformer-nmt-sorani.md": {
-    "mtime": 1782468081.1804976,
+    "mtime": 1783755036.0352762,
     "ast_hash": "b71d4e62a821e6a0df61877c1af2ab5d",
     "semantic_hash": ""
   },
   "wiki/synthesis/implementation-and-methodology.md": {
-    "mtime": 1783754996.061905,
-    "ast_hash": "56e121a0f0f9291c75decb24eafe93c5",
+    "mtime": 1783756981.9370282,
+    "ast_hash": "64634b34c0fb1e6d761e66b14744af89",
     "semantic_hash": ""
   },
   "wiki/synthesis/kurdish-data-explorer-pipeline.md": {
-    "mtime": 1783112965.691133,
-    "ast_hash": "8f26e79cf1d2343350c42caea5fccd3f",
+    "mtime": 1783756996.0775104,
+    "ast_hash": "552203242d0e85aa1640a04c8f6afe5d",
     "semantic_hash": ""
   },
   "raw/sources/A Transformer-based Neural Network Machine Translation Model for the Kurdish Sorani Dialect.pdf": {
@@ -340,42 +340,42 @@
     "semantic_hash": ""
   },
   ".obsidian/app.json": {
-    "mtime": 1783095363.3848484,
+    "mtime": 1783755036.0264797,
     "ast_hash": "99914b932bd37a50b983c5e7c90ae93b",
     "semantic_hash": ""
   },
   ".obsidian/appearance.json": {
-    "mtime": 1783095363.3858485,
+    "mtime": 1783755036.0265138,
     "ast_hash": "99914b932bd37a50b983c5e7c90ae93b",
     "semantic_hash": ""
   },
   ".obsidian/core-plugins.json": {
-    "mtime": 1783095362.898818,
+    "mtime": 1783755036.0265408,
     "ast_hash": "7c877bea49eaeabb100563bd157b9051",
     "semantic_hash": ""
   },
   ".obsidian/graph.json": {
-    "mtime": 1783095454.589999,
+    "mtime": 1783755036.026561,
     "ast_hash": "442a8fab47ab85be1750a30562cd54bc",
     "semantic_hash": ""
   },
   ".obsidian/workspace.json": {
-    "mtime": 1783095451.492157,
+    "mtime": 1783755036.0265915,
     "ast_hash": "caadb783345fff8b2a95da175fe798ae",
     "semantic_hash": ""
   },
   "_COMMUNITY_Soran Badawi.md": {
-    "mtime": 1783095447.203908,
+    "mtime": 1783755036.0267754,
     "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
     "semantic_hash": ""
   },
   "wiki/synthesis/project-presentation-overview.md": {
-    "mtime": 1783113039.9863303,
-    "ast_hash": "af5b7b53ee8cca778100410c6d5992ca",
+    "mtime": 1783756923.9591408,
+    "ast_hash": "d12ccaccc0df96642b3ebf8f682d76f2",
     "semantic_hash": ""
   },
   ".claude/skills/verify/SKILL.md": {
-    "mtime": 1783706175.4234688,
+    "mtime": 1783755036.0263913,
     "ast_hash": "2769a694ef9f385b56e21f808737a363",
     "semantic_hash": ""
   }
