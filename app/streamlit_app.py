@@ -23,6 +23,7 @@ import html
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import plotly.express as px
 import streamlit as st
@@ -101,6 +102,20 @@ def _first_run_for(source: str) -> str:
 def _load_all(runs: tuple[str, ...]) -> dict[str, dict]:
     """Preload every fitted run so sidebar navigation never triggers fitting."""
     return {run: pipeline.load_run(run) for run in runs}
+
+
+@st.cache_resource(show_spinner=False)
+def _doc_embeddings(run: str) -> np.ndarray:
+    """Document embeddings for a run, via the pipeline's on-disk cache.
+
+    The cache is keyed by (model, content hash of the saved documents), so for
+    fitted runs this is a plain np.load — no re-embedding.
+    """
+    from kurdish_explorer import embed as kx_embed
+
+    docs = pd.read_parquet(config.ARTIFACTS_DIR / run / "documents.parquet")
+    model_key = run.split("__", 1)[1]
+    return kx_embed.embed_documents(docs["text"].astype(str).tolist(), model_key=model_key)
 
 
 # ---------------------------------------------------------------------------
@@ -513,9 +528,11 @@ def main() -> None:
         if chosen != "(all)":
             view = docs[docs["label"] == chosen]
 
-    tab_tree, tab_map, tab_eval = st.tabs(["Topic tree", "Document map", "Model & evaluation"])
+    tab_tree, tab_map, tab_ask, tab_eval = st.tabs(
+        ["Topic tree", "Document map", "Ask the corpus", "Model & evaluation"])
     render_tree_tab(tab_tree, hierarchy, docs, view, topic_info, topic_words, has_labels)
     render_map_tab(tab_map, view, topic_words, has_labels)
+    render_search_tab(tab_ask, run, model, docs, topic_words)
     render_eval_tab(tab_eval, source, model, meta, art, loaded_runs, runs_by_source)
 
 
@@ -705,6 +722,122 @@ def render_map_tab(container, view, topic_words, has_labels) -> None:
         st.plotly_chart(themed(fig, height=640), width="stretch")
         st.caption(f"Showing {len(plot_df):,} of {len(view):,} documents. "
                    "At hundreds-of-MB scale this view samples; topic stats use all documents.")
+
+
+# ---------------------------------------------------------------------------
+# Tab: Ask the corpus (one-click example questions + free-text semantic search)
+# ---------------------------------------------------------------------------
+_EXAMPLE_QUERIES = [
+    "ئەنجامی یاری تۆپی پێ",     # football match results -> sport
+    "نرخی نەوت و دۆلار",         # oil and dollar prices  -> economic
+    "کۆرۆنا و ڤاکسین",           # corona and vaccines    -> health
+    "smartphones and technology",  # English: shows the embedder is multilingual
+]
+
+
+@st.cache_data(show_spinner=False)
+def _topic_vectors(run: str, model_key: str, topic_words: dict):
+    """One unit vector per topic, for matching questions to topics.
+
+    Preferred: the centroid of each topic's document embeddings (loaded from the
+    pipeline's on-disk cache — no re-embedding). If that cache is missing for
+    this run, fall back to embedding each topic's top keywords instead of
+    silently re-embedding the whole corpus in the UI.
+    """
+    from kurdish_explorer import embed as kx_embed
+
+    docs = pd.read_parquet(config.ARTIFACTS_DIR / run / "documents.parquet")
+    texts = docs["text"].astype(str).tolist()
+    if kx_embed._cache_path(model_key, texts).exists():
+        emb = _doc_embeddings(run)
+        topics_arr = docs["topic"].to_numpy()
+        tids = sorted(int(t) for t in np.unique(topics_arr) if t != -1)
+        cents = np.vstack([emb[topics_arr == t].mean(axis=0) for t in tids])
+        cents /= np.linalg.norm(cents, axis=1, keepdims=True)
+        return tids, cents
+    tids = sorted(int(t) for t in topic_words if int(t) != -1)
+    reps = [" ".join(w for w, _ in topic_words[str(t)][:10]) for t in tids]
+    vecs = kx_embed.get_embedder(model_key).encode(
+        reps, convert_to_numpy=True, normalize_embeddings=True)
+    return tids, vecs
+
+
+def _set_query(q: str) -> None:
+    st.session_state.ask_query = q
+
+
+def render_search_tab(container, run, model, docs, topic_words) -> None:
+    with container:
+        st.subheader("Ask the corpus")
+        if model not in config.EMBEDDING_MODELS:
+            st.info("Semantic search needs a registered embedder; this run's model "
+                    f"(`{model}`) is not registered.")
+            return
+        st.caption("Describe a theme or ask a question; it is embedded with the same "
+                   "model as the documents and matched to the nearest topics. The "
+                   "embedder is multilingual, so English questions find Sorani topics. "
+                   "Try one:")
+
+        cols = st.columns(len(_EXAMPLE_QUERIES))
+        for col, ex in zip(cols, _EXAMPLE_QUERIES):
+            col.button(ex, key=f"exq_{ex}", on_click=_set_query, args=(ex,),
+                       width="stretch")
+        query = st.text_input("Your question or theme", key="ask_query",
+                              placeholder="e.g. نرخی نەوت · football results · vaccines")
+        if not query.strip():
+            return
+
+        with st.spinner("Matching your question to topics…"):
+            from kurdish_explorer import embed as kx_embed
+            tids, vecs = _topic_vectors(run, model, topic_words)
+            qv = kx_embed.get_embedder(model).encode(
+                [query], convert_to_numpy=True, normalize_embeddings=True)[0]
+        sims = vecs @ qv
+        order = np.argsort(sims)[::-1][:3]
+        kwmap = keyword_string(topic_words, n=8)
+        best_tid = int(tids[int(order[0])])
+        # TSDAE embeddings are anisotropic: raw cosines bunch near 1.0, so show
+        # the spread across topics (best topic = 100%) instead of the raw value.
+        rel = (sims - sims.min()) / (sims.max() - sims.min() + 1e-9)
+
+        st.markdown(f"#### Closest topics for “{query}”")
+        for rank, i in enumerate(order, start=1):
+            tid = int(tids[int(i)])
+            sub = docs[docs["topic"] == tid]
+            st.markdown(f"**{rank}. Topic {tid}** · {len(sub):,} docs · "
+                        f"relative match {rel[int(i)]:.0%}")
+            st.caption(kwmap.get(tid, ""))
+            cols_ = [c for c in ["text", "text_en", "label"] if c in sub.columns]
+            render_table(sub[cols_].head(3).reset_index(drop=True), height=150,
+                         rename={"text": "Text (Sorani)", "text_en": "English",
+                                 "label": "Category"})
+
+        if {"x", "y"}.issubset(docs.columns):
+            st.markdown("#### Best match on the document map")
+            base = docs[docs["topic"] != -1]
+            others = base[base["topic"] != best_tid]
+            if len(others) > 6000:
+                others = others.sample(6000, random_state=0)
+            match = base[base["topic"] == best_tid]
+            if len(match) > 4000:
+                match = match.sample(4000, random_state=0)
+            plot = pd.concat([others.assign(hit="other topics"),
+                              match.assign(hit=f"topic {best_tid} (best match)")])
+            plot = plot.assign(snippet=plot["text"].str.slice(0, 90))
+            hit_label = f"topic {best_tid} (best match)"
+            fig = px.scatter(
+                plot, x="x", y="y", color="hit", opacity=0.75,
+                category_orders={"hit": ["other topics", hit_label]},
+                color_discrete_map={"other topics": _group_color(),
+                                    hit_label: THEMES[current_theme()]["accent"]},
+                custom_data=["snippet"],
+            )
+            fig.update_traces(marker=dict(size=5, line=dict(width=0)),
+                              hovertemplate="%{customdata[0]}<extra></extra>")
+            fig.update_layout(margin=dict(l=0, r=0, t=10, b=0),
+                              xaxis=dict(visible=False), yaxis=dict(visible=False),
+                              legend_title_text="")
+            st.plotly_chart(themed(fig, height=480), width="stretch")
 
 
 # ---------------------------------------------------------------------------

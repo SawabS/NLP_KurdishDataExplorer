@@ -4,7 +4,8 @@ Interactive topic modeling and exploratory analysis for Central Kurdish (Sorani)
 text — and, generically, for any text corpus you point it at. Upload a raw text
 file or a dataset with a text column (CSV / TSV / Excel / Parquet, up to
 GB-scale via the server-path option) and explore it as a drill-down topic tree,
-a 2D document map, and keyword/baseline comparisons.
+a 2D document map, free-text semantic search ("Ask the corpus", with one-click
+example questions), and keyword/baseline comparisons.
 
 One pipeline, one model: **BERTopic** (sentence embeddings → UMAP → HDBSCAN →
 c-TF-IDF) on top of **KDX MiniLM**, our Sorani-adapted embedder, with the

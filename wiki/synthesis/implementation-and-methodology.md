@@ -185,6 +185,7 @@ labeled/unlabeled, origin). Shipped runs:
 | `kndh__minilm` | 50,000 | 48 | -0.056 | labeled, 5 categories |
 | `kndh__kdx-minilm-tsdae` | 50,000 | 45 | +0.038 | labeled, fine-tuned embedder |
 | `asosoft__minilm` | 7,108 | 47 | +0.081 | unlabeled running text (mcs=25) |
+| `asosoft__kdx-minilm-tsdae` | 7,108 | 5 | +0.086 | KDX under-segments long docs (see [[KDX-MiniLM-TSDAE (fine-tuned embedder)]]) |
 
 ## Generic upload engine (size-unbounded goal)
 
@@ -211,9 +212,12 @@ Scaling provisions for hundreds-of-MB inputs:
 ## Application
 
 `app/streamlit_app.py` reads precomputed artifacts (no model refit). Two modes:
-**Explore a source** (source-first nav → Topic tree, Document map, Model &
-evaluation) and **Upload & explore** (the generic engine above, always using the
-KDX embedder with base-MiniLM fallback via `config.default_model_key()`).
+**Explore a source** (source-first nav → Topic tree, Document map, Ask the
+corpus, Model & evaluation) and **Upload & explore** (the generic engine above,
+always using the KDX embedder with base-MiniLM fallback via
+`config.default_model_key()`). "Ask the corpus" is one-click/free-text semantic
+search: the question is embedded with the run's embedder and matched to
+per-topic centroids from the cached document embeddings.
 
 ### UI polish and verification (2026-07-03)
 

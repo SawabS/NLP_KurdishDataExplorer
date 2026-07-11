@@ -1,5 +1,29 @@
 # Wiki Log
 
+## [2026-07-11] update | "Ask the corpus" semantic search + AsoSoft refits
+
+- New explorer tab **Ask the corpus**: one-click example questions (three Sorani,
+  one English to demonstrate the multilingual embedder) plus free-text input. The
+  query is embedded with the run's KDX embedder and matched to per-topic centroid
+  vectors (computed from the pipeline's cached document embeddings — no
+  re-embedding; keyword-embedding fallback if a run's cache is missing). Shows
+  the top-3 topics with sample documents and highlights the best topic on the 2D
+  map. Displayed as *relative* match (best = 100%) because TSDAE embeddings are
+  anisotropic — raw cosines bunch near 1.0 and would all read "0.99".
+- Fitting audit: both registered embedders load; all four registered runs load;
+  a fresh 1,500-doc end-to-end fit works. Found both AsoSoft runs degenerate
+  (refit at some point with the 50k-tuned default mcs=250 → 2–4 topics).
+  Restored `asosoft__minilm` at the documented mcs=25 → 47 topics, NPMI 0.081
+  (matches the table below). Refit `asosoft__kdx-minilm-tsdae` → 5 topics,
+  NPMI 0.086.
+- **New finding:** the KDX (TSDAE) space collapses *long running-text documents*
+  — an offline sweep on AsoSoft gives only 4–5 topics at any granularity
+  (mcs 10/15/25), largest cluster 2,671 of 7,108, while base MiniLM separates
+  47 topics. TSDAE was adapted on sentence-length text (headlines + split
+  sentences), so long documents average out. KDX remains the production model
+  for sentence/headline-scale text, which is the app's primary use case;
+  recorded as a limitation on [[KDX-MiniLM-TSDAE (fine-tuned embedder)]].
+
 ## [2026-07-10] update | "One clear model" cleanup: KDX becomes the single production embedder
 
 The app had drifted vague: five registered embedding models (E5-base never even

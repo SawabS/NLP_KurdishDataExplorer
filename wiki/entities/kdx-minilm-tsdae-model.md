@@ -83,8 +83,16 @@ E5-base were unregistered from `config.EMBEDDING_MODELS` (all negative NPMI).
 - **Answered:** domain adaptation does improve intrinsic topic quality (NPMI,
   diversity, outlier rate) but trades away category alignment (NMI) — see
   the trade-off table above. Not a clean win; both models ship.
+- **Known limitation (2026-07-11):** the KDX space collapses **long
+  running-text documents** — on AsoSoft (7,108 docs, avg ~700 tokens) HDBSCAN
+  finds only 4–5 topics at any granularity (mcs 10/15/25 swept), largest
+  cluster 2,671 docs, while base MiniLM separates 47 topics at mcs=25. TSDAE
+  was adapted on sentence-length text, so long documents average toward the
+  corpus mean. KDX stays the production embedder for sentence/headline-scale
+  text (the app's primary use case: dataset text columns, descriptions).
 - Still open: would more epochs / a larger sentence corpus (full AsoSoft 75M)
-  narrow or widen the NMI gap versus base MiniLM?
+  narrow or widen the NMI gap versus base MiniLM? Would sentence-level
+  chunk-then-pool embedding fix the long-document collapse?
 
 ## Change log
 

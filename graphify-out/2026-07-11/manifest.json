@@ -15,8 +15,8 @@
     "semantic_hash": ""
   },
   "app/streamlit_app.py": {
-    "mtime": 1783754884.8848593,
-    "ast_hash": "2276c9fdc2a32cb571d18ea49e3bdfba",
+    "mtime": 1783710916.1894832,
+    "ast_hash": "b8737d5b05774a44a70a58beb447269c",
     "semantic_hash": ""
   },
   "app/upload_page.py": {
@@ -115,8 +115,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1783754951.4239426,
-    "ast_hash": "6305ca9f508de01dedbd37b719bd693c",
+    "mtime": 1783705674.0979228,
+    "ast_hash": "2b8913afe52594b1d63388dd6699e634",
     "semantic_hash": ""
   },
   "SKILLS.md": {
@@ -210,8 +210,8 @@
     "semantic_hash": ""
   },
   "wiki/entities/kdx-minilm-tsdae-model.md": {
-    "mtime": 1783754975.0833826,
-    "ast_hash": "578ed4a0401b01b0cfbb8bc3420044dd",
+    "mtime": 1783705748.7636497,
+    "ast_hash": "fa74798de76084c07196b49e818a7e34",
     "semantic_hash": ""
   },
   "wiki/entities/klpt.md": {
@@ -240,8 +240,8 @@
     "semantic_hash": ""
   },
   "wiki/log.md": {
-    "mtime": 1783754960.4316823,
-    "ast_hash": "01d8121e26c533ed4f1b2152f7522f43",
+    "mtime": 1783711227.091781,
+    "ast_hash": "a9db803ed355857019151c08ac44fe19",
     "semantic_hash": ""
   },
   "wiki/sources/asosoft-text-corpus.md": {
@@ -285,8 +285,8 @@
     "semantic_hash": ""
   },
   "wiki/synthesis/implementation-and-methodology.md": {
-    "mtime": 1783754996.061905,
-    "ast_hash": "56e121a0f0f9291c75decb24eafe93c5",
+    "mtime": 1783705740.5451334,
+    "ast_hash": "1ba97c28288e3d9140f69c9a50247505",
     "semantic_hash": ""
   },
   "wiki/synthesis/kurdish-data-explorer-pipeline.md": {
