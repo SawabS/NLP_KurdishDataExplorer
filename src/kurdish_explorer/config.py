@@ -5,7 +5,12 @@ of the current working directory or deployment host.
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -42,6 +47,7 @@ EMBEDDING_MODELS: dict[str, str] = {
     # Domain-adapted (TSDAE) MiniLM — produced by scripts/finetune_tsdae.py.
     "kdx-minilm-tsdae": str(ARTIFACTS_DIR / "models" / "kdx-minilm-tsdae"),
     "minilm": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "openai": os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small"),
 }
 DEFAULT_EMBEDDING_MODEL = "kdx-minilm-tsdae"
 
@@ -50,14 +56,27 @@ DEFAULT_EMBEDDING_MODEL = "kdx-minilm-tsdae"
 EMBEDDING_MODEL_LABELS: dict[str, str] = {
     "kdx-minilm-tsdae": "KDX MiniLM · TSDAE domain-adapted for Sorani (ours)",
     "minilm": "Base MiniLM · off-the-shelf comparison",
+    "openai": f"OpenAI · {EMBEDDING_MODELS['openai']}",
 }
 
 
 def default_model_key() -> str:
-    """The KDX embedder when its local directory exists, else the base model.
+    """Choose an explicit provider, OpenAI when configured, else a local model.
 
-    Keeps a fresh clone usable before scripts/finetune_tsdae.py has been run.
+    ``KDX_EMBEDDING_PROVIDER`` accepts a registered model key. Without it, an
+    ``OPENAI_API_KEY`` selects OpenAI and a fresh clone remains usable with the
+    local MiniLM fallback when no key is configured.
     """
+    requested = os.getenv("KDX_EMBEDDING_PROVIDER", "").strip().lower()
+    if requested:
+        if requested not in EMBEDDING_MODELS:
+            raise ValueError(
+                "KDX_EMBEDDING_PROVIDER must be one of "
+                f"{', '.join(EMBEDDING_MODELS)}; received {requested!r}."
+            )
+        return requested
+    if os.getenv("OPENAI_API_KEY"):
+        return "openai"
     if Path(EMBEDDING_MODELS[DEFAULT_EMBEDDING_MODEL]).exists():
         return DEFAULT_EMBEDDING_MODEL
     return "minilm"

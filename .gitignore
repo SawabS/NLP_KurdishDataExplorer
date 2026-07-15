@@ -4,6 +4,7 @@ __pycache__/
 *.egg-info/
 .ipynb_checkpoints/
 .venv/
+.env
 
 # Datasets and generated artifacts (large / reproducible — not committed)
 data/raw/
@@ -13,6 +14,7 @@ artifacts/
 # Local caches
 .cache/
 *.npy
+graphify-out/
 
 # OS
 .DS_Store

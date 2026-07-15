@@ -18,6 +18,10 @@ coherence).
 # 1. Environment (conda env "ai" or equivalent)
 pip install -r requirements.txt
 
+# Optional: use OpenAI embeddings for new pipeline runs.
+cp .env.example .env
+# Edit .env and set OPENAI_API_KEY.
+
 # 2. Prepare the built-in corpora (KNDH, AsoSoft) into data/processed/
 python scripts/prepare_data.py
 
@@ -44,6 +48,22 @@ documents the model, its training data, and the coherence comparison.
 
 Use the in-app **Upload & explore** mode to run the pipeline on your own text;
 the result becomes a selectable source next to the built-ins.
+
+## OpenAI API setup
+
+Create a local `.env` file from `.env.example`, then replace the placeholder:
+
+```dotenv
+OPENAI_API_KEY=sk-your-key-here
+```
+
+The `.env` file is ignored by Git and is loaded automatically. New runs from
+the uploader and `scripts/run_pipeline.py` will use OpenAI
+`text-embedding-3-small`; completed local-model artifacts remain available for
+exploration. To choose a different OpenAI embedding model, add
+`OPENAI_EMBEDDING_MODEL=text-embedding-3-large`. To keep using a local model
+despite a configured key, add `KDX_EMBEDDING_PROVIDER=minilm` or
+`KDX_EMBEDDING_PROVIDER=kdx-minilm-tsdae`.
 
 ## Layout
 

@@ -25,3 +25,7 @@ openpyxl>=3.1
 # App / viz
 streamlit>=1.30
 plotly>=5.18
+
+# Environment configuration and optional hosted embeddings
+python-dotenv>=1.0
+openai>=1.0
