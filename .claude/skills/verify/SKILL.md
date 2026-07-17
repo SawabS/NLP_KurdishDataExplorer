@@ -1,42 +1,56 @@
 ---
 name: verify
-description: How to launch and drive the Kurdish Data Explorer Streamlit app for end-to-end verification.
+description: Launch and verify the FastAPI + React Kurdish Data Explorer.
 ---
 
 # Verifying the Kurdish Data Explorer
 
-Everything runs from the conda env `ai` (its bins are NOT on PATH):
-`/home/sawab/miniconda3/envs/ai/bin/python`.
+The Python environment is `/home/sawab/miniconda3/envs/ai/bin/python`.
+The React production bundle is served by FastAPI so API and SPA routing are
+verified together.
 
 ## Launch
+
+```bash
+npm run build -w web
+./scripts/serve_web.sh
+```
+
+The default URL is `http://127.0.0.1:8655`. Use `PORT=8656` when that port is
+occupied. For development, run Uvicorn on 8600 and `npm run dev -w web`; Vite
+proxies `/api` to Uvicorn.
+
+The retained Streamlit app can be launched independently:
 
 ```bash
 /home/sawab/miniconda3/envs/ai/bin/python -m streamlit run app/streamlit_app.py \
   --server.headless true --server.port 8655
 ```
 
-Startup preloads every `artifacts/<source>__<model>/` run (parquet reads) —
-wait until "Topic tree" appears in the page body (~10–60 s).
+When verifying both, run FastAPI/React with `PORT=8656`.
 
-## Drive (Playwright, installed in the env)
+## Browser flows
 
-- Sidebar source picker is the **first** `div[data-testid="stSelectbox"]`;
-  options are selected via `role=option`.
-- **Hidden Streamlit tab panels are excluded from `inner_text`** — click the
-  tab (`get_by_text("Model & evaluation")`) before asserting its content.
-  Plotly axis/bar labels live in SVG and never appear in `inner_text`;
-  screenshot instead.
-- Upload flow end-to-end: switch Mode radio to "Upload & explore", choose
-  "Path on this machine (large files)", fill the text input with an absolute
-  path to a small `.txt` (one Sorani headline per line; make one from
-  `data/processed/kndh.parquet`, text column `text_ku`), press Enter, submit
-  "Run pipeline". ~1,200 docs completes in about a minute on the GPU.
-- Test uploads write `artifacts/<slug>__<model>/` (slug is hyphenated) plus a
-  cached embedding in `artifacts/embeddings/` — delete them afterwards.
+Use Playwright from the `ai` environment:
+
+- Open `/` and wait for `Topic hierarchy`; assert four metric cards are visible.
+- Switch Topic tree layouts and depth; click a topic and inspect Sorani samples.
+- Open Document map, change color mode and point cap, and assert Plotly renders.
+- Open Ask the corpus, submit a Sorani example, and follow the best topic to Map.
+- Toggle theme and verify the control state changes without console errors.
+- Open Upload, use a small `.txt` or CSV, start a local-model fit, and poll until
+  redirect to the new `/explore/<source>/<model>/tree` route.
+- Repeat the explorer load at a 390x844 viewport and assert no horizontal page
+  overflow.
 
 ## Fast checks
 
 ```bash
 /home/sawab/miniconda3/envs/ai/bin/python -m pytest tests/ -q
-./tools/lint_wiki.py   # known pre-existing orphan: synthesis/project-presentation-overview.md
+npm run typecheck -w web
+npm run build -w web
+./tools/lint_wiki.py
 ```
+
+Test fits write run artifacts and cached embeddings. Remove only artifacts
+created specifically for verification; never remove existing user runs.

@@ -2,9 +2,9 @@
 title: "Kurdish Data Explorer Pipeline"
 type: synthesis
 created: 2026-06-26
-updated: 2026-07-11
+updated: 2026-07-17
 status: stable
-tags: [synthesis, project, pipeline, topic-modeling, streamlit, sorani]
+tags: [synthesis, project, pipeline, topic-modeling, fastapi, react, sorani]
 sources: ["raw/sources/KLPT – Kurdish Language Processing Toolkit.pdf", "raw/sources/Kurdish News Dataset Headlines (KNDH) through multiclass classification.pdf", "raw/sources/Toward Kurdish language processing: Experiments in collecting and processing the AsoSoft text corpus.pdf", "raw/sources/THE KURDISH LANGUAGE CORPUS: STATE OF THE ART.pdf", "raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf", "raw/sources/Idiom Detection in Sorani Kurdish Texts.pdf", "raw/sources/A Transformer-based Neural Network Machine Translation Model for the Kurdish Sorani Dialect.pdf", "raw/sources/Morphological Feature Extraction for Fine-Grained Sorani Kurdish Dialect.pdf"]
 ---
 
@@ -45,8 +45,8 @@ choice below is grounded in a specific source.
    (UMAP → HDBSCAN → c-TF-IDF), following
    [[Multilingual Transformer and BERTopic for Short Text: Serbian (Medvecki et al. 2024)]].
 4. **Baselines + evaluation** — LDA and NMF compared via topic coherence (NPMI).
-5. **Deployment** — Streamlit app with precomputed embeddings and cached models, on
-   a free managed host (Streamlit Community Cloud or Hugging Face Spaces).
+5. **Deployment** — FastAPI serves an artifact API and the production Vite/React
+   bundle; the retained Streamlit interface can read the same isolated fitted runs.
 
 Transformer choices are backstopped by Kurdish-specific evidence that attention
 models transfer to low-resource settings:

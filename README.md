@@ -7,12 +7,11 @@ GB-scale via the server-path option) and explore it as a drill-down topic tree,
 a 2D document map, free-text semantic search ("Ask the corpus", with one-click
 example questions), and keyword/baseline comparisons.
 
-One **BERTopic** pipeline (sentence embeddings → UMAP → HDBSCAN →
-c-TF-IDF) with selectable embedding models: **KDX MiniLM**, our
-Sorani-adapted embedder; off-the-shelf base MiniLM; **OpenAI** embeddings; and
-**NVIDIA Nemotron-3-Embed-1B**, the fastest hosted option (concurrent batched
-requests, no OpenAI-style free-tier throttling). LDA/NMF remain evaluation
-baselines (NPMI coherence).
+One **BERTopic** pipeline (sentence embeddings → UMAP → HDBSCAN → c-TF-IDF)
+with selectable **OpenAI**, **NVIDIA**, and local sentence-transformer models.
+When provider keys are configured, new runs prefer NVIDIA and then OpenAI;
+local KDX MiniLM and base MiniLM remain available for offline use and model
+comparison. LDA/NMF remain evaluation baselines (NPMI coherence).
 
 ## Quickstart
 
@@ -25,32 +24,49 @@ pip install -r requirements.txt
 #   OPENAI_API_KEY=sk-...
 #   NVIDIA_API_KEY=nvapi-...
 
-# 2. Prepare the built-in corpora (KNDH, AsoSoft) into data/processed/
+# 2. Clone noor-ui at the workspace path, then install frontend dependencies
+git clone https://github.com/SawabS/noor-ui.git raw/sources/noor-ui
+npm install
+
+# 3. Prepare the built-in corpora (KNDH, AsoSoft) into data/processed/
 python scripts/prepare_data.py
 
-# 3. Build the KDX embedder (TSDAE fine-tuning; skippable — the app
-#    falls back to base MiniLM until this exists)
-python scripts/finetune_tsdae.py
-
-# 4. Fit the pipeline for the built-in sources
+# 4. Fit the pipeline for the built-in sources. With NVIDIA_API_KEY or
+#    OPENAI_API_KEY configured, omit --model to use the preferred hosted model.
 #    (writes artifacts/<source>__<model>/)
-python scripts/run_pipeline.py --source kndh                        # + LDA/NMF baselines
+python scripts/run_pipeline.py --source kndh
 python scripts/run_pipeline.py --source asosoft --normalize --no-baselines
 
-# 5. Optional: fit the base model too, so the in-app evaluation chart can
-#    show KDX vs base MiniLM
-python scripts/run_pipeline.py --source kndh --model minilm --no-baselines
-
-# 6. Launch the app after at least one artifact exists
-streamlit run app/streamlit_app.py
+# 5. Build and launch FastAPI + React on http://127.0.0.1:8655
+npm run build -w web
+./scripts/serve_web.sh
 ```
 
-The app preloads fitted artifacts at startup. Use the model dropdown to switch
-between fitted embedders for a source; configured models without artifacts are
-shown as **fit required** and can be fitted interactively without leaving the
-app. OpenAI runs require an explicit acknowledgement because API charges may
-apply. The **Model & evaluation** tab documents the active model and coherence
-comparison.
+The original Streamlit interface remains supported and reads the same artifacts:
+
+```bash
+/home/sawab/miniconda3/envs/ai/bin/python -m streamlit run app/streamlit_app.py \
+  --server.headless true --server.port 8655
+```
+
+When running both applications simultaneously, use another port for the migrated
+web app, for example `PORT=8656 ./scripts/serve_web.sh`.
+
+For development, start FastAPI and Vite together from the repository root:
+
+```bash
+npm run dev
+```
+
+Open `http://127.0.0.1:5173`. Vite proxies `/api` requests to FastAPI on
+`http://127.0.0.1:8600`. Press Ctrl+C once to stop both processes. To run only
+the frontend (when the API is already running), use `npm run dev:web`.
+
+The app reads fitted artifacts through an mtime-keyed cache. Use the model
+dropdown to switch between fitted embedders; models without artifacts are shown
+as **fit required** and run in a serialized background worker. Hosted runs
+require an explicit cost acknowledgement. Set `PRELOAD_EMBEDDER=1` to construct
+the preferred embedder during API startup.
 
 Use the in-app **Upload & explore** mode to run the pipeline on your own text;
 the result becomes a selectable source next to the built-ins.
@@ -98,7 +114,9 @@ default 6).
 
 | Path | What it is |
 | --- | --- |
-| `app/` | Streamlit UI (`streamlit_app.py`, `upload_page.py`) with a light/dark theme toggle |
+| `app/` | Retained Streamlit explorer and upload interface |
+| `server/kdx_server/` | FastAPI artifact/search/upload/job API and production SPA host |
+| `web/` | Vite + React + TypeScript SPA built from noor-ui source and Plotly |
 | `src/kurdish_explorer/` | The pipeline package: config, data, preprocess (KLPT), embed, topics (BERTopic), baselines, evaluate, pipeline |
 | `scripts/` | `prepare_data.py`, `run_pipeline.py`, `tune_bertopic.py`, `finetune_tsdae.py` (domain-adapted embedder) |
 | `artifacts/` | Per-run outputs: `documents.parquet`, `topic_info.parquet`, `topic_words.json`, `hierarchy.json`, `coherence.json`, `meta.json`; cached embeddings; tuned models |
@@ -108,26 +126,27 @@ default 6).
 | `tests/` | Pytest suite |
 | `wiki/`, `raw/`, `tools/`, `AGENTS.md` | The source-grounded research wiki (below) |
 
-## The model
+## Embedding models
 
-The project presents a single embedding model, registered in
-`src/kurdish_explorer/config.py` (`EMBEDDING_MODELS`):
+The registry in `src/kurdish_explorer/config.py` exposes four choices:
 
-- **`kdx-minilm-tsdae` (KDX MiniLM, default)** — `paraphrase-multilingual-MiniLM-L12-v2`
+- **`nvidia`** — hosted Nemotron embeddings; preferred when `NVIDIA_API_KEY` is set.
+- **`openai`** — hosted OpenAI embeddings; preferred when only `OPENAI_API_KEY` is set.
+- **`kdx-minilm-tsdae` (KDX MiniLM)** — `paraphrase-multilingual-MiniLM-L12-v2`
   domain-adapted to Sorani with unsupervised TSDAE (`scripts/finetune_tsdae.py`).
   Training data: ~120k Sorani sentences — the 50k KNDH headlines plus
   sentence-split AsoSoft running text — deduplicated, shuffled (seed 42), no labels.
 - **`minilm` (base MiniLM)** — the unadapted base, kept only as the evaluation
   comparison point.
 
-On KNDH, KDX MiniLM is the only embedder that reaches positive NPMI topic
+On the existing local-model KNDH comparison, KDX MiniLM reaches positive NPMI topic
 coherence (+0.057 vs −0.047 for base MiniLM; earlier DistilUSE/MPNet
 experiments also scored negative and were unregistered). Because the TSDAE
 space is anisotropic, KDX runs use per-model fit overrides
 (`config.MODEL_FIT_OVERRIDES`: wider UMAP neighborhood + HDBSCAN leaf
-selection) — without them HDBSCAN grows a junk mega-cluster. If the local
-TSDAE directory does not exist yet, the app and uploader fall back to base
-MiniLM; create it with:
+selection) — without them HDBSCAN grows a junk mega-cluster. These results are
+an offline comparison, not a restriction on using OpenAI or NVIDIA. To create
+the optional local TSDAE model:
 
 ```bash
 python scripts/finetune_tsdae.py

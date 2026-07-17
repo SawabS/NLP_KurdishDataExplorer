@@ -43,6 +43,7 @@ No question pages yet.
 
 ## Synthesis
 
+- [Application Architecture and Operation](synthesis/application-architecture-and-operation.md) — how to run the React/FastAPI and Streamlit interfaces, with Mermaid system, request, and fitting-flow diagrams plus troubleshooting.
 - [Kurdish Data Explorer Pipeline](synthesis/kurdish-data-explorer-pipeline.md) — how the eight sources ground each stage of the project pipeline.
-- [Implementation and Methodology](synthesis/implementation-and-methodology.md) — transparent as-built record: data provenance, BERTopic tuning, interactive fitting, rate-safe OpenAI and max-throughput NVIDIA embeddings, app behavior, reproducibility.
+- [Implementation and Methodology](synthesis/implementation-and-methodology.md) — transparent as-built record: data provenance, BERTopic tuning, OpenAI/NVIDIA embeddings, FastAPI + React behavior, retained Streamlit compatibility, and reproducibility.
 - [Project Presentation Overview](synthesis/project-presentation-overview.md) — single linear narrative (problem → literature → methodology → results → limitations → conclusion), refreshed with the KDX clustering diagnosis for presentations/podcast generation.

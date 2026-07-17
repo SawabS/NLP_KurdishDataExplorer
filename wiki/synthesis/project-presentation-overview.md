@@ -2,7 +2,7 @@
 title: "Project Presentation Overview"
 type: synthesis
 created: 2026-07-04
-updated: 2026-07-11
+updated: 2026-07-17
 status: stable
 tags: [presentation, overview, narrative, bertopic, kurdish, sorani, podcast-source]
 sources: ["raw/sources/KLPT – Kurdish Language Processing Toolkit.pdf", "raw/sources/Kurdish News Dataset Headlines (KNDH) through multiclass classification.pdf", "raw/sources/Toward Kurdish language processing: Experiments in collecting and processing the AsoSoft text corpus.pdf", "raw/sources/THE KURDISH LANGUAGE CORPUS: STATE OF THE ART.pdf", "raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf", "raw/sources/Idiom Detection in Sorani Kurdish Texts.pdf", "raw/sources/A Transformer-based Neural Network Machine Translation Model for the Kurdish Sorani Dialect.pdf", "raw/sources/Morphological Feature Extraction for Fine-Grained Sorani Kurdish Dialect.pdf"]
@@ -40,7 +40,7 @@ Build an interactive topic-modeling explorer for Sorani Kurdish text that:
 2. Uses transformer-based topic modeling ([[BERTopic]]) as the primary method,
    compared honestly against classical baselines (LDA, NMF) rather than assumed
    superior.
-3. Ships as a live, explorable Streamlit app — not a static report — so a user
+3. Ships as a live FastAPI + React application — not a static report — so a user
    can drill from broad topic clusters down to individual example documents.
 4. Generalizes beyond Kurdish: the long-term architecture goal is a **language-
    and source-agnostic, size-unbounded text-exploration engine**, with Kurdish/KNDH
@@ -120,7 +120,7 @@ Concretely (config in `src/kurdish_explorer/config.py`, code in
    topic diversity (fraction of unique words across topic keyword lists), and NMI
    against the 5 KNDH ground-truth categories (only possible because KNDH is
    labelled).
-7. **Serve.** A Streamlit app reads precomputed artifacts per run
+7. **Serve.** FastAPI reads precomputed artifacts per run and serves a React SPA
    (`artifacts/<source>__<model>/`) — it never re-fits a model on page load, so it
    stays responsive even though fitting itself is expensive.
 
@@ -199,7 +199,7 @@ base MiniLM retained only as the evaluation comparison bar.
 
 ## 7. The application
 
-`app/streamlit_app.py` is a Streamlit app that reads precomputed artifacts only —
+`server/kdx_server/` and `web/` provide a FastAPI + React app that reads precomputed artifacts —
 it never re-fits a model at load time, so it stays responsive. Two modes:
 
 - **Explore a source** — pick a corpus (KNDH, AsoSoft, or a prior upload), then an

@@ -302,3 +302,33 @@ Unresolved issues / cautions:
 - Fifth KNDH category label is inconsistent in the source (science vs education); recorded as science per the channel breakdown, with the discrepancy noted on the page.
 - NMT BLEU 0.45 and idiom ~99% accuracy are strong claims on small data; flagged as encouraging, not decisive.
 - AsoSoft and KNDH licensing/availability for direct ingestion not yet confirmed.
+## [2026-07-17] migrate | FastAPI and React web application
+
+- Replaced the Streamlit presentation layer with a FastAPI artifact/search/upload/job
+  API and a Vite/React SPA built from noor-ui source via npm workspaces.
+- Added shareable source/model/tab routes, Plotly hierarchy and WebGL map views,
+  semantic topic search, streamed uploads, serialized fit jobs, mtime-keyed run
+  caching, production SPA serving, and self-hosted Arabic fonts.
+- OpenAI and NVIDIA remain first-class embedding choices and are selected by the
+  existing provider preference when keys are configured; local models remain
+  available for offline work and comparison.
+- Verification: 21 pytest tests passed, TypeScript and Vite production build passed,
+  real KNDH artifact endpoints returned HTTP 200, and Playwright desktop/mobile
+  checks found no console errors or horizontal overflow.
+## [2026-07-18] restore | Retain the Streamlit application
+
+- Restored `app/streamlit_app.py`, `app/upload_page.py`, and `.streamlit/config.toml`
+  alongside the FastAPI + React application.
+- Re-added the Streamlit dependency and documented independent launch commands.
+- Both interfaces continue to use the unchanged `src/kurdish_explorer/` engine and
+  the same per-run artifacts; no data migration or duplicate fit is required.
+
+## [2026-07-18] document | Application architecture and operation
+
+- Added [[Application Architecture and Operation]], a full-stack operating guide
+  with Mermaid diagrams for system topology, browser/API requests, and fit/upload
+  jobs.
+- Documented development, production-like, and Streamlit launch modes and common
+  startup failures.
+- Replaced the frontend-only root development command with a supervised launcher
+  that starts and stops FastAPI and Vite together.

@@ -1,0 +1,11 @@
+{
+  "name": "kurdish-data-explorer",
+  "private": true,
+  "workspaces": ["web", "raw/sources/noor-ui"],
+  "scripts": {
+    "dev": "./scripts/dev.sh",
+    "dev:web": "npm run dev -w web",
+    "build": "npm run build -w web",
+    "typecheck": "npm run typecheck -w web"
+  }
+}

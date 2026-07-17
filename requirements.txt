@@ -23,8 +23,12 @@ pyarrow>=14
 openpyxl>=3.1
 
 # App / viz
-streamlit>=1.30
 plotly>=5.18
+streamlit>=1.30
+fastapi>=0.128.0
+uvicorn>=0.40.0
+python-multipart
+httpx
 
 # Environment configuration and optional hosted embeddings
 python-dotenv>=1.0

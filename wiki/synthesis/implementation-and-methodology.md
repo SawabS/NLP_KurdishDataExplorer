@@ -26,8 +26,8 @@ exploration without running out of memory. Scaling design lives in
 - Conda env `ai`, Python 3.11.15, single NVIDIA RTX 4060 Laptop GPU (8 GB), CUDA.
 - Key versions: torch 2.11.0+cu130, transformers 5.8.1, sentence-transformers 5.5.1,
   bertopic 0.17.4, umap-learn 0.5.12, hdbscan 0.8.44, gensim 4.4.0,
-  scikit-learn 1.8.0, klpt 0.1.7 (+ chunspell 2.0.4), streamlit 1.58.0,
-  datasets 5.0.0, huggingface_hub 1.21.0.
+  scikit-learn 1.8.0, klpt 0.1.7 (+ chunspell 2.0.4), FastAPI 0.128.0,
+  Uvicorn 0.40.0, React 18, Vite 6, datasets 5.0.0, huggingface_hub 1.21.0.
 - Dependency note (transparent): `datasets`/`huggingface_hub` versions clashed on
   this bleeding-edge stack; pinned `huggingface_hub==1.21.0` to satisfy both
   `transformers` (>=1.5,<2.0) and `datasets`.
@@ -71,7 +71,7 @@ exploration without running out of memory. Scaling design lives in
 - The OpenAI adapter tokenizes before sending: requests are packed below a safe
   fraction of the configured TPM limit, overlong documents are split and their
   vectors recombined with a token-weighted mean, and 429 responses use reset
-  headers plus bounded exponential backoff. The Streamlit fit screen estimates
+  headers plus bounded exponential backoff. The web fit screen estimates
   total tokens and minimum run time before the user confirms a hosted run.
 - The NVIDIA adapter (`NvidiaEmbedder`, `src/kurdish_explorer/embed.py`) is the
   fastest hosted option: it uses NVIDIA's OpenAI-compatible endpoint
@@ -207,15 +207,15 @@ labeled/unlabeled, origin). Shipped runs:
 
 ## Generic upload engine (size-unbounded goal)
 
-`app/upload_page.py` + `pipeline.run_on_texts()` let a user point the explorer at
+The FastAPI upload/job routes + `pipeline.run_on_texts()` let a user point the explorer at
 **their own text** — a `.txt` file (split by line or paragraph) or a tabular file
 (`.csv/.tsv/.xlsx/.parquet`, choosing a text column and optional label column). The
 result becomes its own isolated source with the same tree / map / baselines.
 
 Scaling provisions for hundreds-of-MB inputs:
 
-- **Server-path input** bypasses the browser upload cap (`server.maxUploadSize`
-  raised to 2 GB in `.streamlit/config.toml`) and reads the file directly off disk.
+- **Server-path input** bypasses browser transfer entirely. Browser uploads are
+  streamed to `artifacts/uploads/` with an explicit 2000 MB server-side cap.
 - Files are **streamed line-by-line**, not loaded twice into memory.
 - Tabular inputs now use a cheap **schema peek** before full read: Parquet reads
   only metadata via `pyarrow.parquet.read_schema()`, while CSV/TSV/Excel peek only
@@ -229,14 +229,17 @@ Scaling provisions for hundreds-of-MB inputs:
 
 ## Application
 
-`app/streamlit_app.py` uses saved artifacts for immediate exploration and can
-interactively fit a missing model/source combination. **Explore a source** offers
-a model selector; fitted runs open immediately, while `fit required` choices can
-reuse the source's saved documents to run the pipeline in-app. OpenAI fitting
-requires an explicit data-sharing/cost acknowledgement. **Upload & explore** also
-offers the registered embedding models before starting a new run. "Ask the corpus"
-embeds a one-click/free-text question with the active run's embedder and matches it
-to per-topic centroids from the cached document embeddings.
+The application is a Vite/React SPA using noor-ui, backed by FastAPI under
+`server/kdx_server/`. Saved Parquet/JSON artifacts are read through an mtime-keyed
+LRU cache; large map responses are sampled server-side and returned column-wise.
+Routes encode source, model, and tab, with layout/depth/topic/search state in query
+parameters. Missing model/source combinations and uploads run through a single
+worker job registry with polling, progress, error capture, and query invalidation.
+OpenAI and NVIDIA are normal registry choices and are preferred when their keys are
+configured; hosted fits require a cost acknowledgement. "Ask the corpus" embeds a
+question with the active run's embedder and ranks cached topic centroids.
+The original `app/streamlit_app.py` and `app/upload_page.py` remain runnable as a
+compatibility interface over the same pipeline and artifacts.
 
 ### UI polish and verification (2026-07-03)
 
@@ -251,10 +254,10 @@ to per-topic centroids from the cached document embeddings.
   for the synthetic root, while click-to-drill remains available.
 - Dark-mode tree colors use muted internal-node surfaces and pastel leaf/category
   colors so icicle, treemap, and sunburst charts blend with the page.
-- Verified live with Playwright against Streamlit on `127.0.0.1:8602`: KNDH source
-  selection, friendly model labels, Topic tree / Map / Baselines tabs, light and
-  dark themes, icicle / treemap / sunburst layouts, dark tooltip computed colors,
-  absence of literal `undefined`, and upload-page rendering.
+- Re-verified after the 2026-07-17 migration with Playwright against FastAPI on
+  `127.0.0.1:8656`: artifact-backed hierarchy and WebGL map, route navigation,
+  theme switching, desktop/mobile layouts, no horizontal overflow, and no console
+  errors.
 
 ## Reproducibility
 
@@ -267,11 +270,14 @@ conda run -n ai python scripts/run_pipeline.py --source asosoft --model kdx-mini
 conda run -n ai python scripts/tune_bertopic.py --model minilm
 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
   conda run -n ai python scripts/finetune_tsdae.py --base minilm --max-sentences 110000 --batch-size 8
-conda run -n ai streamlit run app/streamlit_app.py
+npm run build -w web
+./scripts/serve_web.sh
 ```
 
 ## Connections
 
+- Operational topology, launch modes, request lifecycle, and troubleshooting:
+  [[Application Architecture and Operation]].
 - Realizes [[Kurdish Data Explorer Pipeline]] with [[KLPT]],
   [[Kurdish News Dataset Headlines (KNDH)]], [[AsoSoft Text Corpus]], [[BERTopic]],
   and [[KDX-MiniLM-TSDAE (fine-tuned embedder)]].
@@ -288,6 +294,13 @@ conda run -n ai streamlit run app/streamlit_app.py
   runs (base MiniLM 48 topics / NPMI -0.056 / NMI 0.224; TSDAE 45 / +0.038 / 0.159).
 - 2026-07-03: Polished Streamlit selectors, chart theming, topic-tree defaults, and
   upload table reads; verified the live app with Playwright in light and dark modes.
+- 2026-07-17: Replaced Streamlit with a FastAPI + Vite/React noor-ui application;
+  added shareable routes, background fit jobs, streamed uploads, typed APIs,
+  self-hosted Arabic fonts, server tests, and production SPA serving.
+- 2026-07-18: Restored the original Streamlit interface as a supported compatibility
+  app alongside FastAPI/React; both share the same engine and artifact directories.
+- 2026-07-18: Added [[Application Architecture and Operation]] as the focused
+  full-stack runbook and visual architecture companion to this methodology record.
 - 2026-07-11: Diagnosed KDX anisotropy (mean random-pair cosine 0.951) and shipped
   per-model UMAP/HDBSCAN overrides for KDX. Refit KNDH and AsoSoft KDX artifacts;
   refreshed tables to current artifact values.
