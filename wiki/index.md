@@ -25,7 +25,7 @@ the synthesis page for how the sources fit together.
 - [BERTopic](entities/bertopic.md) — transformer-based topic modeling method (primary modeling tool).
 - [KuBERT](entities/kubert.md) — Kurdish BERT variant.
 - [Soran Badawi](entities/soran-badawi.md) — author of KNDH and the Sorani NMT model.
-- [KDX-MiniLM-TSDAE (fine-tuned embedder)](entities/kdx-minilm-tsdae-model.md) — our domain-adapted Kurdish embedder; now uses anisotropy-aware leaf clustering as the app's single production model.
+- [KDX-MiniLM-TSDAE (fine-tuned embedder)](entities/kdx-minilm-tsdae-model.md) — our domain-adapted Kurdish embedder with anisotropy-aware leaf clustering; the default local model, selectable alongside base MiniLM and hosted OpenAI/NVIDIA embeddings.
 
 ## Concepts
 
@@ -44,5 +44,5 @@ No question pages yet.
 ## Synthesis
 
 - [Kurdish Data Explorer Pipeline](synthesis/kurdish-data-explorer-pipeline.md) — how the eight sources ground each stage of the project pipeline.
-- [Implementation and Methodology](synthesis/implementation-and-methodology.md) — transparent as-built record: environment, data provenance, preprocessing, BERTopic tuning + results, KDX anisotropy fix, app UI/upload behavior, reproducibility.
+- [Implementation and Methodology](synthesis/implementation-and-methodology.md) — transparent as-built record: data provenance, BERTopic tuning, interactive fitting, rate-safe OpenAI and max-throughput NVIDIA embeddings, app behavior, reproducibility.
 - [Project Presentation Overview](synthesis/project-presentation-overview.md) — single linear narrative (problem → literature → methodology → results → limitations → conclusion), refreshed with the KDX clustering diagnosis for presentations/podcast generation.

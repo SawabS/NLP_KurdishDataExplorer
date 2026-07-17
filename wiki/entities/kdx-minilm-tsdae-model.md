@@ -2,7 +2,7 @@
 title: "KDX-MiniLM-TSDAE (fine-tuned embedder)"
 type: entity
 created: 2026-06-26
-updated: 2026-07-11
+updated: 2026-07-17
 status: stable
 tags: [model, embedding, tsdae, fine-tuning, domain-adaptation, sorani, minilm]
 sources: ["raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf"]
@@ -72,11 +72,15 @@ embedder. KDX remains the production model because it is the project-specific
 Sorani adaptation and gives the best shipped BERTopic coherence while avoiding the
 bad cluster collapse.
 
-Status in the app (since 2026-07-10): **KDX-MiniLM-TSDAE is the single production
-embedder** — the explorer and the upload engine always use it (no model dropdown).
-Base MiniLM stays registered only as the comparison bar in the Model & evaluation
-tab; the category-alignment trade-off above is disclosed there. DistilUSE / MPNet /
-E5-base were unregistered from `config.EMBEDDING_MODELS` (all negative NPMI).
+Status in the app (since 2026-07-10, superseded 2026-07-15): **KDX-MiniLM-TSDAE
+is the default local embedder** and the fallback when no hosted API key is
+configured (`config.default_model_key()`). The explorer and upload engine now
+expose an explicit model dropdown (`EMBEDDING_MODELS`: `kdx-minilm-tsdae`,
+`minilm`, `openai`, `nvidia`) so any registered model can be selected or fitted
+interactively; unfitted combinations are marked "fit required." Base MiniLM
+remains the comparison bar in the Model & evaluation tab; the category-alignment
+trade-off above is disclosed there. DistilUSE / MPNet / E5-base were
+unregistered from `config.EMBEDDING_MODELS` (all negative NPMI).
 
 ## Connections
 
@@ -114,3 +118,7 @@ E5-base were unregistered from `config.EMBEDDING_MODELS` (all negative NPMI).
 - 2026-07-11: Diagnosed KDX anisotropy and shipped per-model fit overrides
   (UMAP n=50 + HDBSCAN leaf). Refit KNDH to 46 topics / NPMI +0.057 / largest
   topic 6%, and AsoSoft Small to 10 topics / NPMI +0.049.
+- 2026-07-15/17: Reintroduced an explicit model dropdown with interactive
+  in-app fitting (OpenAI, then NVIDIA) alongside KDX; KDX remains the default
+  local model rather than the app's only model. See
+  [[Implementation and Methodology]].

@@ -152,10 +152,16 @@ def render_upload() -> None:
             st.stop()
 
         st.markdown("#### Topics")
-        # One model for the whole app: the KDX Sorani embedder (base MiniLM
-        # fallback until scripts/finetune_tsdae.py has produced it).
-        model = config.default_model_key()
-        st.caption(f"Embedder: **{config.EMBEDDING_MODEL_LABELS.get(model, model)}**")
+        model_keys = list(config.EMBEDDING_MODELS)
+        default_model = config.default_model_key()
+        model = st.selectbox(
+            "Embedding model",
+            model_keys,
+            index=model_keys.index(default_model),
+            format_func=lambda key: config.EMBEDDING_MODEL_LABELS.get(key, key),
+            help="OpenAI and NVIDIA models use OPENAI_API_KEY / NVIDIA_API_KEY "
+                 "respectively and may incur API charges.",
+        )
         normalize = st.checkbox("KLPT-normalize (recommended for raw Sorani)", value=True)
         max_docs = st.number_input("Documents to embed (sample cap for live runs)",
                                    500, 200000, 20000, step=500)

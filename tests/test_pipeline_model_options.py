@@ -8,7 +8,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from kurdish_explorer import config
-from kurdish_explorer.embed import OpenAIEmbedder
+from kurdish_explorer.embed import NvidiaEmbedder, OpenAIEmbedder
 from kurdish_explorer.pipeline import available_model_options, fitted_model_options
 
 
@@ -34,9 +34,27 @@ def test_fitted_model_options_only_includes_precomputed_runs() -> None:
 
 def test_default_model_uses_openai_when_key_is_configured(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("KDX_EMBEDDING_PROVIDER", raising=False)
+    monkeypatch.delenv("NVIDIA_API_KEY", raising=False)
     monkeypatch.setenv("OPENAI_API_KEY", "test-key")
 
     assert config.default_model_key() == "openai"
+
+
+def test_default_model_uses_nvidia_when_key_is_configured(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("KDX_EMBEDDING_PROVIDER", raising=False)
+    monkeypatch.setenv("NVIDIA_API_KEY", "test-key")
+
+    assert config.default_model_key() == "nvidia"
+
+
+def test_default_model_prefers_nvidia_over_openai_when_both_configured(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("KDX_EMBEDDING_PROVIDER", raising=False)
+    monkeypatch.setenv("NVIDIA_API_KEY", "test-key")
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+
+    assert config.default_model_key() == "nvidia"
 
 
 def test_default_model_rejects_unknown_explicit_provider(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -47,10 +65,14 @@ def test_default_model_rejects_unknown_explicit_provider(monkeypatch: pytest.Mon
 
 
 def test_openai_embedder_batches_orders_and_normalizes_responses() -> None:
-    calls: list[list[str]] = []
+    calls: list[list[list[int]]] = []
+
+    class FakeEncoding:
+        def encode(self, text: str, disallowed_special=()):
+            return [ord(char) for char in text]
 
     class FakeEmbeddings:
-        def create(self, model: str, input: list[str]):
+        def create(self, model: str, input: list[list[int]]):
             calls.append(input)
             return SimpleNamespace(data=[
                 SimpleNamespace(index=1, embedding=[0.0, 4.0]),
@@ -59,9 +81,110 @@ def test_openai_embedder_batches_orders_and_normalizes_responses() -> None:
 
     embedder = OpenAIEmbedder.__new__(OpenAIEmbedder)
     embedder.model = "test-model"
+    embedder.encoding = FakeEncoding()
     embedder.client = SimpleNamespace(embeddings=FakeEmbeddings())
 
     vectors = embedder.encode(["first", "second"], batch_size=2)
 
+    assert calls == [[
+        [ord(char) for char in "first"],
+        [ord(char) for char in "second"],
+    ]]
+    np.testing.assert_allclose(vectors, [[1.0, 0.0], [0.0, 1.0]])
+
+
+def test_openai_embedder_splits_long_docs_and_respects_token_budget() -> None:
+    calls: list[list[list[int]]] = []
+    progress: list[tuple[int, int]] = []
+
+    class FakeEncoding:
+        def encode(self, text: str, disallowed_special=()):
+            return [ord(char) for char in text]
+
+    class FakeEmbeddings:
+        def create(self, model: str, input: list[list[int]]):
+            calls.append(input)
+            return SimpleNamespace(data=[
+                SimpleNamespace(index=index, embedding=[3.0, 4.0])
+                for index in range(len(input))
+            ])
+
+    embedder = OpenAIEmbedder.__new__(OpenAIEmbedder)
+    embedder.model = "test-model"
+    embedder.encoding = FakeEncoding()
+    embedder.client = SimpleNamespace(embeddings=FakeEmbeddings())
+    embedder.tpm_limit = 1_000_000
+    embedder.token_budget = 900_000
+    embedder.max_batch_tokens = 5
+    embedder.max_input_tokens = 4
+    embedder.max_retries = 0
+
+    vectors = embedder.encode(
+        ["abcdefgh", "xy"], batch_size=128,
+        normalize_embeddings=False,
+        progress=lambda done, total: progress.append((done, total)),
+    )
+
+    assert all(sum(map(len, batch)) <= 5 for batch in calls)
+    assert all(len(item) <= 4 for batch in calls for item in batch)
+    assert progress[-1] == (3, 3)
+    np.testing.assert_allclose(vectors, [[3.0, 4.0], [3.0, 4.0]])
+
+
+def test_nvidia_embedder_batches_orders_and_normalizes_responses() -> None:
+    calls: list[list[str]] = []
+
+    class FakeEmbeddings:
+        def create(self, model: str, input: list[str], extra_body: dict):
+            calls.append(input)
+            assert extra_body == {"input_type": "passage", "truncate": "END"}
+            return SimpleNamespace(data=[
+                SimpleNamespace(index=1, embedding=[0.0, 4.0]),
+                SimpleNamespace(index=0, embedding=[3.0, 0.0]),
+            ])
+
+    embedder = NvidiaEmbedder.__new__(NvidiaEmbedder)
+    embedder.model = "test-model"
+    embedder.client = SimpleNamespace(embeddings=FakeEmbeddings())
+    embedder.input_type = "passage"
+    embedder.truncate = "END"
+    embedder.batch_size = 2
+    embedder.max_concurrency = 1
+    embedder.max_retries = 0
+
+    vectors = embedder.encode(["first", "second"])
+
     assert calls == [["first", "second"]]
     np.testing.assert_allclose(vectors, [[1.0, 0.0], [0.0, 1.0]])
+
+
+def test_nvidia_embedder_dispatches_multiple_batches_and_reports_progress() -> None:
+    calls: list[list[str]] = []
+    progress: list[tuple[int, int]] = []
+
+    class FakeEmbeddings:
+        def create(self, model: str, input: list[str], extra_body: dict):
+            calls.append(input)
+            return SimpleNamespace(data=[
+                SimpleNamespace(index=index, embedding=[1.0, 0.0])
+                for index in range(len(input))
+            ])
+
+    embedder = NvidiaEmbedder.__new__(NvidiaEmbedder)
+    embedder.model = "test-model"
+    embedder.client = SimpleNamespace(embeddings=FakeEmbeddings())
+    embedder.input_type = "passage"
+    embedder.truncate = "END"
+    embedder.batch_size = 1
+    embedder.max_concurrency = 4
+    embedder.max_retries = 0
+
+    vectors = embedder.encode(
+        ["a", "b", "c"],
+        normalize_embeddings=False,
+        progress=lambda done, total: progress.append((done, total)),
+    )
+
+    assert len(calls) == 3
+    assert progress[-1] == (3, 3)
+    np.testing.assert_allclose(vectors, [[1.0, 0.0], [1.0, 0.0], [1.0, 0.0]])

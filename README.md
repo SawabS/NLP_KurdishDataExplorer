@@ -7,10 +7,12 @@ GB-scale via the server-path option) and explore it as a drill-down topic tree,
 a 2D document map, free-text semantic search ("Ask the corpus", with one-click
 example questions), and keyword/baseline comparisons.
 
-One pipeline, one model: **BERTopic** (sentence embeddings → UMAP → HDBSCAN →
-c-TF-IDF) on top of **KDX MiniLM**, our Sorani-adapted embedder, with the
-off-the-shelf base MiniLM and LDA/NMF kept as evaluation baselines (NPMI
-coherence).
+One **BERTopic** pipeline (sentence embeddings → UMAP → HDBSCAN →
+c-TF-IDF) with selectable embedding models: **KDX MiniLM**, our
+Sorani-adapted embedder; off-the-shelf base MiniLM; **OpenAI** embeddings; and
+**NVIDIA Nemotron-3-Embed-1B**, the fastest hosted option (concurrent batched
+requests, no OpenAI-style free-tier throttling). LDA/NMF remain evaluation
+baselines (NPMI coherence).
 
 ## Quickstart
 
@@ -18,9 +20,10 @@ coherence).
 # 1. Environment (conda env "ai" or equivalent)
 pip install -r requirements.txt
 
-# Optional: use OpenAI embeddings for new pipeline runs.
-cp .env.example .env
-# Edit .env and set OPENAI_API_KEY.
+# Optional: use a hosted embedding provider for new pipeline runs. Create a
+# .env file in the repo root (git-ignored, loaded automatically):
+#   OPENAI_API_KEY=sk-...
+#   NVIDIA_API_KEY=nvapi-...
 
 # 2. Prepare the built-in corpora (KNDH, AsoSoft) into data/processed/
 python scripts/prepare_data.py
@@ -42,28 +45,54 @@ python scripts/run_pipeline.py --source kndh --model minilm --no-baselines
 streamlit run app/streamlit_app.py
 ```
 
-The app preloads all fitted artifacts at startup and explores every source with
-the KDX embedder (there is no model dropdown); the **Model & evaluation** tab
-documents the model, its training data, and the coherence comparison.
+The app preloads fitted artifacts at startup. Use the model dropdown to switch
+between fitted embedders for a source; configured models without artifacts are
+shown as **fit required** and can be fitted interactively without leaving the
+app. OpenAI runs require an explicit acknowledgement because API charges may
+apply. The **Model & evaluation** tab documents the active model and coherence
+comparison.
 
 Use the in-app **Upload & explore** mode to run the pipeline on your own text;
 the result becomes a selectable source next to the built-ins.
 
-## OpenAI API setup
+## Hosted embedding API setup
 
-Create a local `.env` file from `.env.example`, then replace the placeholder:
+Create a local `.env` file in the repo root (git-ignored, loaded automatically
+via `python-dotenv`) with whichever provider key(s) you want:
 
 ```dotenv
 OPENAI_API_KEY=sk-your-key-here
+NVIDIA_API_KEY=nvapi-your-key-here
 ```
 
-The `.env` file is ignored by Git and is loaded automatically. New runs from
-the uploader and `scripts/run_pipeline.py` will use OpenAI
-`text-embedding-3-small`; completed local-model artifacts remain available for
-exploration. To choose a different OpenAI embedding model, add
-`OPENAI_EMBEDDING_MODEL=text-embedding-3-large`. To keep using a local model
-despite a configured key, add `KDX_EMBEDDING_PROVIDER=minilm` or
-`KDX_EMBEDDING_PROVIDER=kdx-minilm-tsdae`.
+Completed local-model artifacts remain available for exploration either way.
+To keep using a local model despite a configured key, add
+`KDX_EMBEDDING_PROVIDER=minilm` or `KDX_EMBEDDING_PROVIDER=kdx-minilm-tsdae`.
+If both `NVIDIA_API_KEY` and `OPENAI_API_KEY` are set, NVIDIA is preferred by
+default (it's the faster of the two); set `KDX_EMBEDDING_PROVIDER=openai` to
+override.
+
+**OpenAI.** New runs use `text-embedding-3-small` by default — set
+`OPENAI_EMBEDDING_MODEL=text-embedding-3-large` to choose another. Requests
+are token-aware: long documents are split and recombined, requests stay below
+a safe fraction of the configured token-per-minute limit, and 429 responses
+retry with server-aware exponential backoff. The default is the free-tier
+`OPENAI_EMBEDDING_TPM=40000`; set this environment variable to your
+dashboard's higher TPM after upgrading. The adapter also adopts a higher limit
+automatically when the API returns it in rate-limit headers.
+
+**NVIDIA.** Get a free key at [build.nvidia.com](https://build.nvidia.com);
+new runs use `nvidia/nemotron-3-embed-1b` (2048-dim, 32k-token context) over
+NVIDIA's OpenAI-compatible hosted endpoint by default — set
+`NVIDIA_EMBEDDING_MODEL` to choose another. This is the fastest embedding
+option in the app: unlike the OpenAI adapter's single-threaded token-bucket
+queue, requests are batched (`NVIDIA_EMBEDDING_BATCH_SIZE`, default 64 docs)
+and fanned out across a thread pool (`NVIDIA_EMBEDDING_MAX_CONCURRENCY`,
+default 8 concurrent requests) since NVIDIA's hosted endpoint has no
+documented low per-minute token cap. Overlong documents are truncated
+server-side (`NVIDIA_EMBEDDING_TRUNCATE=END`) instead of split locally.
+Retries on 429/5xx use exponential backoff (`NVIDIA_EMBEDDING_MAX_RETRIES`,
+default 6).
 
 ## Layout
 

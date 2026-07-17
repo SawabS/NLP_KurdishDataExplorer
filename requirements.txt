@@ -29,3 +29,4 @@ plotly>=5.18
 # Environment configuration and optional hosted embeddings
 python-dotenv>=1.0
 openai>=1.0
+tiktoken>=0.7

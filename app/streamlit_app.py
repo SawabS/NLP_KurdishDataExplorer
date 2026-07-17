@@ -7,9 +7,8 @@ without re-fitting models.
 Design principles the user asked for:
 - **Source-first, no mixing.** You pick a *source* (KNDH, AsoSoft, an upload);
   a run only ever shows one source's documents.
-- **One model.** Every source is explored with the KDX Sorani embedder
-  (TSDAE-adapted MiniLM); the base MiniLM exists only as the evaluation
-  comparison in the Model & evaluation tab.
+- **Explicit model choice.** Fitted models can be switched per source; models
+  without artifacts remain visible and are clearly marked as requiring a fit.
 - **Drill-down topic tree.** Topics are shown as a hierarchy you can expand from
   broad clusters into specific sub-topics, with per-node document counts and
   example text for intuition.
@@ -20,6 +19,7 @@ Design principles the user asked for:
 from __future__ import annotations
 
 import html
+import os
 import sys
 from pathlib import Path
 
@@ -102,6 +102,37 @@ def _first_run_for(source: str) -> str:
 def _load_all(runs: tuple[str, ...]) -> dict[str, dict]:
     """Preload every fitted run so sidebar navigation never triggers fitting."""
     return {run: pipeline.load_run(run) for run in runs}
+
+
+def _fresh_openai_embedder():
+    """Return the current adapter, repairing Streamlit hot-reload stale state."""
+    import importlib
+    from kurdish_explorer import embed as kx_embed
+
+    embedder = kx_embed.get_embedder("openai")
+    required = ("estimate_tokens", "token_budget", "tpm_limit")
+    if all(hasattr(embedder, name) for name in required):
+        return embedder
+
+    # Streamlit reruns the app file but leaves imported modules and their
+    # functools caches alive. Reload the adapter module when an instance from an
+    # older class definition survives a code update.
+    cache_clear = getattr(kx_embed.get_embedder, "cache_clear", None)
+    if cache_clear is not None:
+        cache_clear()
+    kx_embed = importlib.reload(kx_embed)
+    kx_embed.get_embedder.cache_clear()
+    return kx_embed.get_embedder("openai")
+
+
+@st.cache_data(show_spinner=False)
+def _openai_token_count(run: str) -> int:
+    """Count embedding tokens once per saved run for cost/time disclosure."""
+    docs = pd.read_parquet(
+        config.ARTIFACTS_DIR / run / "documents.parquet", columns=["text"]
+    )
+    embedder = _fresh_openai_embedder()
+    return embedder.estimate_tokens(docs["text"].astype(str).tolist())
 
 
 @st.cache_resource(show_spinner=False)
@@ -490,15 +521,149 @@ def main() -> None:
     )
     sinfo = source_meta(source)
 
-    # One model, chosen automatically: the KDX Sorani embedder when fitted for
-    # this source, else the first fitted registered model, else whatever run
-    # exists on disk (old uploads). No dropdown — see the Model & evaluation tab.
+    # Show every registered model so users can discover configured providers,
+    # while clearly marking models that do not yet have artifacts for this
+    # source. Default to the configured provider only when it is fitted; this
+    # keeps the Explore page useful on a fresh API-key setup.
     fitted = runs_by_source.get(source, [])
     registered = [k for k in config.EMBEDDING_MODELS if k in fitted]
-    model = (registered or fitted)[0]
+    preferred = config.default_model_key()
+    default_model = preferred if preferred in fitted else (registered or fitted)[0]
+    model_options = pipeline.available_model_options(source, runs_by_source)
+    if not registered:
+        model_options.extend(
+            (f"Legacy fitted model · {key}", key)
+            for key in fitted
+            if key not in config.EMBEDDING_MODELS
+        )
+    model_labels = {key: label for label, key in model_options}
+    model_keys = [key for _, key in model_options]
+    model = st.sidebar.selectbox(
+        "Embedding model",
+        model_keys,
+        index=model_keys.index(default_model),
+        format_func=model_labels.__getitem__,
+    )
+
+    if model not in fitted:
+        friendly_model = config.EMBEDDING_MODEL_LABELS.get(model, model)
+        st.warning(
+            f"**{friendly_model}** has no fitted artifact for this source yet."
+        )
+        reference_run = f"{source}__{default_model}"
+        reference = loaded_runs[reference_run]
+        reference_docs = reference["documents"]
+        st.write(
+            f"Fit it interactively on the **{len(reference_docs):,} documents** "
+            "already saved for this source."
+        )
+
+        can_fit = True
+        if model == "openai":
+            if not os.getenv("OPENAI_API_KEY"):
+                st.error("OPENAI_API_KEY is not available to this Streamlit process.")
+                can_fit = False
+            else:
+                with st.spinner("Estimating OpenAI tokens and minimum run time…"):
+                    estimated_tokens = _openai_token_count(reference_run)
+                embedder = _fresh_openai_embedder()
+                safe_tpm = embedder.token_budget
+                minimum_minutes = estimated_tokens / safe_tpm
+                if minimum_minutes >= 60:
+                    duration = f"{minimum_minutes / 60:.1f} hours"
+                else:
+                    duration = f"{minimum_minutes:.1f} minutes"
+                st.info(
+                    f"Estimated input: **{estimated_tokens / 1_000_000:.2f}M tokens**. "
+                    f"At the configured **{embedder.tpm_limit:,} TPM** limit, the "
+                    f"theoretical minimum is **{duration}**. The app will batch, "
+                    "wait, and retry automatically."
+                )
+                can_fit = st.checkbox(
+                    "I understand this sends the source text to OpenAI and may incur API charges.",
+                    key=f"confirm_fit_{source}_{model}",
+                )
+        elif model == "nvidia":
+            if not os.getenv("NVIDIA_API_KEY"):
+                st.error("NVIDIA_API_KEY is not available to this Streamlit process.")
+                can_fit = False
+            else:
+                st.info(
+                    "NVIDIA Nemotron embeddings run over a concurrent thread pool "
+                    "(no single-threaded token-per-minute queue like OpenAI's free "
+                    "tier) for the fastest hosted option in this app. Batches retry "
+                    "automatically on rate limits."
+                )
+                can_fit = st.checkbox(
+                    "I understand this sends the source text to NVIDIA and may incur API charges.",
+                    key=f"confirm_fit_{source}_{model}",
+                )
+
+        if st.button(
+            f"Fit {friendly_model}",
+            type="primary",
+            disabled=not can_fit,
+            key=f"fit_{source}_{model}",
+        ):
+            progress = st.progress(0.0, text="Starting…")
+            steps = {
+                "Embedding": 0.1,
+                "Clustering": 0.4,
+                "Projecting": 0.7,
+                "Building": 0.85,
+                "Fitting": 0.9,
+                "Scoring": 0.95,
+            }
+
+            def _fit_progress(message: str) -> None:
+                fraction = next(
+                    (value for prefix, value in steps.items() if message.startswith(prefix)),
+                    0.5,
+                )
+                progress.progress(fraction, text=message)
+
+            # Built-in corpora keep the pipeline's model-specific tuned defaults.
+            # Uploaded sources reuse the live-run auto-granularity heuristic.
+            min_cluster_size = None
+            if source not in {"kndh", "asosoft"}:
+                min_cluster_size = max(15, min(250, len(reference_docs) // 100))
+
+            try:
+                result = pipeline.run_on_dataframe(
+                    reference_docs.copy(),
+                    source=source,
+                    model_key=model,
+                    with_baselines=False,
+                    min_cluster_size=min_cluster_size,
+                    normalized=bool(reference["meta"].get("normalized", False)),
+                    title=reference["meta"].get("title"),
+                    progress=_fit_progress,
+                )
+            except Exception as exc:
+                progress.empty()
+                st.exception(exc)
+            else:
+                progress.progress(1.0, text="Done")
+                st.success(
+                    f"Created {result.n_topics} topics across {result.n_docs:,} documents."
+                )
+                _load_all.clear()
+                st.rerun()
+
+        if source in {"kndh", "asosoft"}:
+            normalize_flag = " --normalize" if source == "asosoft" else ""
+            with st.expander("Prefer the terminal?"):
+                st.code(
+                    "python scripts/run_pipeline.py "
+                    f"--source {source} --model {model} --no-baselines{normalize_flag}"
+                )
+        else:
+            st.caption(
+                "The interactive fit reuses this source's saved documents and labels."
+            )
+        st.stop()
+
     run = f"{source}__{model}"
-    st.sidebar.caption("Embedder: "
-                       f"**{config.EMBEDDING_MODEL_LABELS.get(model, model)}**")
 
     art = loaded_runs[run]
     meta, docs = art["meta"], art["documents"]

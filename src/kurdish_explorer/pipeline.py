@@ -147,7 +147,13 @@ def run_on_dataframe(
 
     # --- Embeddings + BERTopic ---
     _say(f"Embedding {len(docs):,} documents…")
-    embeddings = embed.embed_documents(docs, model_key=model_key)
+    embeddings = embed.embed_documents(
+        docs,
+        model_key=model_key,
+        progress=lambda done, total: _say(
+            f"Embedding {len(docs):,} documents… ({done:,}/{total:,} API chunks)"
+        ),
+    )
     embedder = embed.get_embedder(model_key)
     # Per-model fit overrides (e.g. leaf selection for the anisotropic KDX
     # space); an explicit min_cluster_size from the caller wins over them.

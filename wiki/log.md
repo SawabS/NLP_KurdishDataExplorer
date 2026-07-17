@@ -1,5 +1,69 @@
 # Wiki Log
 
+## [2026-07-17] implementation | Add NVIDIA Nemotron-3-Embed-1B as a max-speed embedding provider
+
+- Registered `nvidia` in `EMBEDDING_MODELS`/`EMBEDDING_MODEL_LABELS`
+  (`nvidia/nemotron-3-embed-1b`, 2048-dim, 32k-token context), gated on
+  `NVIDIA_API_KEY`.
+- Added `NvidiaEmbedder` (`src/kurdish_explorer/embed.py`), an OpenAI-compatible
+  adapter against `https://integrate.api.nvidia.com/v1`. Optimized for
+  throughput rather than the OpenAI adapter's conservative TPM queue: batches
+  (`NVIDIA_EMBEDDING_BATCH_SIZE`, default 64) are dispatched concurrently
+  across a thread pool (`NVIDIA_EMBEDDING_MAX_CONCURRENCY`, default 8), since
+  NVIDIA's hosted endpoint has no documented low per-minute token cap.
+  Overlong documents are truncated server-side (`truncate=END`) instead of
+  split/recombined locally. 429/5xx responses retry with bounded exponential
+  backoff.
+- `default_model_key()` now checks `NVIDIA_API_KEY` before `OPENAI_API_KEY`
+  (NVIDIA is the faster default once configured); `KDX_EMBEDDING_PROVIDER`
+  still overrides explicitly.
+- Wired into both model dropdowns (Explore a source, Upload & explore) via the
+  existing generic `EMBEDDING_MODELS` iteration in `pipeline.available_model_options`
+  — no dropdown-specific code needed. Added an NVIDIA branch next to the OpenAI
+  one in `streamlit_app.py`'s interactive-fit flow (API-key check + explicit
+  data-sharing/cost acknowledgement before fitting).
+- Also fixed stale documentation: README's Quickstart and setup sections still
+  referenced `.env.example`, which was deleted in a prior commit
+  (`22b7989`). Replaced with inline `.env` instructions covering both
+  `OPENAI_API_KEY` and `NVIDIA_API_KEY`.
+- Added `NvidiaEmbedder` unit tests (batching/ordering/normalization, multi-batch
+  dispatch + progress) and `default_model_key` precedence tests; full suite
+  (10 tests) passes.
+
+## [2026-07-15] fix | Repair stale OpenAI adapter after Streamlit hot reload
+
+- Root cause: Streamlit reran `streamlit_app.py` while Python retained the older
+  imported embedding module and its LRU-cached `OpenAIEmbedder` instance. The old
+  object predated `estimate_tokens()`.
+- Added capability detection plus targeted cache clearing/module reload before
+  OpenAI token estimation or fitting.
+- Simulated the stale object and confirmed automatic recovery; all six tests pass.
+
+## [2026-07-15] fix | OpenAI embedding batches respect TPM limits
+
+- Root cause: a 128-document request contained 288,005 tokens against the
+  organization's 40,000 TPM `text-embedding-3-small` limit.
+- Replaced document-count-only requests with exact tokenizer-based batching and
+  a 90% sliding-window TPM budget. Overlong documents are split into token chunks
+  and reduced back to one normalized vector using a token-weighted mean.
+- Added bounded 429 retries with jitter and server reset headers; successful API
+  responses can raise the limiter automatically when the account tier is higher.
+- Streamlit now shows an exact token count and theoretical minimum duration before
+  enabling an OpenAI fit. AsoSoft's saved 7,108 documents contain 29.34M tokens,
+  implying at least 13.6 hours at 40k TPM.
+- Added `tiktoken`, `.env.example` throttle settings, and regression tests for
+  token-budget packing, long-document splitting, aggregation, and progress.
+
+## [2026-07-15] implementation | Interactive embedding-model selection and fitting
+
+- Added model selectors to existing-source exploration and the upload workflow.
+- Unfitted model/source combinations remain visible and can now be fitted inside
+  Streamlit using the source's saved documents; progress is reported in the UI.
+- OpenAI fitting requires explicit acknowledgement that source text is sent to
+  OpenAI and API charges may apply.
+- Verified selector state, confirmation gating, and the fit callback with
+  Streamlit's application-test harness; no API request was sent during testing.
+
 ## [2026-07-11] research | Anisotropy diagnosis: the mega-topics were a fit bug, now fixed
 
 User reported the model "performing bad". Root-caused and fixed:

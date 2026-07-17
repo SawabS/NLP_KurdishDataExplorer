@@ -48,6 +48,7 @@ EMBEDDING_MODELS: dict[str, str] = {
     "kdx-minilm-tsdae": str(ARTIFACTS_DIR / "models" / "kdx-minilm-tsdae"),
     "minilm": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
     "openai": os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small"),
+    "nvidia": os.getenv("NVIDIA_EMBEDDING_MODEL", "nvidia/nemotron-3-embed-1b"),
 }
 DEFAULT_EMBEDDING_MODEL = "kdx-minilm-tsdae"
 
@@ -57,15 +58,18 @@ EMBEDDING_MODEL_LABELS: dict[str, str] = {
     "kdx-minilm-tsdae": "KDX MiniLM · TSDAE domain-adapted for Sorani (ours)",
     "minilm": "Base MiniLM · off-the-shelf comparison",
     "openai": f"OpenAI · {EMBEDDING_MODELS['openai']}",
+    "nvidia": f"NVIDIA · {EMBEDDING_MODELS['nvidia']} (concurrent, max speed)",
 }
 
 
 def default_model_key() -> str:
-    """Choose an explicit provider, OpenAI when configured, else a local model.
+    """Choose an explicit provider, a hosted key when configured, else local.
 
-    ``KDX_EMBEDDING_PROVIDER`` accepts a registered model key. Without it, an
-    ``OPENAI_API_KEY`` selects OpenAI and a fresh clone remains usable with the
-    local MiniLM fallback when no key is configured.
+    ``KDX_EMBEDDING_PROVIDER`` accepts a registered model key and always wins.
+    Without it, ``NVIDIA_API_KEY`` selects NVIDIA (checked first because its
+    adapter is the fastest hosted option once configured), then
+    ``OPENAI_API_KEY`` selects OpenAI, and a fresh clone remains usable with
+    the local MiniLM fallback when no key is configured.
     """
     requested = os.getenv("KDX_EMBEDDING_PROVIDER", "").strip().lower()
     if requested:
@@ -75,6 +79,8 @@ def default_model_key() -> str:
                 f"{', '.join(EMBEDDING_MODELS)}; received {requested!r}."
             )
         return requested
+    if os.getenv("NVIDIA_API_KEY"):
+        return "nvidia"
     if os.getenv("OPENAI_API_KEY"):
         return "openai"
     if Path(EMBEDDING_MODELS[DEFAULT_EMBEDDING_MODEL]).exists():

@@ -14,7 +14,7 @@ import argparse
 import sys
 from pathlib import Path
 
-# Make the src/ package importable when run as a plain script.
+# Make the src/ package importable b when run as a plain script.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from kurdish_explorer import config, pipeline  # noqa: E402

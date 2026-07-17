@@ -2,7 +2,7 @@
 title: "Implementation and Methodology"
 type: synthesis
 created: 2026-06-26
-updated: 2026-07-11
+updated: 2026-07-17
 status: stable
 tags: [implementation, methodology, reproducibility, bertopic, tsdae, pipeline, transparency]
 sources: ["raw/sources/KLPT – Kurdish Language Processing Toolkit.pdf", "raw/sources/Kurdish News Dataset Headlines (KNDH) through multiclass classification.pdf", "raw/sources/Toward Kurdish language processing: Experiments in collecting and processing the AsoSoft text corpus.pdf", "raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf"]
@@ -62,11 +62,28 @@ exploration without running out of memory. Scaling design lives in
 
 ## Embedding
 
-- Default `paraphrase-multilingual-MiniLM-L12-v2` (384-dim). Registry also includes
-  distiluse (512), mpnet (768), multilingual-e5-base, and the fine-tuned
-  [[KDX-MiniLM-TSDAE (fine-tuned embedder)]].
+- The registry includes the fine-tuned
+  [[KDX-MiniLM-TSDAE (fine-tuned embedder)]], its multilingual MiniLM base,
+  OpenAI `text-embedding-3-small`, and NVIDIA `nemotron-3-embed-1b`. Older
+  DistilUSE/MPNet artifacts remain on disk but are no longer registered.
 - GPU encoding (fp32, normalized), with an on-disk `.npy` cache keyed by
   (model, content hash) so re-runs reuse embeddings.
+- The OpenAI adapter tokenizes before sending: requests are packed below a safe
+  fraction of the configured TPM limit, overlong documents are split and their
+  vectors recombined with a token-weighted mean, and 429 responses use reset
+  headers plus bounded exponential backoff. The Streamlit fit screen estimates
+  total tokens and minimum run time before the user confirms a hosted run.
+- The NVIDIA adapter (`NvidiaEmbedder`, `src/kurdish_explorer/embed.py`) is the
+  fastest hosted option: it uses NVIDIA's OpenAI-compatible endpoint
+  (`https://integrate.api.nvidia.com/v1`) and, because that endpoint has no
+  documented low per-minute token cap the way OpenAI's free tier does, fans
+  batched requests (default 64 docs/request) out across a thread pool (default
+  8 concurrent requests) instead of a single-threaded token-bucket queue.
+  Overlong documents are truncated server-side (`truncate=END`) rather than
+  split locally, since the model's 32k-token context comfortably covers
+  headlines/sentences. 429/5xx responses retry with bounded exponential
+  backoff. `NVIDIA_API_KEY` is checked before `OPENAI_API_KEY` in
+  `default_model_key()` for this reason.
 
 ## Topic modeling ([[BERTopic]])
 
@@ -212,13 +229,14 @@ Scaling provisions for hundreds-of-MB inputs:
 
 ## Application
 
-`app/streamlit_app.py` reads precomputed artifacts (no model refit). Two modes:
-**Explore a source** (source-first nav → Topic tree, Document map, Ask the
-corpus, Model & evaluation) and **Upload & explore** (the generic engine above,
-always using the KDX embedder with base-MiniLM fallback via
-`config.default_model_key()`). "Ask the corpus" is one-click/free-text semantic
-search: the question is embedded with the run's embedder and matched to
-per-topic centroids from the cached document embeddings.
+`app/streamlit_app.py` uses saved artifacts for immediate exploration and can
+interactively fit a missing model/source combination. **Explore a source** offers
+a model selector; fitted runs open immediately, while `fit required` choices can
+reuse the source's saved documents to run the pipeline in-app. OpenAI fitting
+requires an explicit data-sharing/cost acknowledgement. **Upload & explore** also
+offers the registered embedding models before starting a new run. "Ask the corpus"
+embeds a one-click/free-text question with the active run's embedder and matches it
+to per-topic centroids from the cached document embeddings.
 
 ### UI polish and verification (2026-07-03)
 
@@ -273,3 +291,18 @@ conda run -n ai streamlit run app/streamlit_app.py
 - 2026-07-11: Diagnosed KDX anisotropy (mean random-pair cosine 0.951) and shipped
   per-model UMAP/HDBSCAN overrides for KDX. Refit KNDH and AsoSoft KDX artifacts;
   refreshed tables to current artifact values.
+- 2026-07-15: Restored explicit embedding-model selectors for existing and uploaded
+  sources. Added interactive fitting for missing model/source artifacts, including
+  progress reporting and explicit OpenAI data-sharing/cost acknowledgement.
+- 2026-07-15: Fixed OpenAI 429 failures caused by document-count batching. Added
+  exact token batching, long-document aggregation, TPM throttling, reset-aware
+  retries, API-limit header detection, and preflight token/time disclosure.
+- 2026-07-17: Added NVIDIA `nemotron-3-embed-1b` as a registered embedding
+  provider (`NVIDIA_API_KEY`), tuned for maximum throughput via concurrent
+  thread-pool batching rather than OpenAI's single-threaded token-bucket
+  queue. Wired into the Explore and Upload model dropdowns with the same
+  fit-in-app + acknowledgement UX as OpenAI. `default_model_key()` now prefers
+  NVIDIA over OpenAI when both keys are configured.
+- 2026-07-15: Made Streamlit repair stale cached OpenAI adapter instances after a
+  hot code reload, preventing old class objects from missing new token-estimation
+  and throttling methods.
