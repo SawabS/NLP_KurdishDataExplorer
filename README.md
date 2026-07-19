@@ -1,11 +1,13 @@
 # Kurdish Data Explorer
 
 Interactive topic modeling and exploratory analysis for Central Kurdish (Sorani)
-text — and, generically, for any text corpus you point it at. Upload a raw text
+text and, generically, for any text corpus you point it at. Upload a raw text
 file or a dataset with a text column (CSV / TSV / Excel / Parquet, up to
-GB-scale via the server-path option) and explore it as a drill-down topic tree,
-a 2D document map, free-text semantic search ("Ask the corpus", with one-click
-example questions), and keyword/baseline comparisons.
+GB-scale via the server-path option) and explore it through four workspace tabs:
+Structure (drill-down topic tree), Map (2D document map), Search (free-text
+semantic search with one-click example questions), and Evaluate
+(keyword/baseline comparisons). The Overview landing page lists every corpus
+with switchable card and row (table) views.
 
 One **BERTopic** pipeline (sentence embeddings → UMAP → HDBSCAN → c-TF-IDF)
 with selectable **OpenAI**, **NVIDIA**, and local sentence-transformer models.
@@ -41,6 +43,12 @@ python scripts/run_pipeline.py --source asosoft --normalize --no-baselines
 npm run build -w web
 ./scripts/serve_web.sh
 ```
+
+In this production-like mode one FastAPI process serves both the API and the
+compiled SPA from `web/dist`, so rebuild (`npm run build -w web`) after any
+frontend change. If port 8655 is occupied, pick another with
+`PORT=8656 ./scripts/serve_web.sh`. The serve script uses the `ai` conda
+environment's Python by default; override with `PYTHON=/path/to/python`.
 
 The original Streamlit interface remains supported and reads the same artifacts:
 
@@ -88,7 +96,7 @@ If both `NVIDIA_API_KEY` and `OPENAI_API_KEY` are set, NVIDIA is preferred by
 default (it's the faster of the two); set `KDX_EMBEDDING_PROVIDER=openai` to
 override.
 
-**OpenAI.** New runs use `text-embedding-3-small` by default — set
+**OpenAI.** New runs use `text-embedding-3-small` by default; set
 `OPENAI_EMBEDDING_MODEL=text-embedding-3-large` to choose another. Requests
 are token-aware: long documents are split and recombined, requests stay below
 a safe fraction of the configured token-per-minute limit, and 429 responses
@@ -99,7 +107,7 @@ automatically when the API returns it in rate-limit headers.
 
 **NVIDIA.** Get a free key at [build.nvidia.com](https://build.nvidia.com);
 new runs use `nvidia/nemotron-3-embed-1b` (2048-dim, 32k-token context) over
-NVIDIA's OpenAI-compatible hosted endpoint by default — set
+NVIDIA's OpenAI-compatible hosted endpoint by default; set
 `NVIDIA_EMBEDDING_MODEL` to choose another. This is the fastest embedding
 option in the app: unlike the OpenAI adapter's single-threaded token-bucket
 queue, requests are batched (`NVIDIA_EMBEDDING_BATCH_SIZE`, default 64 docs)
@@ -130,13 +138,13 @@ default 6).
 
 The registry in `src/kurdish_explorer/config.py` exposes four choices:
 
-- **`nvidia`** — hosted Nemotron embeddings; preferred when `NVIDIA_API_KEY` is set.
-- **`openai`** — hosted OpenAI embeddings; preferred when only `OPENAI_API_KEY` is set.
-- **`kdx-minilm-tsdae` (KDX MiniLM)** — `paraphrase-multilingual-MiniLM-L12-v2`
+- **`nvidia`**: hosted Nemotron embeddings; preferred when `NVIDIA_API_KEY` is set.
+- **`openai`**: hosted OpenAI embeddings; preferred when only `OPENAI_API_KEY` is set.
+- **`kdx-minilm-tsdae` (KDX MiniLM)**: `paraphrase-multilingual-MiniLM-L12-v2`
   domain-adapted to Sorani with unsupervised TSDAE (`scripts/finetune_tsdae.py`).
-  Training data: ~120k Sorani sentences — the 50k KNDH headlines plus
-  sentence-split AsoSoft running text — deduplicated, shuffled (seed 42), no labels.
-- **`minilm` (base MiniLM)** — the unadapted base, kept only as the evaluation
+  Training data: ~120k Sorani sentences (the 50k KNDH headlines plus
+  sentence-split AsoSoft running text), deduplicated, shuffled (seed 42), no labels.
+- **`minilm` (base MiniLM)**: the unadapted base, kept only as the evaluation
   comparison point.
 
 On the existing local-model KNDH comparison, KDX MiniLM reaches positive NPMI topic
@@ -144,7 +152,7 @@ coherence (+0.057 vs −0.047 for base MiniLM; earlier DistilUSE/MPNet
 experiments also scored negative and were unregistered). Because the TSDAE
 space is anisotropic, KDX runs use per-model fit overrides
 (`config.MODEL_FIT_OVERRIDES`: wider UMAP neighborhood + HDBSCAN leaf
-selection) — without them HDBSCAN grows a junk mega-cluster. These results are
+selection); without them HDBSCAN grows a junk mega-cluster. These results are
 an offline comparison, not a restriction on using OpenAI or NVIDIA. To create
 the optional local TSDAE model:
 
@@ -173,5 +181,5 @@ Workflow:
 grep "^## \[" wiki/log.md | tail -10
 ```
 
-Rule: never edit files inside `raw/` during wiki maintenance — raw files are
+Rule: never edit files inside `raw/` during wiki maintenance; raw files are
 evidence only.
