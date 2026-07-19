@@ -5,7 +5,7 @@ created: 2026-07-18
 updated: 2026-07-18
 status: stable
 tags: [application, architecture, fastapi, react, vite, operations, mermaid]
-sources: ["package.json", "web/package.json", "web/vite.config.ts", "web/src/App.tsx", "web/src/api/client.ts", "server/kdx_server/main.py", "server/kdx_server/jobs.py", "src/kurdish_explorer/pipeline.py"]
+sources: ["package.json", "web/package.json", "web/vite.config.ts", "web/src/app/App.tsx", "web/src/api/client.ts", "server/kdx_server/main.py", "server/kdx_server/jobs.py", "src/kurdish_explorer/pipeline.py"]
 ---
 
 # Application Architecture and Operation
@@ -135,7 +135,7 @@ but completed artifacts remain on disk and are discovered again as fitted runs.
 
 | Path | Responsibility |
 | --- | --- |
-| `web/src/` | React routes, noor-ui components, Plotly views, typed API client, query state |
+| `web/src/` | React SPA: `app/` shell and providers, `features/` (overview, upload, explore workspaces), typed API client, Plotly views, query state |
 | `server/kdx_server/` | Health, sources, models, runs, search, uploads, and job endpoints; production SPA host |
 | `src/kurdish_explorer/` | Data preparation, normalization, embeddings, BERTopic, baselines, evaluation, pipeline orchestration |
 | `scripts/` | Data preparation, training/tuning, production serving, and full-stack development startup |
@@ -243,3 +243,6 @@ Other failures have different meanings:
 - 2026-07-18: Created the operational and architecture synthesis; added Mermaid
   system, request, and fitting flows; documented the unified development command
   and failure modes.
+- 2026-07-19: Updated frontend paths after the feature-folder restructure
+  (`web/src/app/` shell, `web/src/features/` for overview, upload, and the
+  explore workspace views).

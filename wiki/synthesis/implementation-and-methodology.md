@@ -233,11 +233,14 @@ The application is a Vite/React SPA using noor-ui, backed by FastAPI under
 `server/kdx_server/`. Saved Parquet/JSON artifacts are read through an mtime-keyed
 LRU cache; large map responses are sampled server-side and returned column-wise.
 Routes encode source, model, and tab, with layout/depth/topic/search state in query
-parameters. Missing model/source combinations and uploads run through a single
+parameters. The landing Overview lists every corpus with card and row (table) views
+(persisted per browser); each explore workspace offers Structure, Map, Search, and
+Evaluate tabs. Missing model/source combinations and uploads run through a single
 worker job registry with polling, progress, error capture, and query invalidation.
 OpenAI and NVIDIA are normal registry choices and are preferred when their keys are
-configured; hosted fits require a cost acknowledgement. "Ask the corpus" embeds a
-question with the active run's embedder and ranks cached topic centroids.
+configured; hosted fits require a cost acknowledgement. The Search tab (formerly
+"Ask the corpus") embeds a question with the active run's embedder and ranks cached
+topic centroids.
 The original `app/streamlit_app.py` and `app/upload_page.py` remain runnable as a
 compatibility interface over the same pipeline and artifacts.
 
@@ -310,6 +313,15 @@ npm run build -w web
 - 2026-07-15: Fixed OpenAI 429 failures caused by document-count batching. Added
   exact token batching, long-document aggregation, TPM throttling, reset-aware
   retries, API-limit header detection, and preflight token/time disclosure.
+- 2026-07-19: Restructured the frontend into feature folders (`web/src/app/`,
+  `web/src/features/`) with an Overview landing page (card/row corpus views),
+  workspace tabs renamed Structure/Map/Search/Evaluate, and a bilingual
+  English/Sorani UI with RTL support. Fixed invisible primary-button labels by
+  teaching tailwind-merge the custom noor-ui font-size scale (it had been
+  stripping `text-primary-action-text` as a conflicting color class), and fixed a
+  mobile page overflow caused by an absolutely positioned `sr-only` table-header
+  span. Re-verified all routes with Playwright in both themes, desktop and
+  mobile, with no console errors.
 - 2026-07-17: Added NVIDIA `nemotron-3-embed-1b` as a registered embedding
   provider (`NVIDIA_API_KEY`), tuned for maximum throughput via concurrent
   thread-pool batching rather than OpenAI's single-threaded token-bucket

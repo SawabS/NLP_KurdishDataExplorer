@@ -24,6 +24,9 @@ const en = {
   activeFit: "Fit in progress",
   viewChart: "Chart",
   viewTable: "Table",
+  viewCards: "Cards",
+  viewRows: "Rows",
+  models: "Models",
   labeled: "Labeled",
 };
 
@@ -50,6 +53,9 @@ const ckb: Dict = {
   activeFit: "پرۆسەی فیت لە جێبەجێکردندایە",
   viewChart: "هێڵکاری",
   viewTable: "خشتە",
+  viewCards: "کارتەکان",
+  viewRows: "ڕیزەکان",
+  models: "مۆدێلەکان",
   labeled: "پۆلێنکراو",
 };
 

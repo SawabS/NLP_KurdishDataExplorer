@@ -332,3 +332,18 @@ Unresolved issues / cautions:
   startup failures.
 - Replaced the frontend-only root development command with a supervised launcher
   that starts and stops FastAPI and Vite together.
+
+## [2026-07-19] fix+feature | UI restructure polish, view toggle, theme-token fix
+
+- Fixed primary buttons rendering as blank black/white pills: tailwind-merge did
+  not know the noor-ui typography scale, so `text-caption` (a font size) was
+  merged against `text-primary-action-text` (a color) and stripped it. `cn()` now
+  extends tailwind-merge with the custom font-size class group.
+- Added a persisted Cards/Rows view toggle to the Overview corpus list so many
+  datasets stay scannable; the row view is a sortable-width table with model
+  badges and works in RTL and on mobile.
+- Fixed a mobile horizontal-overflow bug: an absolutely positioned `sr-only`
+  header span anchored to the document; the header cell is now `relative`.
+- Playwright tour of Overview, Upload, and all four explore tabs in light and
+  dark themes, English and Sorani (RTL), desktop and 390px mobile: no console
+  errors, no page overflow; search, tree layouts, and map table verified live.
