@@ -1,6 +1,6 @@
 import { FileText, Hash } from "lucide-react";
 import { Badge, EmptyState, Select, Skeleton, Typography } from "noor-ui";
-import { useTopic } from "../../api/hooks";
+import { useTopic } from "../../../api/hooks";
 
 export function TopicInspector({source, model, topicId, category, options, onChange}: {source: string; model: string; topicId?: number; category?: string; options: Array<{value: string; label: string}>; onChange: (id: number) => void}) {
   const detail = useTopic(source, model, topicId, category);
@@ -10,7 +10,7 @@ export function TopicInspector({source, model, topicId, category, options, onCha
     <section className="flex h-full min-h-[560px] flex-col bg-surface">
       <div className="border-b border-border p-4">
         <div className="mb-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2"><Hash className="size-4 text-accent-primary" /><Typography variant="label">Topic lens</Typography></div>
+          <div className="flex items-center gap-2"><Hash className="size-4 text-text-secondary" /><Typography variant="label">Topic lens</Typography></div>
           {detail.data && <Badge>{detail.data.count.toLocaleString()} docs</Badge>}
         </div>
         <Select aria-label="Topic" value={String(topicId)} options={options} onValueChange={(value) => onChange(Number(value))} />
@@ -21,7 +21,7 @@ export function TopicInspector({source, model, topicId, category, options, onCha
           <p className="mb-3 text-caption uppercase text-text-muted">Defining terms</p>
           <div className="flex flex-wrap gap-2" dir="auto" lang="ckb">
             {detail.data.keywords.map((item, index) => (
-              <span key={item.word} className={`corpus-text rounded-md border px-2.5 py-1 text-body-sm ${index < 3 ? "border-accent-primary/30 bg-accent-primary/10 text-text-primary" : "border-border bg-surface-raised text-text-secondary"}`}>{item.word}</span>
+              <span key={item.word} className={`corpus-text rounded-md border px-2.5 py-1 text-body-sm ${index < 3 ? "border-info bg-info-bg text-text-primary" : "border-border bg-surface-raised text-text-secondary"}`}>{item.word}</span>
             ))}
           </div>
         </div>

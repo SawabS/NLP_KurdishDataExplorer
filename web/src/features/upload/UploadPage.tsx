@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, FileInput, Play, Settings2, SlidersHorizontal } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { FileInput, Play, Settings2, SlidersHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Alert, Button, Checkbox, FileUpload, FormField, Input, Progress, SegmentedControl, Select, Slider, Switch, Typography } from "noor-ui";
+import { Alert, Button, Checkbox, FormField, Input, SegmentedControl, Select, Slider, Switch, Typography } from "noor-ui";
 import { api } from "../../api/client";
 import { useJob, useModels } from "../../api/hooks";
-
-interface SelectedFile {path: string; name: string; size: number; columns: string[]; kind: "text" | "table"}
+import { compactModelLabel } from "../../lib/labels";
+import { JobProgress } from "../explore/JobProgress";
+import { SourceStep, type SelectedFile } from "./SourceStep";
 
 export function UploadPage() {
   const navigate = useNavigate();
-  const client = useQueryClient();
   const models = useModels();
-  const activeJobs = useQuery({queryKey: ["jobs"], queryFn: api.jobs, refetchInterval: 2000});
+  const activeJobs = useQuery({queryKey: ["jobs"], queryFn: ({signal}) => api.jobs(signal), refetchInterval: 2000});
   const [method, setMethod] = useState("upload");
   const [path, setPath] = useState("");
   const [selected, setSelected] = useState<SelectedFile>();
@@ -45,16 +45,22 @@ export function UploadPage() {
     }
   }, [peek.data, upload.data]);
   useEffect(() => { if (fit.data?.job_id) setJobId(fit.data.job_id); }, [fit.data]);
+  // Cache invalidation on completion is owned by JobsProvider; this page only navigates.
   useEffect(() => {
     if (job.data?.status === "done" && job.data.result) {
-      void client.invalidateQueries();
       navigate(`/explore/${encodeURIComponent(job.data.result.source)}/${encodeURIComponent(job.data.result.model)}/tree`);
     }
-  }, [client, job.data, navigate]);
+  }, [job.data, navigate]);
 
   const registry = models.data?.models.find((item) => item.key === model);
   const hosted = model === "openai" || model === "nvidia";
-  const canSubmit = selected && model && registry?.key_present && (!hosted || costAck) && (selected.kind === "text" || textCol);
+  const blockers = [
+    !selected && "select and inspect a source file",
+    selected?.kind === "table" && !textCol && "choose a text column",
+    Boolean(registry) && !registry!.key_present && "provider key missing on the server",
+    hosted && Boolean(registry?.key_present) && !costAck && "acknowledge the hosted-run cost",
+  ].filter((value): value is string => Boolean(value));
+  const canSubmit = blockers.length === 0 && Boolean(model);
   const attachable = activeJobs.data?.find((item) => item.kind === "fit-upload" && !["done", "error"].includes(item.status));
 
   const start = () => {
@@ -85,18 +91,18 @@ export function UploadPage() {
       {attachable && !jobId && <Alert className="mt-5" title="A fit is already in progress" description={<span>{attachable.message} <Button className="ms-2" size="sm" variant="link" onClick={() => setJobId(attachable.id)}>Reattach</Button></span>} />}
 
       <div className="mt-5 grid items-start gap-5 xl:grid-cols-[380px_minmax(0,1fr)]">
-        <section className="rounded-md border border-border bg-surface">
-          <div className="flex items-center gap-3 border-b border-border px-4 py-3"><span className="grid size-7 place-items-center rounded-md bg-accent-primary/10 text-caption font-semibold text-accent-primary">01</span><FileInput className="size-4" /><Typography variant="label">Source material</Typography></div>
-          <div className="p-4">
-            <SegmentedControl className="w-full" aria-label="Input method" value={method} options={[{value: "upload", label: "Upload"}, {value: "path", label: "Server path"}]} onValueChange={(value) => {setMethod(value); setSelected(undefined);}} />
-            {method === "upload" ? <FileUpload className="mt-4" accept=".txt,.text,.csv,.tsv,.xlsx,.xls,.parquet" disabled={upload.isPending} onFilesSelected={(files) => files[0] && upload.mutate(files[0])} label={upload.isPending ? "Uploading…" : "Choose or drop a file"} helperText="TXT, CSV, TSV, Excel, Parquet · 2 GB max" /> : <div className="mt-4 space-y-2"><Input aria-label="Absolute server path" value={path} onChange={(event) => setPath(event.target.value)} placeholder="/home/.../corpus.csv" /><Button fullWidth variant="secondary" loading={peek.isPending} onClick={() => peek.mutate(path)}>Inspect path</Button></div>}
-            {(upload.isError || peek.isError) && <Alert className="mt-3" variant="danger" description={(upload.error ?? peek.error)?.message} />}
-            {selected && <div className="mt-4 border-t border-border pt-4">
-              <div className="flex items-start gap-3"><CheckCircle2 className="mt-0.5 size-5 shrink-0 text-success" /><div className="min-w-0"><p className="truncate text-label">{selected.name}</p><p className="mt-1 text-caption text-text-muted">{(selected.size / 1e6).toFixed(1)} MB · {selected.kind === "table" ? `${selected.columns.length} columns` : "plain text"}</p></div></div>
-              <dl className="mt-4 grid grid-cols-2 gap-3 border-y border-border py-3 text-caption"><div><dt className="text-text-muted">Format</dt><dd className="mt-1 capitalize text-text-primary">{selected.kind}</dd></div><div><dt className="text-text-muted">Status</dt><dd className="mt-1 text-text-primary">Ready</dd></div></dl>
-            </div>}
-          </div>
-        </section>
+        <SourceStep
+          method={method}
+          onMethodChange={(value) => {setMethod(value); setSelected(undefined);}}
+          path={path}
+          onPathChange={setPath}
+          selected={selected}
+          uploading={upload.isPending}
+          peeking={peek.isPending}
+          error={(upload.error ?? peek.error)?.message}
+          onUpload={(file) => upload.mutate(file)}
+          onPeek={() => peek.mutate(path)}
+        />
 
         {selected ? <form className="overflow-hidden rounded-md border border-border bg-surface" onSubmit={(event) => {event.preventDefault(); start();}}>
           <section>
@@ -119,27 +125,27 @@ export function UploadPage() {
                 <div className="py-2 md:px-4"><Switch checked={autoMcs} onCheckedChange={setAutoMcs} label="Auto granularity" description="Scale clusters to corpus" /></div>
                 <div className="py-2 md:ps-4"><Switch checked={baselines} onCheckedChange={setBaselines} label="LDA/NMF baselines" description="Add comparisons" /></div>
               </div>
-              {!autoMcs && <div className="mt-4"><div className="flex justify-between text-body-sm"><span>Minimum cluster size</span><span>{mcs}</span></div><Slider className="mt-2" aria-label="Minimum cluster size" min={10} max={500} step={10} value={[mcs]} onValueChange={([value]) => setMcs(value)} /></div>}
+              {!autoMcs && <div className="mt-4"><div className="flex justify-between text-body-sm"><span>Minimum cluster size</span><span className="tabular-nums">{mcs}</span></div><Slider className="mt-2" aria-label="Minimum cluster size" min={10} max={500} step={10} value={[mcs]} onValueChange={([value]) => setMcs(value)} /></div>}
               {hosted && <div className="mt-4"><Checkbox checked={costAck} onCheckedChange={(value) => setCostAck(value === true)} label="I understand this hosted embedding run may incur API charges" /></div>}
-              {!registry?.key_present && <Alert className="mt-4" variant="danger" title="Provider key unavailable" description="Configure the provider key in the FastAPI server environment." />}
+              {registry && !registry.key_present && <Alert className="mt-4" variant="danger" title="Provider key unavailable" description="Configure the provider key in the FastAPI server environment." />}
             </div>
           </section>
 
           <footer className="border-t border-border bg-surface-raised px-4 py-4">
-            {!jobId && <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><p className="text-caption text-text-muted">Runs are queued and artifacts are saved automatically.</p><Button type="submit" disabled={!canSubmit} loading={fit.isPending}><Play className="size-4" />Run pipeline</Button></div>}
+            {!jobId && (
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                {/* A disabled button always says WHY it's disabled. */}
+                <p className="text-caption text-text-muted" aria-live="polite">
+                  {canSubmit ? "Runs are queued and artifacts are saved automatically." : `To run: ${blockers.join("; ")}.`}
+                </p>
+                <Button type="submit" disabled={!canSubmit} loading={fit.isPending}><Play className="size-4" />Run pipeline</Button>
+              </div>
+            )}
             {fit.isError && <Alert variant="danger" title="Could not start fit" description={fit.error.message} />}
-            {job.data && <div className="space-y-3"><div className="flex justify-between text-body-sm"><span>{job.data.status === "queued" ? "Queued behind the current fit" : job.data.message}</span><span>{Math.round(job.data.fraction * 100)}%</span></div><Progress value={job.data.fraction * 100} label={job.data.message} />{job.data.error && <Alert variant="danger" title="Fit failed" description={job.data.error} />}</div>}
+            {job.data && <JobProgress job={job.data} />}
           </footer>
         </form> : <section className="grid min-h-[460px] place-items-center rounded-md border border-dashed border-border bg-surface/50 p-8 text-center"><div><FileInput className="mx-auto size-8 text-text-muted" /><Typography className="mt-3" variant="heading-sm">Select source material</Typography><p className="mt-1 text-body-sm text-text-muted">Configuration appears after the file is inspected.</p></div></section>}
       </div>
     </div>
   </div>;
-}
-
-function compactModelLabel(key: string, label: string) {
-  if (key === "openai") return "OpenAI · text-embedding-3-small";
-  if (key === "nvidia") return "NVIDIA · Nemotron Embed 1B";
-  if (key === "kdx-minilm-tsdae") return "Sorani MiniLM · local TSDAE";
-  if (key === "minilm") return "Base multilingual MiniLM";
-  return label;
 }
