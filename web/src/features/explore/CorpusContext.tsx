@@ -29,8 +29,8 @@ export function CorpusContext({source, category, sourceInfo, sources, run, onSou
           <Select aria-label={t("categories")} disabled={!sourceInfo.has_labels} value={category} options={[{value: "(all)", label: sourceInfo.has_labels ? "All categories" : "No categories"}, ...sourceInfo.categories.map((value) => ({value, label: value}))]} onValueChange={onCategoryChange} />
         </FormField>
       </div>
-      <div className="mt-7 border-t border-border pt-5">
-        <p className="text-caption uppercase text-text-muted">{t("glance")}</p>
+      <div className="mt-8">
+        <p className="text-caption uppercase tracking-wide text-text-muted">{t("glance")}</p>
         <DataList
           className="mt-3"
           items={[

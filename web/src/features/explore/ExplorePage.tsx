@@ -1,7 +1,7 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { forwardRef, useEffect, useState, type HTMLAttributes, type ReactNode } from "react";
 import { ChartNoAxesCombined, ChevronDown, GitBranch, Map as MapIcon, Menu, Search } from "lucide-react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { Badge, Breadcrumbs, Button, Drawer, ErrorState, IconButton, Skeleton, StatCard, TabsContent, TabsList, TabsRoot, TabsTrigger, Tooltip, Typography } from "noor-ui";
+import { Badge, Breadcrumbs, Button, Drawer, ErrorState, IconButton, Skeleton, TabsContent, TabsList, TabsRoot, TabsTrigger, Tooltip, Typography } from "noor-ui";
 import { usePrefetchWorkspace, useRun, useSources } from "../../api/hooks";
 import { useWorkspacePanel } from "../../layout/WorkspacePanel";
 import { useLocale } from "../../lib/i18n";
@@ -90,9 +90,9 @@ export function ExplorePage() {
   return (
     <div className="flex h-full min-w-0">
       {/* Corpus panel — collapsed via the rail toggle to free visualization width. */}
-      {panel.open && <aside className="hidden w-[300px] shrink-0 overflow-y-auto border-e border-border bg-surface lg:block">{context}</aside>}
-      <TabsRoot value={activeTab} onValueChange={(value) => go(source, model, value)} className="flex min-w-0 flex-1 flex-col overflow-hidden" activationMode="manual">
-        <div className="shrink-0 border-b border-border bg-canvas px-4 pt-4 md:px-6 md:pt-5">
+      {panel.open && <aside className="hidden w-[288px] shrink-0 overflow-y-auto bg-surface lg:block">{context}</aside>}
+      <TabsRoot value={activeTab} onValueChange={(value) => go(source, model, value)} className="flex min-w-0 flex-1 flex-col overflow-hidden bg-canvas" activationMode="manual">
+        <div className="shrink-0 px-4 pt-4 md:px-6 md:pt-5">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
               <Breadcrumbs items={[
@@ -132,13 +132,11 @@ export function ExplorePage() {
           </div>
 
           {run.data && statsOpen && (
-            <div className="mt-4 grid grid-cols-2 gap-3 xl:grid-cols-4">
-              <StatCard className="gap-1 p-3" label={t("documents")} value={<span className="text-heading-sm tabular-nums">{run.data.n_docs.toLocaleString()}</span>} />
-              <StatCard className="gap-1 p-3" label={t("topics")} value={<span className="text-heading-sm tabular-nums">{run.data.n_topics.toLocaleString()}</span>} />
-              <Tooltip content={t("outliersHint")}>
-                <StatCard className="gap-1 p-3" label={t("coverage")} value={<span className="text-heading-sm tabular-nums">{coverage}%</span>} />
-              </Tooltip>
-              <StatCard className="gap-1 p-3" label={t("categories")} value={<span className="text-heading-sm tabular-nums">{sourceInfo.has_labels ? sourceInfo.categories.length.toLocaleString() : "—"}</span>} />
+            <div className="mt-4 flex flex-wrap gap-x-10 gap-y-4">
+              <Metric label={t("documents")} value={run.data.n_docs.toLocaleString()} />
+              <Metric label={t("topics")} value={run.data.n_topics.toLocaleString()} />
+              <Tooltip content={t("outliersHint")}><Metric label={t("coverage")} value={`${coverage}%`} /></Tooltip>
+              <Metric label={t("categories")} value={sourceInfo.has_labels ? sourceInfo.categories.length.toLocaleString() : "—"} />
             </div>
           )}
 
@@ -168,6 +166,18 @@ export function ExplorePage() {
     </div>
   );
 }
+
+/** Borderless metric — clean number over a muted label, no boxes. forwardRef so
+ *  it can be a Tooltip trigger (Radix asChild passes a ref). */
+const Metric = forwardRef<HTMLDivElement, {label: string; value: string} & HTMLAttributes<HTMLDivElement>>(
+  ({label, value, ...props}, ref) => (
+    <div ref={ref} {...props}>
+      <p className="text-caption text-text-muted">{label}</p>
+      <p className="mt-0.5 text-heading-sm font-semibold tabular-nums">{value}</p>
+    </div>
+  ),
+);
+Metric.displayName = "Metric";
 
 /** Layout-true skeleton: header band + stat cards + chart block, so content doesn't jump. */
 function LoadingPage() {

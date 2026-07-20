@@ -41,8 +41,8 @@ export function MapView({source, model, category, params, setParams}: Props) {
 
   if (points.isLoading) {
     return (
-      <div className="p-4 md:p-5">
-        <div className="overflow-hidden rounded-md border border-border bg-surface">
+      <div className="p-4 md:p-6">
+        <div className="overflow-hidden rounded-xl bg-surface shadow-sm">
           <Skeleton className="m-4 h-9 w-96 max-w-full" />
           <Skeleton className="mx-4 mb-4 h-[600px]" />
         </div>
@@ -76,9 +76,9 @@ export function MapView({source, model, category, params, setParams}: Props) {
   });
 
   return (
-    <div className="p-4 md:p-5">
-      <section className="overflow-hidden rounded-md border border-border bg-surface">
-        <div className="flex flex-col gap-4 border-b border-border px-4 py-3 xl:flex-row xl:items-center xl:justify-between">
+    <div className="p-4 md:p-6">
+      <section className="overflow-hidden rounded-xl bg-surface shadow-sm">
+        <div className="flex flex-col gap-4 px-4 py-3 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2"><ScanSearch className="size-4 text-text-secondary" /><Typography variant="label">Semantic field</Typography></div>
             <Badge>{data.shown.toLocaleString()} / {data.total.toLocaleString()} docs</Badge>

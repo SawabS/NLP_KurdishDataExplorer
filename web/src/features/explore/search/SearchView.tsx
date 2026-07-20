@@ -35,8 +35,8 @@ export function SearchView({source, model, params, setParams}: Props) {
   const selected = search.data?.results.find((result) => result.topic_id === selParam) ?? search.data?.results[0];
 
   return (
-    <div className="p-4 md:p-5">
-      <section className="border-b border-border pb-5">
+    <div className="p-4 md:p-6">
+      <section className="pb-5">
         <div className="flex items-center gap-2 text-text-secondary"><Sparkles className="size-4" /><Typography variant="label">Ask the corpus</Typography></div>
         <p className="mt-1 max-w-4xl text-body-sm text-text-secondary">Type a question, event, or theme in Sorani or English — results are matched by meaning, not keywords.</p>
         <form className="mt-3 flex max-w-4xl gap-2" onSubmit={(event) => {event.preventDefault(); submit(draft);}}>
@@ -56,8 +56,8 @@ export function SearchView({source, model, params, setParams}: Props) {
       )}
       {search.isError && <Alert className="mt-5" variant="danger" title="Search failed" description={search.error.message} />}
       {search.data && (
-        <div className="mt-5 grid min-h-[560px] overflow-hidden rounded-md border border-border bg-surface xl:grid-cols-[360px_minmax(0,1fr)]">
-          <div className="border-b border-border xl:border-b-0 xl:border-e">
+        <div className="mt-5 grid min-h-[560px] overflow-hidden rounded-xl bg-surface shadow-sm xl:grid-cols-[360px_minmax(0,1fr)]">
+          <div className="border-b border-border/60 xl:border-b-0 xl:border-e xl:border-border/60">
             <ResultList data={search.data} selectedId={selected?.topic_id} onSelect={select} />
           </div>
           {selected && <ResultDetail source={source} model={model} result={selected} />}

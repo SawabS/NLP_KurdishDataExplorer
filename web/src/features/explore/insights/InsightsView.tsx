@@ -1,7 +1,7 @@
-import { useMemo } from "react";
+import { forwardRef, useMemo, type HTMLAttributes } from "react";
 import type { Data } from "plotly.js";
 import { BarChart3, Layers, PieChart } from "lucide-react";
-import { Skeleton, StatCard, Tooltip, Typography } from "noor-ui";
+import { Skeleton, Tooltip, Typography } from "noor-ui";
 import { useDistribution, useTopics } from "../../../api/hooks";
 import type { RunMeta, SourceSummary } from "../../../api/types";
 import { Plot } from "../../../charts/Plot";
@@ -10,6 +10,18 @@ import { useLocale } from "../../../lib/i18n";
 import { topicDisplayName } from "../../../lib/labels";
 
 interface Props {source: string; model: string; sourceInfo: SourceSummary; run: RunMeta}
+
+/** Borderless metric — a clean number over a muted label. forwardRef so it can
+ *  be a Tooltip trigger (Radix asChild passes a ref). */
+const Metric = forwardRef<HTMLDivElement, {label: string; value: string} & HTMLAttributes<HTMLDivElement>>(
+  ({label, value, ...props}, ref) => (
+    <div ref={ref} {...props}>
+      <p className="text-caption text-text-muted">{label}</p>
+      <p className="mt-0.5 text-heading-md font-semibold tabular-nums">{value}</p>
+    </div>
+  ),
+);
+Metric.displayName = "Metric";
 
 const median = (values: number[]) => {
   if (!values.length) return 0;
@@ -71,35 +83,31 @@ export function InsightsView({source, model, sourceInfo, run}: Props) {
   }, [distribution.data]);
 
   return (
-    <div className="space-y-5 p-4 md:p-5">
+    <div className="space-y-8 p-4 md:p-6">
       <section>
-        <div className="mb-3 flex items-center gap-2 text-text-secondary"><Layers className="size-4" /><Typography variant="label">{t("glance")}</Typography></div>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <Tooltip content={t("outliersHint")}>
-            <StatCard className="gap-1 p-4" label={`${t("clustered")} · ${t("coverage")}`} value={<span className="text-heading-md tabular-nums">{coverage}%</span>} />
-          </Tooltip>
-          <StatCard className="gap-1 p-4" label={t("largestTopic")} value={<span className="text-heading-md tabular-nums">{largestShare}%</span>} />
-          <StatCard className="gap-1 p-4" label="Median topic size" value={<span className="text-heading-md tabular-nums">{median(counts).toLocaleString()}</span>} />
-          <StatCard className="gap-1 p-4" label="Avg docs / topic" value={<span className="text-heading-md tabular-nums">{avgPerTopic.toLocaleString()}</span>} />
+        <div className="mb-4 flex items-center gap-2 text-text-secondary"><Layers className="size-4" /><Typography variant="label">{t("glance")}</Typography></div>
+        <div className="flex flex-wrap gap-x-10 gap-y-4">
+          <Tooltip content={t("outliersHint")}><Metric label={`${t("clustered")} · ${t("coverage")}`} value={`${coverage}%`} /></Tooltip>
+          <Metric label={t("largestTopic")} value={`${largestShare}%`} />
+          <Metric label="Median topic size" value={median(counts).toLocaleString()} />
+          <Metric label="Avg docs / topic" value={avgPerTopic.toLocaleString()} />
         </div>
         {/* Coverage meter: clustered vs unclustered, magnitude read at a glance. */}
-        <div className="mt-3 rounded-md border border-border bg-surface p-4">
+        <div className="mt-5 max-w-3xl">
           <div className="flex items-center justify-between text-caption text-text-secondary">
             <span>{t("clustered")} · {clustered.toLocaleString()}</span>
             <span>{t("unclustered")} · {run.n_outliers.toLocaleString()}</span>
           </div>
-          <div className="mt-2 flex h-2.5 w-full overflow-hidden rounded-full bg-surface-raised" role="img" aria-label={`${coverage}% ${t("clustered")}`}>
+          <div className="mt-2 flex h-2 w-full overflow-hidden rounded-full bg-surface-raised" role="img" aria-label={`${coverage}% ${t("clustered")}`}>
             <div className="h-full rounded-full" style={{width: `${coverage}%`, backgroundColor: palette.kind.bertopic}} />
           </div>
         </div>
       </section>
 
-      <section className="rounded-md border border-border bg-surface">
-        <div className="border-b border-border px-4 py-3">
-          <div className="flex items-center gap-2"><BarChart3 className="size-4 text-text-secondary" /><Typography variant="label">{t("topicSizes")}</Typography></div>
-          <p className="mt-0.5 text-caption text-text-muted">{t("topicSizesHint")}</p>
-        </div>
-        <div className="p-3">
+      <section>
+        <div className="mb-1 flex items-center gap-2"><BarChart3 className="size-4 text-text-secondary" /><Typography variant="label">{t("topicSizes")}</Typography></div>
+        <p className="mb-3 text-caption text-text-muted">{t("topicSizesHint")}</p>
+        <div className="rounded-xl bg-surface p-3 shadow-sm">
           {topics.isLoading ? <Skeleton className="h-[440px] w-full" /> : !rows.length ? null : (
             <Plot
               data={[
@@ -138,12 +146,10 @@ export function InsightsView({source, model, sourceInfo, run}: Props) {
       </section>
 
       {sourceInfo.has_labels && (
-        <section className="rounded-md border border-border bg-surface">
-          <div className="border-b border-border px-4 py-3">
-            <div className="flex items-center gap-2"><PieChart className="size-4 text-text-secondary" /><Typography variant="label">{t("categories")}</Typography></div>
-            <p className="mt-0.5 text-caption text-text-muted">Documents per category — the class balance of the corpus.</p>
-          </div>
-          <div className="p-3">
+        <section>
+          <div className="mb-1 flex items-center gap-2"><PieChart className="size-4 text-text-secondary" /><Typography variant="label">{t("categories")}</Typography></div>
+          <p className="mb-3 text-caption text-text-muted">Documents per category — the class balance of the corpus.</p>
+          <div className="rounded-xl bg-surface p-3 shadow-sm">
             {distribution.isLoading ? <Skeleton className="h-[360px] w-full" /> : !balance ? null : (
               <Plot
                 data={[{

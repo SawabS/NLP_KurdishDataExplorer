@@ -69,9 +69,9 @@ export function StructureView({source, model, category, params, setParams}: Prop
   };
 
   return (
-    <div className="p-4 md:p-5">
-      <div className="overflow-hidden rounded-md border border-border bg-surface">
-        <div className="flex flex-col gap-4 border-b border-border px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
+    <div className="p-4 md:p-6">
+      <div className="overflow-hidden rounded-xl bg-surface shadow-sm">
+        <div className="flex flex-col gap-4 px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-2"><Layers3 className="size-4 text-text-secondary" /><Typography variant="label">Hierarchy canvas</Typography><span className="text-caption text-text-muted">Area = documents</span></div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <SegmentedControl aria-label="Hierarchy layout" value={layout} options={[{value: "icicle", label: "Icicle"}, {value: "treemap", label: "Treemap"}, {value: "sunburst", label: "Sunburst"}]} onValueChange={(value) => update("layout", value)} />
@@ -79,7 +79,7 @@ export function StructureView({source, model, category, params, setParams}: Prop
           </div>
         </div>
         <div className="grid xl:grid-cols-[minmax(0,1fr)_380px]">
-          <div className="min-w-0 border-b border-border xl:border-b-0 xl:border-e">
+          <div className="min-w-0 border-b border-border/60 xl:border-b-0 xl:border-e">
             <Plot data={[trace]} layout={{height: 600, margin: {l: 0, r: 0, t: 8, b: 0}}} onClick={onChartClick} />
           </div>
           <TopicInspector source={source} model={model} topicId={selected} category={category} options={options} onChange={(value) => update("topic", String(value))} />

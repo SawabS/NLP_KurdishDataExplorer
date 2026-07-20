@@ -1,5 +1,5 @@
 import { Check, Palette } from "lucide-react";
-import { DropdownMenu, DropdownMenuItem, DropdownMenuLabel, IconButton, Tooltip } from "noor-ui";
+import { DropdownMenu, DropdownMenuItem, DropdownMenuLabel, IconButton } from "noor-ui";
 import { themeOptions, useTheme } from "noor-ui/providers";
 import { useLocale } from "../lib/i18n";
 
@@ -45,13 +45,12 @@ export function ThemeMenu() {
 
   return (
     <DropdownMenu
+      side="right"
       align="end"
       trigger={
-        <Tooltip content={t("theme")} side="right">
-          <IconButton aria-label={t("theme")} variant="ghost" size="sm">
-            <Palette className="size-4" />
-          </IconButton>
-        </Tooltip>
+        <IconButton aria-label={t("theme")} title={t("theme")} variant="ghost" size="sm">
+          <Palette className="size-4" />
+        </IconButton>
       }
     >
       <DropdownMenuLabel>{t("theme")}</DropdownMenuLabel>
