@@ -9,7 +9,9 @@ export function compactModelLabel(key: string, label: string) {
 }
 
 export function compactSourceLabel(title: string) {
-  return title.replace(/\s+—.*$/, "");
+  // Drop a trailing " — subtitle" and any uploaded-file extension so the
+  // corpus name stays short in selects, breadcrumbs, and the command palette.
+  return title.replace(/\s+—.*$/, "").replace(/\.(txt|text|csv|tsv|xlsx|xls|parquet)$/i, "");
 }
 
 export function topicDisplayName(name: string) {
