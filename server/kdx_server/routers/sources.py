@@ -12,17 +12,18 @@ def list_sources() -> list[dict]:
     grouped = pipeline.runs_by_source()
     sources = []
     for source, fitted_models in grouped.items():
-        first_model = next((model for model in fitted_models if model in config.EMBEDDING_MODELS), fitted_models[0])
-        meta = pipeline.run_meta(pipeline.run_key(source, first_model))
+        # Serve one "best available" run per source; the model choice is no
+        # longer surfaced in the UI (the app is about exploring the data).
+        best = config.best_available_model(fitted_models)
+        meta = pipeline.run_meta(pipeline.run_key(source, best))
         categories = meta.get("categories") or []
         if meta.get("has_labels") and not categories:
-            documents = config.ARTIFACTS_DIR / pipeline.run_key(source, first_model) / "documents.parquet"
+            documents = config.ARTIFACTS_DIR / pipeline.run_key(source, best) / "documents.parquet"
             labels = pd.read_parquet(documents, columns=["label"])["label"]
             unique = labels.dropna().astype(str).drop_duplicates().head(101).tolist()
             categories = sorted(unique) if len(unique) <= 100 else []
         models = [
-            {"key": key, "label": config.EMBEDDING_MODEL_LABELS.get(key, key), "fitted": key in fitted_models}
-            for key in config.EMBEDDING_MODELS
+            {"key": best, "label": config.EMBEDDING_MODEL_LABELS.get(best, best), "fitted": True}
         ]
         sources.append({
             "source": source,

@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Skeleton } from "noor-ui";
 import { AppShell } from "../layout/AppShell";
+import { WorkspacePanelProvider } from "../layout/WorkspacePanel";
 import { ErrorBoundary } from "./ErrorBoundary";
 
 const OverviewPage = lazy(() => import("../features/overview/OverviewPage").then((module) => ({default: module.OverviewPage})));
@@ -10,8 +11,9 @@ const UploadPage = lazy(() => import("../features/upload/UploadPage").then((modu
 
 export function App() {
   return (
-    <AppShell>
-      <ErrorBoundary>
+    <WorkspacePanelProvider>
+      <AppShell>
+        <ErrorBoundary>
         <Suspense fallback={<LoadingRoute />}>
           <Routes>
             <Route path="/" element={<OverviewPage />} />
@@ -20,8 +22,9 @@ export function App() {
             <Route path="*" element={<Navigate replace to="/" />} />
           </Routes>
         </Suspense>
-      </ErrorBoundary>
-    </AppShell>
+        </ErrorBoundary>
+      </AppShell>
+    </WorkspacePanelProvider>
   );
 }
 

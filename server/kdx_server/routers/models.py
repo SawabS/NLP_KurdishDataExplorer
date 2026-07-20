@@ -8,8 +8,11 @@ router = APIRouter(tags=["models"])
 
 @router.get("/models")
 def list_models() -> dict:
+    """Embedding providers offered for new fits — only the hosted ones."""
+    keys = config.NEW_FIT_MODELS
+    default = config.default_model_key()
     return {
-        "default": config.default_model_key(),
+        "default": default if default in keys else keys[0],
         "models": [
             {
                 "key": key,
@@ -20,6 +23,6 @@ def list_models() -> dict:
                     else True
                 ),
             }
-            for key in config.EMBEDDING_MODELS
+            for key in keys
         ],
     }

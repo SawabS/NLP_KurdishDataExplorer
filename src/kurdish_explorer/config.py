@@ -62,6 +62,28 @@ EMBEDDING_MODEL_LABELS: dict[str, str] = {
 }
 
 
+# Models offered for NEW fits / uploads. The local models above remain
+# loadable so previously-fitted corpora keep working, but they are no longer
+# exposed as a user choice: the app is about exploring the DATA, not comparing
+# embedding backends. Only the two hosted providers are offered going forward.
+NEW_FIT_MODELS: tuple[str, ...] = ("openai", "nvidia")
+
+# When a corpus has several fitted runs on disk, prefer a hosted run, then the
+# Sorani-adapted local model, then anything else. This lets the UI serve one
+# "best available" run per source without asking the user to pick a model.
+MODEL_PREFERENCE: tuple[str, ...] = (
+    "openai", "nvidia", "kdx-minilm-tsdae", "minilm", "mpnet", "distiluse", "e5-base",
+)
+
+
+def best_available_model(fitted: list[str]) -> str:
+    """Pick the single run to serve for a source from its fitted model keys."""
+    for key in MODEL_PREFERENCE:
+        if key in fitted:
+            return key
+    return fitted[0]
+
+
 def default_model_key() -> str:
     """Choose an explicit provider, a hosted key when configured, else local.
 

@@ -1,11 +1,12 @@
 import { useMemo } from "react";
 import type { Layout } from "plotly.js";
 import { useTheme } from "noor-ui/providers";
-import { cssToken, TOKEN_FALLBACKS, usePalette } from "./palette";
+import { cssToken, TOKEN_FALLBACKS, usePalette, useThemeSignal } from "./palette";
 
 export function usePlotlyTheme(): Partial<Layout> {
   const { resolvedTheme } = useTheme();
   const palette = usePalette();
+  const signal = useThemeSignal();
   return useMemo(() => {
     const mode = resolvedTheme === "dark" ? "dark" : "light";
     const token = (name: string) => cssToken(name, TOKEN_FALLBACKS[name]?.[mode] ?? "");
@@ -23,5 +24,5 @@ export function usePlotlyTheme(): Partial<Layout> {
       hoverlabel: {bgcolor: token("--n-surface"), bordercolor: border, font: {color: foreground}},
       legend: {font: {color: foreground}, title: {font: {color: muted}}},
     };
-  }, [palette, resolvedTheme]);
+  }, [palette, resolvedTheme, signal]);
 }

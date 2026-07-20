@@ -1,12 +1,14 @@
 import { useMemo, useState, type ReactNode } from "react";
-import { ChartNoAxesCombined, Database, FolderUp, GitBranch, Home, Languages, Map, Search } from "lucide-react";
+import { ChartNoAxesCombined, Database, FolderUp, GitBranch, Home, Languages, Map, PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { CommandPalette, IconButton, Sidebar, SidebarItem, Spinner, ThemeToggle, Tooltip, Typography, type CommandPaletteGroup } from "noor-ui";
+import { CommandPalette, IconButton, Sidebar, SidebarItem, Spinner, Tooltip, Typography, type CommandPaletteGroup } from "noor-ui";
 import { useTheme } from "noor-ui/providers";
 import { useSources, useTopics } from "../api/hooks";
 import { useJobs } from "../app/JobsProvider";
 import { useLocale } from "../lib/i18n";
 import { compactSourceLabel, topicDisplayName } from "../lib/labels";
+import { ThemeMenu } from "./ThemeMenu";
+import { useWorkspacePanel } from "./WorkspacePanel";
 
 export function AppShell({children}: {children: ReactNode}) {
   const location = useLocation();
@@ -15,6 +17,7 @@ export function AppShell({children}: {children: ReactNode}) {
   const { setTheme, resolvedTheme } = useTheme();
   const { active } = useJobs();
   const sources = useSources();
+  const panel = useWorkspacePanel();
   const [paletteOpen, setPaletteOpen] = useState(false);
 
   const exploreMatch = location.pathname.match(/^\/explore\/([^/]+)\/([^/]+)\/([^/]+)/);
@@ -43,7 +46,7 @@ export function AppShell({children}: {children: ReactNode}) {
           {id: "ws-tree", label: t("tabStructure"), icon: <GitBranch className="size-4" />, onSelect: () => navigate(`/explore/${exploreMatch[1]}/${exploreMatch[2]}/tree`)},
           {id: "ws-map", label: t("tabMap"), icon: <Map className="size-4" />, onSelect: () => navigate(`/explore/${exploreMatch[1]}/${exploreMatch[2]}/map`)},
           {id: "ws-ask", label: t("tabSearch"), icon: <Search className="size-4" />, onSelect: () => navigate(`/explore/${exploreMatch[1]}/${exploreMatch[2]}/ask`)},
-          {id: "ws-model", label: t("tabEvaluate"), icon: <ChartNoAxesCombined className="size-4" />, onSelect: () => navigate(`/explore/${exploreMatch[1]}/${exploreMatch[2]}/model`)},
+          {id: "ws-insights", label: t("tabInsights"), icon: <ChartNoAxesCombined className="size-4" />, onSelect: () => navigate(`/explore/${exploreMatch[1]}/${exploreMatch[2]}/insights`)},
         ],
       });
       if (topics.data) {
@@ -99,6 +102,7 @@ export function AppShell({children}: {children: ReactNode}) {
     <div className="flex h-dvh overflow-hidden bg-canvas text-text-primary">
       <CommandPalette items={paletteGroups} open={paletteOpen} onOpenChange={setPaletteOpen} enableShortcut placeholder={t("commandPlaceholder")} />
 
+      {/* Fixed-width icon rail — its width never changes, so content stays put. */}
       <Sidebar
         collapsed
         className="hidden shrink-0 md:flex"
@@ -114,6 +118,19 @@ export function AppShell({children}: {children: ReactNode}) {
         }
         footer={
           <div className="flex flex-col items-center gap-2">
+            {exploreMatch && (
+              <Tooltip content={panel.open ? t("collapse") : t("expand")} side="right">
+                <IconButton
+                  aria-label={panel.open ? t("collapse") : t("expand")}
+                  aria-pressed={panel.open}
+                  variant="ghost"
+                  size="sm"
+                  onClick={panel.toggle}
+                >
+                  {panel.open ? <PanelLeftClose className="size-4" /> : <PanelLeftOpen className="size-4" />}
+                </IconButton>
+              </Tooltip>
+            )}
             {active.length > 0 && (
               <Tooltip content={`${t("activeFit")} · ${Math.round((active[0].fraction ?? 0) * 100)}%`} side="right">
                 <button
@@ -127,7 +144,7 @@ export function AppShell({children}: {children: ReactNode}) {
               </Tooltip>
             )}
             {localeToggle}
-            <ThemeToggle />
+            <ThemeMenu />
           </div>
         }
       >
@@ -137,23 +154,23 @@ export function AppShell({children}: {children: ReactNode}) {
       </Sidebar>
 
       <div className="flex min-w-0 flex-1 flex-col pb-16 md:pb-0">
-        <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-surface/95 px-4 md:px-6">
+        <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-border bg-surface/95 px-4 md:px-6">
           <div className="flex min-w-0 items-baseline gap-3">
             <Typography variant="label">{t("appName")}</Typography>
             <span className="hidden text-caption text-text-muted sm:inline">{t("appTagline")}</span>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             {active.length > 0 && (
               <button
                 type="button"
                 onClick={() => navigate("/upload")}
-                className="me-2 hidden items-center gap-2 rounded-md border border-border bg-surface-raised px-2.5 py-1 text-caption text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-canvas sm:flex"
+                className="me-1 hidden items-center gap-2 rounded-md border border-border bg-surface-raised px-2.5 py-1 text-caption text-text-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-canvas sm:flex"
               >
                 <Spinner size="sm" />
                 <span aria-live="polite">{t("activeFit")} · {Math.round((active[0].fraction ?? 0) * 100)}%</span>
               </button>
             )}
-            <div className="flex items-center gap-1 md:hidden">{localeToggle}<ThemeToggle /></div>
+            <div className="flex items-center gap-1 md:hidden">{localeToggle}<ThemeMenu /></div>
           </div>
         </header>
         <main className="min-h-0 flex-1 overflow-hidden">{children}</main>

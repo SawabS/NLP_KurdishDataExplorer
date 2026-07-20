@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { Search, Sparkles } from "lucide-react";
-import { Alert, Button, Input, Progress, Skeleton, SuggestedPrompt, Typography } from "noor-ui";
+import { Alert, Button, Input, Progress, Skeleton, Typography } from "noor-ui";
 import { useSearchQuery } from "../../../api/hooks";
 import { ResultDetail } from "./ResultDetail";
 import { ResultList } from "./ResultList";
-
-const EXAMPLES = ["ئەنجامی یاری تۆپی پێ", "نرخی نەوت و دۆلار", "کۆرۆنا و ڤاکسین", "smartphones and technology"];
 
 interface Props {source: string; model: string; params: URLSearchParams; setParams: (params: URLSearchParams) => void}
 
@@ -39,18 +37,12 @@ export function SearchView({source, model, params, setParams}: Props) {
   return (
     <div className="p-4 md:p-5">
       <section className="border-b border-border pb-5">
-        <div className="flex items-center gap-2 text-text-secondary"><Sparkles className="size-4" /><Typography variant="label">Semantic search</Typography></div>
+        <div className="flex items-center gap-2 text-text-secondary"><Sparkles className="size-4" /><Typography variant="label">Ask the corpus</Typography></div>
+        <p className="mt-1 max-w-4xl text-body-sm text-text-secondary">Type a question, event, or theme in Sorani or English — results are matched by meaning, not keywords.</p>
         <form className="mt-3 flex max-w-4xl gap-2" onSubmit={(event) => {event.preventDefault(); submit(draft);}}>
-          <div className="min-w-0 flex-1"><Input aria-label="Question or theme" value={draft} onChange={(event) => setDraft(event.target.value)} leadingIcon={<Search className="size-4" />} placeholder="Search a question, event, or theme in Sorani or English" /></div>
-          <Button type="submit" loading={search.isFetching}>Search</Button>
+          <div className="min-w-0 flex-1"><Input aria-label="Question or theme" value={draft} onChange={(event) => setDraft(event.target.value)} leadingIcon={<Search className="size-4" />} placeholder="e.g. election results, oil prices, public health…" /></div>
+          <Button type="submit" loading={search.isFetching}>Ask</Button>
         </form>
-        {!search.data && !search.isFetching && (
-          <div className="mt-4 grid max-w-4xl gap-2 sm:grid-cols-2">
-            {EXAMPLES.map((example) => (
-              <SuggestedPrompt key={example} dir="auto" lang="ckb" label={example} onClick={() => submit(example)} />
-            ))}
-          </div>
-        )}
       </section>
 
       {search.isFetching && !search.data && (

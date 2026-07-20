@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTheme } from "noor-ui/providers";
 
 /**
@@ -53,8 +53,25 @@ const hashString = (value: string) => {
   return hash;
 };
 
+/** Bumps whenever the applied palette changes — after ThemeProvider writes the
+ *  data-theme attribute — so CSS-token reads recompute against the LIVE values.
+ *  Needed because two dark palettes share resolvedTheme="dark", and getComputedStyle
+ *  during render runs before the provider's attribute effect commits. */
+export function useThemeSignal(): string {
+  const { activeTheme } = useTheme();
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const observer = new MutationObserver(() => setTick((value) => value + 1));
+    observer.observe(document.documentElement, {attributes: true, attributeFilter: ["data-theme"]});
+    return () => observer.disconnect();
+  }, []);
+  return `${activeTheme}:${tick}`;
+}
+
 export function usePalette(): Palette {
   const { resolvedTheme } = useTheme();
+  const signal = useThemeSignal();
   return useMemo(() => {
     const dark = resolvedTheme === "dark";
     const categorical = dark ? CATEGORICAL_DARK : CATEGORICAL_LIGHT;
@@ -78,5 +95,5 @@ export function usePalette(): Palette {
         baseline: cssToken("--n-text-muted", "#6b7280"),
       },
     };
-  }, [resolvedTheme]);
+  }, [resolvedTheme, signal]);
 }

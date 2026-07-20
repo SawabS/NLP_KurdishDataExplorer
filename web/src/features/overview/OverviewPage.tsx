@@ -5,7 +5,7 @@ import { Badge, Button, Card, EmptyState, ErrorState, SegmentedControl, Skeleton
 import { useSources } from "../../api/hooks";
 import type { SourceSummary } from "../../api/types";
 import { useLocale } from "../../lib/i18n";
-import { compactModelLabel, compactSourceLabel } from "../../lib/labels";
+import { compactSourceLabel } from "../../lib/labels";
 
 const VIEW_KEY = "kurdish-data-explorer-overview-view";
 type View = "cards" | "rows";
@@ -70,40 +70,26 @@ export function OverviewPage() {
 
       {view === "cards" ? (
         <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {sources.data.map((source) => {
-            const fitted = source.models.filter((model) => model.fitted);
-            const first = fitted[0];
-            return (
-              <Card key={source.source} className="flex flex-col gap-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 text-caption text-text-muted"><Database className="size-3.5" /><span>{t("corpus")}</span></div>
-                    <Typography variant="heading-sm" className="mt-1 truncate">{compactSourceLabel(source.title)}</Typography>
-                  </div>
-                  {source.has_labels && <Badge variant="info">{t("labeled")}</Badge>}
+          {sources.data.map((source) => (
+            <Card key={source.source} className="flex flex-col gap-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 text-caption text-text-muted"><Database className="size-3.5" /><span>{t("corpus")}</span></div>
+                  <Typography variant="heading-sm" className="mt-1 truncate">{compactSourceLabel(source.title)}</Typography>
                 </div>
-                <dl className="grid grid-cols-2 gap-3 border-y border-border py-3 text-body-sm">
-                  <div><dt className="text-caption text-text-muted">{t("documents")}</dt><dd className="mt-0.5 font-semibold tabular-nums">{source.n_docs.toLocaleString()}</dd></div>
-                  <div><dt className="text-caption text-text-muted">{t("models")}</dt><dd className="mt-0.5 font-semibold tabular-nums">{fitted.length} / {source.models.length}</dd></div>
-                </dl>
-                <div className="flex flex-wrap gap-1.5">
-                  {source.models.map((model) => (
-                    <Badge key={model.key} variant={model.fitted ? "neutral" : "warning"}>{compactModelLabel(model.key, model.label)}{model.fitted ? "" : " · fit required"}</Badge>
-                  ))}
-                </div>
-                <div className="mt-auto">
-                  <Button
-                    size="sm"
-                    variant={first ? "primary" : "outline"}
-                    disabled={!source.models.length}
-                    onClick={() => openExplorer(source)}
-                  >
-                    {t("navExplore")} <ArrowUpRight className="size-4 rtl:rotate-180" />
-                  </Button>
-                </div>
-              </Card>
-            );
-          })}
+                {source.has_labels && <Badge variant="info">{t("labeled")}</Badge>}
+              </div>
+              <dl className="grid grid-cols-2 gap-3 border-y border-border py-3 text-body-sm">
+                <div><dt className="text-caption text-text-muted">{t("documents")}</dt><dd className="mt-0.5 font-semibold tabular-nums">{source.n_docs.toLocaleString()}</dd></div>
+                <div><dt className="text-caption text-text-muted">{t("categories")}</dt><dd className="mt-0.5 font-semibold tabular-nums">{source.has_labels ? source.categories.length : "—"}</dd></div>
+              </dl>
+              <div className="mt-auto">
+                <Button size="sm" onClick={() => openExplorer(source)}>
+                  {t("navExplore")} <ArrowUpRight className="size-4 rtl:rotate-180" />
+                </Button>
+              </div>
+            </Card>
+          ))}
         </div>
       ) : (
         <div className="mt-6 overflow-hidden rounded-md border border-border bg-surface">
@@ -112,46 +98,29 @@ export function OverviewPage() {
               <TableRow className="hover:bg-transparent">
                 <TableHead>{t("corpus")}</TableHead>
                 <TableHead className="text-end">{t("documents")}</TableHead>
-                <TableHead className="text-end">{t("models")}</TableHead>
-                <TableHead className="hidden lg:table-cell">{t("tabEvaluate")}</TableHead>
+                <TableHead className="text-end">{t("categories")}</TableHead>
                 <TableHead className="relative"><span className="sr-only">{t("navExplore")}</span></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sources.data.map((source) => {
-                const fitted = source.models.filter((model) => model.fitted);
-                return (
-                  <TableRow key={source.source} className="cursor-pointer" onClick={() => openExplorer(source)}>
-                    <TableCell>
-                      <div className="flex min-w-0 items-center gap-2">
-                        <Database className="size-4 shrink-0 text-text-muted" />
-                        <span className="truncate font-medium">{compactSourceLabel(source.title)}</span>
-                        {source.has_labels && <Badge variant="info">{t("labeled")}</Badge>}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-end tabular-nums">{source.n_docs.toLocaleString()}</TableCell>
-                    <TableCell className="text-end tabular-nums">{fitted.length} / {source.models.length}</TableCell>
-                    <TableCell className="hidden lg:table-cell">
-                      <div className="flex flex-wrap gap-1.5">
-                        {fitted.map((model) => (
-                          <Badge key={model.key} variant="neutral">{compactModelLabel(model.key, model.label)}</Badge>
-                        ))}
-                        {!fitted.length && <span className="text-caption text-text-muted">fit required</span>}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-end">
-                      <Button
-                        size="sm"
-                        variant={fitted.length ? "primary" : "outline"}
-                        disabled={!source.models.length}
-                        onClick={(event) => {event.stopPropagation(); openExplorer(source);}}
-                      >
-                        {t("navExplore")} <ArrowUpRight className="size-4 rtl:rotate-180" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              {sources.data.map((source) => (
+                <TableRow key={source.source} className="cursor-pointer" onClick={() => openExplorer(source)}>
+                  <TableCell>
+                    <div className="flex min-w-0 items-center gap-2">
+                      <Database className="size-4 shrink-0 text-text-muted" />
+                      <span className="truncate font-medium">{compactSourceLabel(source.title)}</span>
+                      {source.has_labels && <Badge variant="info">{t("labeled")}</Badge>}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-end tabular-nums">{source.n_docs.toLocaleString()}</TableCell>
+                  <TableCell className="text-end tabular-nums">{source.has_labels ? source.categories.length : "—"}</TableCell>
+                  <TableCell className="text-end">
+                    <Button size="sm" onClick={(event) => {event.stopPropagation(); openExplorer(source);}}>
+                      {t("navExplore")} <ArrowUpRight className="size-4 rtl:rotate-180" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </div>

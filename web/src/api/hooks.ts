@@ -60,9 +60,9 @@ export function usePrefetchWorkspace(s: string, m: string) {
         {key: ["distribution", s, m], fn: (sig) => api.distribution(s, m, sig)},
       ],
       map: [{key: ["points", s, m, 12000, "(all)"], fn: (sig) => api.points(s, m, 12000, "(all)", sig)}],
-      model: [
-        {key: ["coherence", s, m], fn: (sig) => api.coherence(s, m, sig)},
-        {key: ["baselines", s, m], fn: (sig) => api.baselines(s, m, sig)},
+      insights: [
+        {key: ["topics", s, m], fn: (sig) => api.topics(s, m, sig)},
+        {key: ["distribution", s, m], fn: (sig) => api.distribution(s, m, sig)},
       ],
     };
     for (const {key, fn} of fetchers[tab] ?? []) {

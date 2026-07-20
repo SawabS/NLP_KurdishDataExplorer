@@ -1,22 +1,28 @@
-import { useState, type ReactNode } from "react";
-import { ChartNoAxesCombined, GitBranch, Map as MapIcon, Menu, Search } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { ChartNoAxesCombined, ChevronDown, GitBranch, Map as MapIcon, Menu, Search } from "lucide-react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { Badge, Breadcrumbs, Button, Drawer, ErrorState, Skeleton, StatCard, TabsContent, TabsList, TabsRoot, TabsTrigger, Tooltip, Typography } from "noor-ui";
+import { Badge, Breadcrumbs, Button, Drawer, ErrorState, IconButton, Skeleton, StatCard, TabsContent, TabsList, TabsRoot, TabsTrigger, Tooltip, Typography } from "noor-ui";
 import { usePrefetchWorkspace, useRun, useSources } from "../../api/hooks";
+import { useWorkspacePanel } from "../../layout/WorkspacePanel";
 import { useLocale } from "../../lib/i18n";
-import { compactModelLabel, compactSourceLabel } from "../../lib/labels";
+import { compactSourceLabel } from "../../lib/labels";
 import { CorpusContext } from "./CorpusContext";
 import { FitRequired } from "./FitRequired";
-import { EvaluateView } from "./evaluate/EvaluateView";
+import { InsightsView } from "./insights/InsightsView";
 import { MapView } from "./map/MapView";
 import { SearchView } from "./search/SearchView";
 import { StructureView } from "./structure/StructureView";
+
+const STATS_KEY = "kurdish-data-explorer-stats-open";
 
 export function ExplorePage() {
   const {source = "", model = "", tab = "tree"} = useParams();
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
   const [contextOpen, setContextOpen] = useState(false);
+  const panel = useWorkspacePanel();
+  const [statsOpen, setStatsOpen] = useState<boolean>(() => localStorage.getItem(STATS_KEY) !== "false");
+  useEffect(() => { localStorage.setItem(STATS_KEY, String(statsOpen)); }, [statsOpen]);
   const { t } = useLocale();
   const sources = useSources();
   const prefetch = usePrefetchWorkspace(source, model);
@@ -30,7 +36,7 @@ export function ExplorePage() {
     {value: "tree", label: t("tabStructure"), icon: GitBranch},
     {value: "map", label: t("tabMap"), icon: MapIcon},
     {value: "ask", label: t("tabSearch"), icon: Search},
-    {value: "model", label: t("tabEvaluate"), icon: ChartNoAxesCombined},
+    {value: "insights", label: t("tabInsights"), icon: ChartNoAxesCombined},
   ];
   const activeTab = workspaces.some((item) => item.value === tab) ? tab : "tree";
 
@@ -42,7 +48,6 @@ export function ExplorePage() {
   const context = (
     <CorpusContext
       source={source}
-      model={model}
       category={category}
       sourceInfo={sourceInfo}
       sources={sources.data!}
@@ -52,7 +57,6 @@ export function ExplorePage() {
         go(value, next.models.find((item) => item.fitted)?.key ?? next.models[0].key);
         setContextOpen(false);
       }}
-      onModelChange={(value) => { go(source, value); setContextOpen(false); }}
       onCategoryChange={(value) => {
         const next = new URLSearchParams(params);
         value === "(all)" ? next.delete("category") : next.set("category", value);
@@ -74,15 +78,19 @@ export function ExplorePage() {
     content = <MapView source={source} model={model} category={category} params={params} setParams={setParams} />;
   } else if (activeTab === "ask") {
     content = <SearchView source={source} model={model} params={params} setParams={setParams} />;
-  } else if (activeTab === "model") {
-    content = <EvaluateView source={source} model={model} />;
+  } else if (activeTab === "insights") {
+    content = <InsightsView source={source} model={model} sourceInfo={sourceInfo} run={run.data} />;
   } else {
     content = <StructureView source={source} model={model} category={category} params={params} setParams={setParams} />;
   }
 
+  const clustered = run.data ? run.data.n_docs - run.data.n_outliers : 0;
+  const coverage = run.data && run.data.n_docs > 0 ? Math.round((clustered / run.data.n_docs) * 100) : 0;
+
   return (
     <div className="flex h-full min-w-0">
-      <aside className="hidden w-[312px] shrink-0 overflow-y-auto border-e border-border bg-surface lg:block">{context}</aside>
+      {/* Corpus panel — collapsed via the rail toggle to free visualization width. */}
+      {panel.open && <aside className="hidden w-[300px] shrink-0 overflow-y-auto border-e border-border bg-surface lg:block">{context}</aside>}
       <TabsRoot value={activeTab} onValueChange={(value) => go(source, model, value)} className="flex min-w-0 flex-1 flex-col overflow-hidden" activationMode="manual">
         <div className="shrink-0 border-b border-border bg-canvas px-4 pt-4 md:px-6 md:pt-5">
           <div className="flex items-start justify-between gap-4">
@@ -90,34 +98,47 @@ export function ExplorePage() {
               <Breadcrumbs items={[
                 {label: t("corpus")},
                 {label: compactSourceLabel(sourceInfo.title)},
-                {label: modelInfo ? compactModelLabel(modelInfo.key, modelInfo.label) : ""},
               ]} />
               <div className="mt-1 flex min-w-0 items-center gap-2">
                 <Typography variant="heading-md" className="truncate">{sourceInfo.title}</Typography>
                 {sourceInfo.has_labels && <Badge variant="info">{t("labeled")}</Badge>}
               </div>
             </div>
-            <Drawer
-              open={contextOpen}
-              onOpenChange={setContextOpen}
-              side="start"
-              title="Corpus context"
-              trigger={<Button className="lg:hidden" size="sm" variant="outline"><Menu className="size-4" /> Context</Button>}
-            >
-              {context}
-            </Drawer>
+            <div className="flex items-center gap-2">
+              {run.data && (
+                <Tooltip content={statsOpen ? t("collapse") : t("expand")}>
+                  <IconButton
+                    aria-label={statsOpen ? t("collapse") : t("expand")}
+                    aria-expanded={statsOpen}
+                    variant="ghost"
+                    size="sm"
+                    className="hidden sm:inline-flex"
+                    onClick={() => setStatsOpen((open) => !open)}
+                  >
+                    <ChevronDown className={`size-4 transition-transform ${statsOpen ? "" : "-rotate-90"}`} />
+                  </IconButton>
+                </Tooltip>
+              )}
+              <Drawer
+                open={contextOpen}
+                onOpenChange={setContextOpen}
+                side="start"
+                title={t("corpus")}
+                trigger={<Button className="lg:hidden" size="sm" variant="outline"><Menu className="size-4" /> {t("corpus")}</Button>}
+              >
+                {context}
+              </Drawer>
+            </div>
           </div>
 
-          {run.data && (
+          {run.data && statsOpen && (
             <div className="mt-4 grid grid-cols-2 gap-3 xl:grid-cols-4">
               <StatCard className="gap-1 p-3" label={t("documents")} value={<span className="text-heading-sm tabular-nums">{run.data.n_docs.toLocaleString()}</span>} />
               <StatCard className="gap-1 p-3" label={t("topics")} value={<span className="text-heading-sm tabular-nums">{run.data.n_topics.toLocaleString()}</span>} />
               <Tooltip content={t("outliersHint")}>
-                <StatCard className="gap-1 p-3" label={t("outliers")} value={<span className="text-heading-sm tabular-nums">{run.data.n_outliers.toLocaleString()}</span>} />
+                <StatCard className="gap-1 p-3" label={t("coverage")} value={<span className="text-heading-sm tabular-nums">{coverage}%</span>} />
               </Tooltip>
-              <Tooltip content={t("npmiHint")}>
-                <StatCard className="gap-1 p-3" label="NPMI" value={<span className="text-heading-sm tabular-nums">{run.data.coherence_npmi.BERTopic?.toFixed(3) ?? "n/a"}</span>} />
-              </Tooltip>
+              <StatCard className="gap-1 p-3" label={t("categories")} value={<span className="text-heading-sm tabular-nums">{sourceInfo.has_labels ? sourceInfo.categories.length.toLocaleString() : "—"}</span>} />
             </div>
           )}
 
@@ -128,7 +149,7 @@ export function ExplorePage() {
                 <TabsTrigger
                   key={item.value}
                   value={item.value}
-                  className="gap-1.5 px-2.5 py-3 data-[state=active]:border-primary-action sm:gap-2 sm:px-3"
+                  className="gap-2 px-3.5 py-3 text-body-sm font-medium data-[state=active]:border-primary-action data-[state=active]:text-text-primary sm:px-4"
                   onMouseEnter={() => prefetch(item.value)}
                   onFocus={() => prefetch(item.value)}
                 >
