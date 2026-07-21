@@ -2,8 +2,8 @@
 
 Interactive topic modeling and exploratory analysis for Central Kurdish (Sorani)
 text and, generically, for any text corpus you point it at. Upload a raw text
-file or a dataset with a text column (CSV / TSV / Excel / Parquet, up to
-GB-scale via the server-path option) and explore it through four workspace tabs:
+file or a dataset with a text column (CSV / TSV / Excel / Parquet, any size)
+and explore it through four workspace tabs:
 Structure (drill-down topic tree), Map (2D document map), Search (free-text
 semantic search with one-click example questions), and Evaluate
 (keyword/baseline comparisons). The Overview landing page lists every corpus
@@ -72,12 +72,19 @@ the frontend (when the API is already running), use `npm run dev:web`.
 
 The app reads fitted artifacts through an mtime-keyed cache. Use the model
 dropdown to switch between fitted embedders; models without artifacts are shown
-as **fit required** and run in a serialized background worker. Hosted runs
-require an explicit cost acknowledgement. Set `PRELOAD_EMBEDDER=1` to construct
-the preferred embedder during API startup.
+as **fit required** and run in a serialized background worker. Runs on a hosted
+provider are labeled as such wherever they are started. Set `PRELOAD_EMBEDDER=1`
+to construct the preferred embedder during API startup.
 
 Use the in-app **Upload & explore** mode to run the pipeline on your own text;
-the result becomes a selectable source next to the built-ins.
+the result becomes a selectable source next to the built-ins. Upload asks for no
+parameters and accepts files of any size: the server streams the file to disk,
+profiles a bounded head sample of it, and derives the ingestion plan itself —
+what counts as a document, which column holds the text, which column looks like
+a category label, and how many documents get embedded. The page reports that
+plan (and the auto-selected embedding model) before you start the run, and the
+same record is stored in the run's `meta.json` and shown under **How this run
+was built** in Insights.
 
 ## Hosted embedding API setup
 

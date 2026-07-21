@@ -1,6 +1,6 @@
 import { forwardRef, useMemo, type HTMLAttributes } from "react";
 import type { Data } from "plotly.js";
-import { BarChart3, Layers, PieChart } from "lucide-react";
+import { BarChart3, FileText, Layers, PieChart } from "lucide-react";
 import { Skeleton, Tooltip, Typography } from "noor-ui";
 import { useDistribution, useTopics } from "../../../api/hooks";
 import type { RunMeta, SourceSummary } from "../../../api/types";
@@ -22,6 +22,51 @@ const Metric = forwardRef<HTMLDivElement, {label: string; value: string} & HTMLA
   ),
 );
 Metric.displayName = "Metric";
+
+/**
+ * What produced these topics: the file the documents came from, how they were
+ * cut out of it, and the exact embedding model. Older runs carry no ingest
+ * record, so the model line still stands on its own.
+ */
+function ProvenanceSection({run}: {run: RunMeta}) {
+  const ingest = run.ingest ?? undefined;
+  // Local models are registered by filesystem path; runs fitted before that was
+  // normalized server-side still carry one.
+  const modelName = (ingest?.embedding?.name ?? run.model_name).split("/").pop() ?? run.model_name;
+  const rows: Array<{label: string; value: string}> = [
+    ...(ingest ? [
+      {label: "Source file", value: `${ingest.file} · ${ingest.format.toUpperCase()}`},
+      {
+        label: "Documents",
+        value: ingest.sampled
+          ? `${ingest.documents_embedded.toLocaleString()} embedded · random sample of ${ingest.documents_available.toLocaleString()}`
+          : `${ingest.documents_embedded.toLocaleString()} embedded · every ${ingest.unit} that qualified`,
+      },
+      {
+        label: "Document text",
+        value: ingest.text_col ? `column “${ingest.text_col}”` : `one per ${ingest.unit}, ≥ ${ingest.min_words} words`,
+      },
+      ...(ingest.label_col ? [{label: "Category label", value: `column “${ingest.label_col}”`}] : []),
+    ] : [{label: "Documents", value: `${run.n_docs.toLocaleString()} embedded`}]),
+    {label: "Embedding model", value: ingest?.embedding ? `${ingest.embedding.provider} · ${modelName}` : modelName},
+    {label: "Normalization", value: run.normalized ? "KLPT Sorani normalization applied" : "raw text, not normalized"},
+    {label: "Fit time", value: `${run.seconds.toLocaleString()} s`},
+  ];
+  return (
+    <section>
+      <div className="mb-1 flex items-center gap-2"><FileText className="size-4 text-text-secondary" /><Typography variant="label">How this run was built</Typography></div>
+      <p className="mb-3 text-caption text-text-muted">Exactly what was embedded, and with which model.</p>
+      <dl className="grid max-w-3xl gap-x-8 gap-y-3 sm:grid-cols-2">
+        {rows.map((row) => (
+          <div key={row.label}>
+            <dt className="text-caption text-text-muted">{row.label}</dt>
+            <dd className="mt-0.5 text-body-sm text-text-primary" dir="auto">{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  );
+}
 
 const median = (values: number[]) => {
   if (!values.length) return 0;
@@ -167,6 +212,8 @@ export function InsightsView({source, model, sourceInfo, run}: Props) {
           </div>
         </section>
       )}
+
+      <ProvenanceSection run={run} />
     </div>
   );
 }

@@ -97,12 +97,15 @@ def run_on_texts(
     with_baselines: bool = False,
     min_cluster_size: int | None = None,
     progress=None,
+    ingest: dict | None = None,
 ) -> PipelineResult:
     """Fit the pipeline on an arbitrary list of texts (uploads / any source).
 
     This is the generic engine entry point. ``title`` is a human-readable name
     for the source (e.g. an uploaded file name or a dataset column); ``run_id``
     is the sanitized key used on disk (defaults to a slug of ``title``).
+    ``ingest`` is provenance — where the documents came from and how they were
+    cut — stored verbatim in ``meta.json`` so the UI can explain the run.
     """
     import pandas as pd
 
@@ -118,7 +121,7 @@ def run_on_texts(
     return run_on_dataframe(
         df, source=run_id, model_key=model_key,
         with_baselines=with_baselines, min_cluster_size=min_cluster_size,
-        normalized=normalize, title=title, progress=progress,
+        normalized=normalize, title=title, progress=progress, ingest=ingest,
     )
 
 
@@ -131,6 +134,7 @@ def run_on_dataframe(
     normalized: bool = False,
     title: str | None = None,
     progress=None,
+    ingest: dict | None = None,
 ) -> PipelineResult:
     """Core pipeline over a unified-schema DataFrame (doc_id, source, text, label[, text_en]).
 
@@ -231,6 +235,8 @@ def run_on_dataframe(
         "has_hierarchy": bool(hierarchy),
         "seconds": round(time.time() - t0, 1),
         "categories": config.KNDH_CATEGORIES if source == "kndh" else None,
+        # Provenance: what was embedded, from where, and with which model.
+        "ingest": ingest,
     }
     (out / "meta.json").write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
 

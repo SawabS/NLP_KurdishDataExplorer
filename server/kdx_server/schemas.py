@@ -47,15 +47,17 @@ class FitRunRequest(BaseModel):
 
 
 class FitUploadRequest(BaseModel):
+    """Only ``path`` is required. Every other field is an override of the plan
+    the server derives from the file itself (see ``uploads.profile``)."""
+
     path: str
     display_name: str | None = None
-    split: Literal["Line", "Paragraph"] = "Line"
-    min_words: int = Field(3, ge=1, le=50)
+    split: Literal["Line", "Paragraph"] | None = None
+    min_words: int | None = Field(None, ge=1, le=50)
     text_col: str | None = None
     label_col: str | None = None
-    model: str
-    normalize: bool = True
-    max_docs: int = Field(20_000, ge=500, le=200_000)
-    auto_mcs: bool = True
+    model: str | None = None
+    normalize: bool | None = None
+    max_docs: int | None = Field(None, ge=100)
     min_cluster_size: int | None = Field(None, ge=10, le=500)
     with_baselines: bool = False

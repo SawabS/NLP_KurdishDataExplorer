@@ -1,4 +1,4 @@
-import type { Coherence, Distribution, Job, ModelRegistry, PointsData, RunMeta, SearchResult, SourceSummary, TopicDetail, TopicRow, TreeData } from "./types";
+import type { Coherence, Distribution, FileProfile, Job, ModelRegistry, PointsData, RunMeta, SearchResult, SourceSummary, TopicDetail, TopicRow, TreeData } from "./types";
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`/api${path}`, {
@@ -29,8 +29,8 @@ export const api = {
   baselines: (source: string, model: string, signal?: AbortSignal) => request<{baselines: Record<string, string[][]>}>(`${run(source, model)}/baselines`, {signal}),
   estimate: (source: string, model: string, signal?: AbortSignal) => request<{n_docs: number; model: string; estimated_tokens?: number; safe_tpm?: number; minimum_minutes?: number}>(`${run(source, model)}/estimate`, {signal}),
   search: (source: string, model: string, query: string, signal?: AbortSignal) => request<SearchResult>(`${run(source, model)}/search`, { method: "POST", body: JSON.stringify({query}), signal }),
-  upload: (file: File) => { const body = new FormData(); body.append("file", file); return request<{path: string; name: string; size: number; columns: string[]}>("/uploads", {method: "POST", body}); },
-  peek: (path: string) => request<{path: string; name: string; size: number; columns: string[]; kind: "text" | "table"}>("/uploads/peek", {method: "POST", body: JSON.stringify({path})}),
+  upload: (file: File) => { const body = new FormData(); body.append("file", file); return request<FileProfile>("/uploads", {method: "POST", body}); },
+  peek: (path: string) => request<FileProfile>("/uploads/peek", {method: "POST", body: JSON.stringify({path})}),
   fitRun: (body: {source: string; model: string; reference_model?: string}) => request<{job_id: string}>("/jobs/fit-run", {method: "POST", body: JSON.stringify(body)}),
   fitUpload: (body: Record<string, unknown>) => request<{job_id: string}>("/jobs/fit-upload", {method: "POST", body: JSON.stringify(body)}),
   job: (id: string, signal?: AbortSignal) => request<Job>(`/jobs/${id}`, {signal}),

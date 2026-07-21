@@ -1,12 +1,6 @@
-/** Single home for display-name shortening (was duplicated in ExplorePage and UploadPage). */
-
-export function compactModelLabel(key: string, label: string) {
-  if (key === "openai") return "OpenAI · text-embedding-3-small";
-  if (key === "nvidia") return "NVIDIA · Nemotron Embed 1B";
-  if (key === "kdx-minilm-tsdae") return "Sorani MiniLM · local TSDAE";
-  if (key === "minilm") return "Base multilingual MiniLM";
-  return label;
-}
+/** Single home for display-name shortening (was duplicated in ExplorePage and UploadPage).
+ *  Model names are no longer shortened here: the API serves the provider and the
+ *  exact model id, and both are shown verbatim wherever a run is described. */
 
 export function compactSourceLabel(title: string) {
   // Drop a trailing " — subtitle" and any uploaded-file extension so the

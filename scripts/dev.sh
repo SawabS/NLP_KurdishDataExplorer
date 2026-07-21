@@ -29,8 +29,11 @@ cd "$ROOT"
 export PYTHONPATH="$ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
 export KDX_API_ORIGIN="http://127.0.0.1:$API_PORT"
 
+# --reload keeps the API in step with Vite's hot reload; without it an edited
+# route keeps serving old responses to a freshly reloaded frontend.
 "$PYTHON_BIN" -m uvicorn kdx_server.main:app \
-  --app-dir server --host 127.0.0.1 --port "$API_PORT" &
+  --app-dir server --host 127.0.0.1 --port "$API_PORT" \
+  --reload --reload-dir server --reload-dir src &
 api_pid=$!
 
 npm run dev -w web -- --host "$WEB_HOST" --port "$WEB_PORT" &
