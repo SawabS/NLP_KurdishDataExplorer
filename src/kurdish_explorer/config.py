@@ -37,12 +37,12 @@ KNDH_CATEGORIES = ["economic", "health", "science & technology", "social", "spor
 # ---------------------------------------------------------------------------
 # Embedding model registry
 # ---------------------------------------------------------------------------
-# The project presents ONE model: KDX MiniLM — multilingual MiniLM domain-
-# adapted to Sorani with TSDAE (scripts/finetune_tsdae.py, trained on KNDH
-# headlines + AsoSoft sentences). The off-the-shelf base MiniLM stays
-# registered only as the evaluation comparison point. Earlier experiments
-# (DistilUSE, MPNet, E5-base) scored worse on NPMI coherence and were
-# unregistered; their artifacts remain on disk but are not shown in the app.
+# The registry supports hosted OpenAI/NVIDIA comparison runs plus two local
+# research options. KDX MiniLM is multilingual MiniLM domain-adapted to Sorani
+# with TSDAE (scripts/finetune_tsdae.py, trained on KNDH headlines + AsoSoft
+# sentences); base MiniLM is its offline comparison and keyless fallback when
+# the trained KDX directory is absent. Earlier DistilUSE/MPNet/E5 experiments
+# scored worse on NPMI coherence and were unregistered.
 EMBEDDING_MODELS: dict[str, str] = {
     # Domain-adapted (TSDAE) MiniLM — produced by scripts/finetune_tsdae.py.
     "kdx-minilm-tsdae": str(ARTIFACTS_DIR / "models" / "kdx-minilm-tsdae"),
@@ -75,7 +75,7 @@ MODEL_PREFERENCE: tuple[str, ...] = (
 
 
 def best_available_model(fitted: list[str]) -> str:
-    """Pick the single run to serve for a source from its fitted model keys."""
+    """Pick a source's default route while leaving all fitted runs selectable."""
     for key in MODEL_PREFERENCE:
         if key in fitted:
             return key

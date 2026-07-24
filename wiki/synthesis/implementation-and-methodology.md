@@ -2,7 +2,7 @@
 title: "Implementation and Methodology"
 type: synthesis
 created: 2026-06-26
-updated: 2026-07-21
+updated: 2026-07-24
 status: stable
 tags: [implementation, methodology, reproducibility, bertopic, tsdae, pipeline, transparency, llm-labeling, rag]
 sources: ["raw/sources/KLPT – Kurdish Language Processing Toolkit.pdf", "raw/sources/Kurdish News Dataset Headlines (KNDH) through multiclass classification.pdf", "raw/sources/Toward Kurdish language processing: Experiments in collecting and processing the AsoSoft text corpus.pdf", "raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf"]
@@ -173,12 +173,14 @@ anisotropy fix, no longer creates the former 27k-document junk topic. Base MiniL
 still has slightly better category alignment and keyword diversity. The decisive
 result is narrower: the leaf/UMAP override is a strict improvement over the old
 KDX fit (largest topic 54% → 6%, NMI 0.159 → 0.212, NPMI +0.038 → +0.057).
-Decision (2026-07-10, "one clear model" cleanup, retained after the fix):
-**KDX-MiniLM-TSDAE is the app's single production embedder** because it is the
-project-specific Sorani adaptation and gives the highest KDX/BERTopic coherence.
-Base MiniLM stays registered only as the evaluation comparison point (Model &
-evaluation tab); DistilUSE / MPNet / E5-base were unregistered (all scored
-negative NPMI; artifacts remain on disk).
+Historical decision (2026-07-10): KDX-MiniLM-TSDAE briefly became the app's
+single production embedder because it is the project-specific Sorani adaptation
+and gives the highest KDX/BERTopic coherence. That product decision was
+superseded by the hosted-provider comparison. KDX and base MiniLM remain
+registered so existing research runs stay loadable and keyless local work still
+has a fallback; new interactive fits offer OpenAI and NVIDIA. DistilUSE, MPNet,
+and E5-base remain unregistered (all scored negative NPMI; old artifacts may
+still exist locally).
 
 ## Topic hierarchy (the drill-down tree)
 
@@ -263,10 +265,29 @@ provisioning step. Shipped default: `meta/llama-3.1-8b-instruct`.
 ## Source isolation and transparency
 
 The user explores **one source at a time and sources are never mixed** unless they
-ask. Navigation is source-first: pick a corpus (KNDH, AsoSoft, or an upload); the
-embedder is chosen automatically (KDX when fitted, no dropdown). The run key is
-`<source>__<model>` so each run only ever contains one corpus's documents. Every source shows a provenance banner (what it is, size,
-labeled/unlabeled, origin). Shipped runs:
+ask. Navigation is source-first: pick a corpus, then choose among that source's
+completed embedding runs. The run key is `<source>__<model>` so each run contains
+one corpus's documents. `GET /api/sources` returns every fitted registered model
+in preference order; the preferred run supplies the default route and
+source-level metadata but does not hide the others. Every source shows its size,
+label status, origin, and run provenance.
+
+The current Fly demonstration intentionally exposes only one source:
+`corpus-unreviewed`, a deterministic 100,000-document sample from 376,292
+available paragraphs in `corpus_unreviewed.txt`. It has completed OpenAI and
+NVIDIA fits:
+
+| Run | Docs | Topics | Outliers | NPMI | End-to-end fit |
+|---|---:|---:|---:|---:|---:|
+| `corpus-unreviewed__openai` | 100,000 | 38 | 868 | 0.03742 | 3,628.7 s |
+| `corpus-unreviewed__nvidia` | 100,000 | 32 | 552 | 0.04915 | 337.4 s cache-reusing; 597.5 s earlier cold run |
+
+These timings compare complete fitting workflows, not isolated embedding API
+latency. The NVIDIA result demonstrates the practical throughput benefit of its
+concurrent batching; the topic counts and NPMI values also show that providers
+produce structurally different topic spaces on the same document sample.
+
+Earlier local research artifacts include:
 
 | Source | Docs | Topics | NPMI | Notes |
 |---|---|---|---|---|
@@ -302,18 +323,15 @@ Scaling provisions for hundreds-of-MB inputs:
 The application is a Vite/React SPA using noor-ui, backed by FastAPI under
 `server/kdx_server/`. Saved Parquet/JSON artifacts are read through an mtime-keyed
 LRU cache; large map responses are sampled server-side and returned column-wise.
-Routes encode source, model, and tab, with layout/depth/topic/search state in query
-parameters — the model segment is still there for shareable links, but as of
-2026-07-20 it's derived (`config.best_available_model()`), not user-chosen: the
-embedding-model picker was removed from `CorpusContext`, which now shows only
-Corpus + Category. The landing Overview lists every corpus with card and row
-(table) views (persisted per browser); each explore workspace offers **Structure,
-Map, Ask, and Insights** tabs (Evaluate was replaced by Insights on 2026-07-20 —
-see "Baselines and evaluation" above). Missing model/source combinations and
-uploads, and the topic-labeling retrofit job, all run through the same
-single-worker job registry with polling, progress, error capture, and query
-invalidation. Both the corpus-context rail and the header stat row are
-independently collapsible (persisted).
+Routes encode source, model, and tab, with layout/depth/topic/search state in
+query parameters. `config.best_available_model()` selects the default route,
+while the corpus rail exposes every completed registered model for direct
+comparison. The landing Overview lists every corpus with card and row views
+(persisted per browser); each explore workspace offers **Structure, Map,
+Documents, Ask, and Insights**. Missing model/source combinations, uploads, and
+topic-labeling retrofit jobs use the same single-worker registry with polling,
+progress, error capture, and query invalidation. The corpus-context rail and
+header stat row are independently collapsible and persisted.
 
 Only `openai`/`nvidia` are offered when fitting a *new* corpus
 (`config.NEW_FIT_MODELS`); hosted fits still require a cost acknowledgement.
@@ -324,8 +342,26 @@ retrieval-augmented generation: it embeds the question, retrieves the nearest
 documents by cosine similarity over the run's cached embeddings, and asks a chat
 LLM to synthesize a cited answer from them (see "LLM topic labeling and
 retrieval-augmented answers" above) — not just a ranked list of topic matches.
-The original `app/streamlit_app.py` and `app/upload_page.py` remain runnable as a
-compatibility interface over the same pipeline and artifacts.
+The legacy Streamlit application and configuration were removed on 2026-07-24.
+FastAPI/React is now the only runtime UI and deployment path.
+
+### Current interaction and loading design (2026-07-24)
+
+- The fixed app bar is a translucent, backdrop-blurred theme surface. On precise
+  pointing devices, a theme-colored gradient wobble follows the pointer within
+  the bar; touch devices and reduced-motion users keep the native behavior.
+- Ask shows staged retrieval and generation feedback plus answer/citation
+  skeletons. The former full-width green progress line was removed because it
+  implied measurable completion where the backend only exposes an indeterminate
+  request.
+- Structure's Corpus distribution is a ranked set of real topic labels with
+  document counts, corpus shares, and direct selection instead of an opaque
+  default Plotly bar chart.
+- Explore uses the page scroll container only; the nested browser scrollbar was
+  removed.
+- The document-vector LRU cache holds one model matrix. This prevents the 586 MB
+  OpenAI and 782 MB NVIDIA matrices from remaining resident together on the 2 GB
+  Fly machine.
 
 ### UI polish and verification (2026-07-03)
 
@@ -425,3 +461,9 @@ npm run build -w web
   corpus" as real RAG (per-document retrieval + cited LLM answer, not
   topic-centroid ranking); added a provider-agnostic chat/completion client
   (Ollama/OpenAI/NVIDIA) separate from the embedding provider.
+- 2026-07-24: Made FastAPI/React the sole application path and removed Streamlit;
+  restored fitted embedding-model selection for side-by-side OpenAI/NVIDIA
+  exploration; constrained the Fly demo to the two 100,000-document
+  `corpus-unreviewed` runs; bounded RAG's document-vector cache to one matrix;
+  redesigned Ask loading, Corpus distribution, scrolling, and the translucent
+  theme-aware app bar.

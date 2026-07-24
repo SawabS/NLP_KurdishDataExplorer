@@ -25,7 +25,7 @@ the synthesis page for how the sources fit together.
 - [BERTopic](entities/bertopic.md) — transformer-based topic modeling method (primary modeling tool).
 - [KuBERT](entities/kubert.md) — Kurdish BERT variant.
 - [Soran Badawi](entities/soran-badawi.md) — author of KNDH and the Sorani NMT model.
-- [KDX-MiniLM-TSDAE (fine-tuned embedder)](entities/kdx-minilm-tsdae-model.md) — our domain-adapted Kurdish embedder with anisotropy-aware leaf clustering. Still powers already-fitted corpora (kndh, asosoft) and is no longer user-facing; as of 2026-07-20 only OpenAI/NVIDIA are offered for new fits, and the app derives one "best available" run per source instead of asking.
+- [KDX-MiniLM-TSDAE (fine-tuned embedder)](entities/kdx-minilm-tsdae-model.md) — domain-adapted Kurdish embedder with anisotropy-aware clustering; retained as a local fallback and for existing research runs while new interactive fits focus on OpenAI/NVIDIA.
 
 ## Concepts
 
@@ -43,7 +43,7 @@ No question pages yet.
 
 ## Synthesis
 
-- [Application Architecture and Operation](synthesis/application-architecture-and-operation.md) — how to run the React/FastAPI and Streamlit interfaces, with Mermaid system, request, and fitting-flow diagrams plus troubleshooting.
-- [Kurdish Data Explorer Pipeline](synthesis/kurdish-data-explorer-pipeline.md) — how the eight sources ground each stage of the project pipeline.
-- [Implementation and Methodology](synthesis/implementation-and-methodology.md) — transparent as-built record: data provenance, BERTopic tuning, OpenAI/NVIDIA embeddings, LLM topic labeling, RAG-based "Ask the corpus," FastAPI + React behavior, retained Streamlit compatibility, and reproducibility.
-- [Project Presentation Overview](synthesis/project-presentation-overview.md) — single linear narrative (problem → literature → methodology → results → limitations → conclusion), refreshed with the KDX clustering diagnosis for presentations/podcast generation.
+- [Application Architecture and Operation](synthesis/application-architecture-and-operation.md) — current React/FastAPI topology, local commands, model routing, controlled Fly deployment, memory constraints, and troubleshooting.
+- [Kurdish Data Explorer Pipeline](synthesis/kurdish-data-explorer-pipeline.md) — how eight research sources ground the active BERTopic pipeline, four-model registry, and deployed provider comparison.
+- [Implementation and Methodology](synthesis/implementation-and-methodology.md) — transparent as-built record: data provenance, BERTopic tuning, OpenAI/NVIDIA comparison, LLM topic labeling, RAG-based Ask, current FastAPI/React behavior, and reproducibility.
+- [Project Presentation Overview](synthesis/project-presentation-overview.md) — current linear narrative from research problem through the five-workspace application, 100k-document provider comparison, limitations, and conclusion.

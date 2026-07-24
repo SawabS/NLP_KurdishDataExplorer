@@ -19,7 +19,7 @@ quality benchmark. The engine itself must be language- and source-agnostic.
 | **Topic repr.** | c-TF-IDF over Kurdish CountVectorizer | Same; c-TF-IDF is already linear and cheap |
 | **Evaluate** | NPMI (gensim) + NMI vs labels | NPMI on a sampled doc set; metrics are topic-level so they scale |
 | **Visualize** | Plotly tables/bars + topic×category | Topic-level aggregates scale; the document scatter uses **sampling/aggregation** (can't render millions of points) |
-| **Serve** | FastAPI + React is the primary interface; the original Streamlit app remains runnable against the same artifacts | Add Arrow/DuckDB only when artifact sizes require lazy predicates; never send or load full embeddings in the browser |
+| **Serve** | FastAPI serves the React SPA and artifact/search/job API; the legacy Streamlit interface has been removed | Add Arrow/DuckDB only when artifact sizes require lazy predicates; never send or load full embeddings in the browser |
 
 ## Why the current clustering won't scale
 

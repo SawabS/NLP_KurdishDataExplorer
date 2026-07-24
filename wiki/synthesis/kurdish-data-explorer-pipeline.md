@@ -2,7 +2,7 @@
 title: "Kurdish Data Explorer Pipeline"
 type: synthesis
 created: 2026-06-26
-updated: 2026-07-17
+updated: 2026-07-24
 status: stable
 tags: [synthesis, project, pipeline, topic-modeling, fastapi, react, sorani]
 sources: ["raw/sources/KLPT – Kurdish Language Processing Toolkit.pdf", "raw/sources/Kurdish News Dataset Headlines (KNDH) through multiclass classification.pdf", "raw/sources/Toward Kurdish language processing: Experiments in collecting and processing the AsoSoft text corpus.pdf", "raw/sources/THE KURDISH LANGUAGE CORPUS: STATE OF THE ART.pdf", "raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf", "raw/sources/Idiom Detection in Sorani Kurdish Texts.pdf", "raw/sources/A Transformer-based Neural Network Machine Translation Model for the Kurdish Sorani Dialect.pdf", "raw/sources/Morphological Feature Extraction for Fine-Grained Sorani Kurdish Dialect.pdf"]
@@ -45,8 +45,9 @@ choice below is grounded in a specific source.
    (UMAP → HDBSCAN → c-TF-IDF), following
    [[Multilingual Transformer and BERTopic for Short Text: Serbian (Medvecki et al. 2024)]].
 4. **Baselines + evaluation** — LDA and NMF compared via topic coherence (NPMI).
-5. **Deployment** — FastAPI serves an artifact API and the production Vite/React
-   bundle; the retained Streamlit interface can read the same isolated fitted runs.
+5. **Deployment** — FastAPI serves the artifact API and production Vite/React
+   bundle as one application. The controlled Fly demo exposes one
+   `corpus-unreviewed` sample with separate completed OpenAI and NVIDIA runs.
 
 Transformer choices are backstopped by Kurdish-specific evidence that attention
 models transfer to low-resource settings:
@@ -78,12 +79,13 @@ models transfer to low-resource settings:
   KNDH reaches NMI 0.232 against the 5 human categories (base MiniLM), vs 0.212 for
   the anisotropy-aware TSDAE-adapted embedder — topics partially but not fully recover the human
   labels; full sweep in [[Implementation and Methodology]].
-- **Embedding backbone — narrowed, not fully closed:** the shipped pipeline uses
-  multilingual sentence-transformers (MiniLM, DistilUSE, MPNet, E5-base) plus a
-  domain-adapted [[KDX-MiniLM-TSDAE (fine-tuned embedder)]]; Kurdish-specific
-  [[KuBERT]] was never wired into the embedding stage (only referenced from the
-  idiom-detection source as classification evidence), so the comparison against a
-  Kurdish-specific encoder is still untested.
+- **Embedding backbone — narrowed, not fully closed:** the active registry contains
+  base MiniLM, domain-adapted [[KDX-MiniLM-TSDAE (fine-tuned embedder)]], OpenAI
+  `text-embedding-3-small`, and NVIDIA `nemotron-3-embed-1b`. New interactive fits
+  offer the two hosted providers; local models support existing artifacts and
+  keyless research. DistilUSE, MPNet, and E5-base were unregistered after weaker
+  results. Kurdish-specific [[KuBERT]] was never wired into the embedding stage,
+  so comparison against a Kurdish-specific encoder remains untested.
 
 ## Change log
 
@@ -93,3 +95,6 @@ models transfer to low-resource settings:
   question narrowed. Full as-built detail lives in
   [[Implementation and Methodology]]; this page stays the literature-grounded
   design rationale.
+- 2026-07-24: Updated the deployment and embedding stages for the sole
+  FastAPI/React application, active four-model registry, and controlled
+  OpenAI/NVIDIA `corpus-unreviewed` demo.

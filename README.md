@@ -27,9 +27,8 @@ pip install -r requirements.txt
 #   OPENAI_API_KEY=sk-...
 #   NVIDIA_API_KEY=nvapi-...
 
-# 2. Clone noor-ui at the workspace path, then install frontend dependencies
-git clone https://github.com/SawabS/noor-ui.git raw/sources/noor-ui
-npm install
+# 2. Restore the local noor-ui workspace, install dependencies, and build
+./scripts/bootstrap_web.sh
 
 # 3. Prepare the built-in corpora (KNDH, AsoSoft) into data/processed/
 python scripts/prepare_data.py
@@ -61,11 +60,13 @@ Open `http://127.0.0.1:5173`. Vite proxies `/api` requests to FastAPI on
 `http://127.0.0.1:8600`. Press Ctrl+C once to stop both processes. To run only
 the frontend (when the API is already running), use `npm run dev:web`.
 
-The app reads fitted artifacts through an mtime-keyed cache. Use the model
-dropdown to switch between fitted embedders; models without artifacts are shown
-as **fit required** and run in a serialized background worker. Runs on a hosted
-provider are labeled as such wherever they are started. Set `PRELOAD_EMBEDDER=1`
-to construct the preferred embedder during API startup.
+The app reads fitted artifacts through an mtime-keyed cache. A source's model
+dropdown lists every completed registered embedding run for that source; the
+preference order selects only the initial route. New uploads auto-select a
+configured hosted provider (NVIDIA first, then OpenAI) and fall back to a local
+model in a keyless installation. Fit and topic-labeling jobs run through one
+serialized background worker. Set `PRELOAD_EMBEDDER=1` to construct the
+preferred embedder during API startup.
 
 ## Deploy to Fly.io
 
@@ -97,15 +98,21 @@ fly secrets set -a kdx-explorer \
 From the repository root, deploy the current working tree:
 
 ```bash
+npm run typecheck
 npm run build -w web
+test -f artifacts/corpus-unreviewed__openai/meta.json
+test -f artifacts/corpus-unreviewed__nvidia/meta.json
+test -f artifacts/embeddings/openai_596f760f62c82cf9.npy
+test -f artifacts/embeddings/nvidia_6aaced7846221f39.npy
 fly deploy -a kdx-explorer --remote-only
 ```
 
 The Docker build performs its own frontend build, but the local build above is
-a useful pre-deployment TypeScript check. `--remote-only` uses Fly's remote
-builder and does not require local Docker. Deployment is intentionally manual:
-fitted artifacts and the local Noor workspace are git-ignored, so a clean
-GitHub Actions checkout does not contain the complete Docker build context.
+a useful pre-deployment check. `--remote-only` uses Fly's remote builder and
+does not require local Docker. Deployment is intentionally manual: fitted
+artifacts and the local Noor workspace are git-ignored, so a clean GitHub
+checkout or GitHub Actions runner does not contain the complete Docker build
+context. Run the deploy from the prepared workstation checkout.
 
 Verify the release:
 
@@ -132,10 +139,16 @@ corpus, and unrelated embedding caches stay local and are excluded from the
 image. When replacing a fit later, update both its run-directory and exact-cache
 allow-list entries before deploying.
 
+The Fly machine has 2 GB RAM. The OpenAI and NVIDIA matrices are approximately
+586 MB and 782 MB; the server therefore caches only one full document matrix at
+a time. Switching models can incur a reload, but retaining both would leave too
+little memory for FastAPI, pandas, and query processing.
+
 Use the in-app **Upload & explore** mode to run the pipeline on your own text;
 the result becomes a selectable source next to the built-ins. Upload asks for no
-parameters and accepts files of any size: the server streams the file to disk,
-profiles a bounded head sample of it, and derives the ingestion plan itself —
+parameters and supports files up to the server's 2 GB upload limit: the server
+streams the file to disk, profiles a bounded head sample of it, and derives the
+ingestion plan itself —
 what counts as a document, which column holds the text, which column looks like
 a category label, and how many documents get embedded. The page reports that
 plan (and the auto-selected embedding model) before you start the run, and the
@@ -192,7 +205,7 @@ default 6).
 | `scripts/` | `prepare_data.py`, `run_pipeline.py`, `tune_bertopic.py`, `finetune_tsdae.py` (domain-adapted embedder) |
 | `artifacts/` | Per-run outputs: `documents.parquet`, `topic_info.parquet`, `topic_words.json`, `hierarchy.json`, `coherence.json`, `meta.json`; cached embeddings; tuned models |
 | `data/` | `raw/` corpus downloads, `processed/` unified Parquet tables |
-| `docs/ARCHITECTURE.md` | Scaling plan: how each stage grows from 50k docs to millions |
+| `docs/ARCHITECTURE.md` | Scaling plan: how each stage grows from 100k docs to millions |
 | `reports/` | LaTeX project proposal |
 | `tests/` | Pytest suite |
 | `wiki/`, `raw/`, `tools/`, `AGENTS.md` | The source-grounded research wiki (below) |
@@ -215,12 +228,12 @@ The registry in `src/kurdish_explorer/config.py` exposes four choices:
   comparison point.
 
 For the current deterministic 100,000-document demo sample, the NVIDIA run has
-32 topics (NPMI 0.04915); its cache-reusing refit took 337.4 seconds, while the
-earlier cold NVIDIA fit took 597.5 seconds. The OpenAI
-`text-embedding-3-small` run took 3,628.7 seconds and has 38 topics
-(NPMI 0.03742). These are end-to-end fit measurements, not a controlled
-embedding-only benchmark; they make the practical speed/structure trade-off
-visible on the same corpus.
+32 topics, 552 outliers, and NPMI 0.04915; its cache-reusing refit took
+337.4 seconds, while the earlier cold NVIDIA fit took 597.5 seconds. The OpenAI
+`text-embedding-3-small` run took 3,628.7 seconds and has 38 topics, 868
+outliers, and NPMI 0.03742. These are end-to-end fit measurements, not a
+controlled embedding-only benchmark; they make the practical speed/structure
+trade-off visible on the same corpus.
 
 On the existing local-model KNDH comparison, KDX MiniLM reaches positive NPMI topic
 coherence (+0.057 vs −0.047 for base MiniLM; earlier DistilUSE/MPNet

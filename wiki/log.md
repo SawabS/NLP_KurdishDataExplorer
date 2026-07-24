@@ -450,3 +450,30 @@ centroids instead of actually answering the question.
   and live end-to-end checks against a real corpus (`mabast-version-2`) —
   labeling job, `/tree` root, and `/ask` retrieval+synthesis all confirmed
   working against the running dev server.
+
+## [2026-07-24] document | Reconcile the wiki and deployment guide with the current product
+
+- Updated [[Application Architecture and Operation]] to describe the single
+  FastAPI/React application, fitted-model routing, manual Fly deployment, exact
+  artifact allow-list, runtime secrets, and the one-document-matrix cache needed
+  for the 2 GB machine.
+- Updated [[Implementation and Methodology]] with the current
+  `corpus-unreviewed` OpenAI/NVIDIA comparison, five workspaces, restored
+  fitted-model selector, Ask/Structure loading and distribution redesign,
+  single-scroll layout, and theme-aware glass app bar.
+- Updated [[KDX-MiniLM-TSDAE (fine-tuned embedder)]] to distinguish its current
+  registered local-fallback/research role from the OpenAI/NVIDIA providers
+  offered for new interactive fits.
+- Corrected stale claims that Streamlit remained supported or that the app hid
+  all but one best model. Streamlit was removed on 2026-07-24; model preference
+  now chooses the initial route while all fitted registered models remain
+  selectable.
+- Reconciled `README.md` with the executable bootstrap script, 2 GB upload cap,
+  deployment preflight, local-only build inputs, Fly memory behavior, and exact
+  topic/outlier/NPMI results for both 100,000-document runs.
+- Updated `wiki/index.md` navigation descriptions and removed the final stale
+  Streamlit statement from `docs/ARCHITECTURE.md`.
+- Refreshed [[Kurdish Data Explorer Pipeline]] and
+  [[Project Presentation Overview]] so the literature-grounded rationale and
+  presentation narrative match the active provider registry, five workspaces,
+  current KDX role, and controlled Fly demo.
