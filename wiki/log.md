@@ -347,3 +347,106 @@ Unresolved issues / cautions:
 - Playwright tour of Overview, Upload, and all four explore tabs in light and
   dark themes, English and Sorani (RTL), desktop and 390px mobile: no console
   errors, no page overflow; search, tree layouts, and map table verified live.
+
+## [2026-07-20] redesign | Data-first UI: hide the embedding model, Evaluate → Insights
+
+User feedback: the app read as an embedding-model comparison tool, not a data
+explorer, and the Evaluate tab (NPMI/LDA/NMF/model dossier) was too technical
+for a general audience while adding little for technical users either.
+
+- **Embedding model hidden from the UI.** `CorpusContext` now shows only
+  Corpus + Category, no model picker. `GET /sources` returns one "best
+  available" run per source via `config.best_available_model()`
+  (`MODEL_PREFERENCE`: openai > nvidia > kdx-minilm-tsdae > minilm > mpnet >
+  distiluse > e5-base). The URL still carries `/explore/:source/:model/:tab`
+  (the model is derived, not chosen) so links stay shareable.
+- **Only `openai`/`nvidia` offered for NEW fits.** `config.NEW_FIT_MODELS`
+  restricts the Upload page's model selector to the two hosted providers;
+  `config.EMBEDDING_MODELS` still lists the local keys (`kdx-minilm-tsdae`,
+  `minilm`, ...) purely so already-fitted corpora (kndh, asosoft) keep
+  loading. `GET /models` (`server/kdx_server/routers/models.py`) now returns
+  richer `ModelCard`s (`key_present`, `provider`, `hosted`) and an `auto`
+  field naming the model a new fit would pick with no explicit choice.
+- **Evaluate tab replaced by Insights** (`features/explore/insights/InsightsView.tsx`):
+  glance metrics (coverage %, largest-topic share, median/avg topic size), a
+  share-based topic-size Pareto (bars = % of corpus, line = cumulative
+  coverage, one shared axis), a category-balance bar for labeled corpora, and
+  a "how this run was built" provenance section (source file, document
+  count/rules, embedding model, normalization, fit time). The old
+  coherence/baseline endpoints (`/coherence`, `/baselines`) still exist
+  server-side but are no longer surfaced in the UI.
+- **Sidebar and stats become collapsible.** The corpus-context rail collapses
+  via a rail-footer toggle (`layout/WorkspacePanel.tsx`); the header stat row
+  (documents/topics/coverage/categories) collapses independently per
+  `ExplorePage`, both persisted (localStorage / the panel hook).
+- Upload flow gained `FileProfileCard.tsx` and `IngestPlanCard.tsx`
+  (structure/plan preview before fitting) and suggested-prompt chips were
+  removed from Ask the corpus.
+
+Known documentation debt this created (now fixed by this entry + the
+2026-07-21 entry below): this change was shipped without a wiki update; the
+"Baselines and evaluation" / "Application" sections of
+[[Implementation and Methodology]] still described the old Evaluate tab and
+model-dropdown UI until now.
+
+## [2026-07-21] feature | LLM topic labels, visible tree root, and real RAG for Ask the corpus
+
+Follow-on request after 2026-07-20: BERTopic's raw c-TF-IDF keyword labels
+("نییە_ئەمە_خۆت_شتێک") read as noise to a general user, the topic-hierarchy
+chart had no visible starting point, and "Ask the corpus" only ranked topic
+centroids instead of actually answering the question.
+
+- **Human-readable topic names.** New `src/kurdish_explorer/labeling.py`
+  batches every hierarchy node (leaf topics *and* internal merge groups) —
+  its top keywords plus one representative document — to a chat LLM, asking
+  for a short name in the same language as the document (not hardcoded
+  Kurdish, since uploaded corpora can be any language). Saved as
+  `topic_labels.json` per run, keyed by node id (leaf ids == topic ids, so
+  one file covers both the flat topic list and the tree). Runs automatically
+  at fit time (`pipeline.run_on_dataframe`) and can retrofit any
+  already-fitted run from saved artifacts alone, no re-embedding
+  (`pipeline.label_run()`, `POST /runs/{source}/{model}/label`, backed by the
+  existing job-queue/progress UI). The frontend's "Name topics" button
+  (`structure/NameTopicsAction.tsx`) only appears while some topics are still
+  unlabeled; `lib/labels.ts:topicName()` prefers the LLM label everywhere,
+  falling back to the old keyword formatting for un-labeled runs.
+- **The corpus is now a visible tree root.** `tree.py:build_tree` prepends a
+  synthetic `__source__` node (labeled with the corpus title) as the one
+  true root and reparents the formerly-rootless top-level hierarchy node(s)
+  under it; `StructureView.tsx` removed the `root.color: transparent`
+  override that had been hiding this.
+- **Real RAG, not topic-centroid search.** `search.py:retrieve()` does actual
+  per-document nearest-neighbor search (cosine similarity over the run's
+  full cached embedding matrix — brute-force numpy, no vector DB; fast
+  enough at these corpus sizes) instead of the old centroid approximation
+  (`rank()`, kept for the original `/search` endpoint).
+  `search.py:answer()` feeds the retrieved passages to the chat LLM with
+  inline-citation instructions; new endpoint `POST /runs/{s}/{m}/ask`.
+  `SearchView.tsx` was rewritten as an answer-plus-citations chat UI, and
+  degrades gracefully (citations still render even if answer synthesis
+  errors).
+- **New chat-provider abstraction**, separate from the embedding provider:
+  `config.CHAT_MODELS` / `config.default_chat_provider()` / new
+  `src/kurdish_explorer/llm.py`. One `chat_complete()` covers Ollama
+  (local), OpenAI, and NVIDIA through the same OpenAI-compatible client
+  shape (NVIDIA and Google's Gemini API both expose one; Ollama does too).
+  `.env`: `KDX_CHAT_PROVIDER` (`ollama|openai|nvidia`), `OLLAMA_CHAT_MODEL`
+  (default `qwen2.5:7b-instruct`, already pulled locally),
+  `NVIDIA_CHAT_API_KEY`/`NVIDIA_CHAT_MODEL` (falls back to `NVIDIA_API_KEY`
+  if unset — lets the chat model use a different NIM deployment/key than
+  the embedding provider).
+- **Model-latency finding, current config:** started on NVIDIA's
+  `google/gemma-4-31b-it` (a real, confirmed-available NIM model) — worked,
+  but ~47s+ per call even for trivial replies (cold-start/low-priority
+  queuing) and occasional transient 500s; labeling 45 hierarchy nodes took
+  ~6 minutes. Switched `NVIDIA_CHAT_MODEL` to `meta/llama-3.1-8b-instruct`
+  (~1s/call, confirmed on this account) — same `/ask` query dropped from
+  minutes to ~4 seconds with an equally coherent, correctly-cited answer.
+  `google/gemma-3-12b-it`/`gemma-3-4b-it` are listed in NVIDIA's model
+  catalog but 404 ("not found for account") on this key — not usable
+  without a separate provisioning step.
+- Verification: full pytest suite green (`test_tree_values_and_depth`
+  updated for the new root node), `tsc --noEmit` and `vite build` clean,
+  and live end-to-end checks against a real corpus (`mabast-version-2`) —
+  labeling job, `/tree` root, and `/ask` retrieval+synthesis all confirmed
+  working against the running dev server.

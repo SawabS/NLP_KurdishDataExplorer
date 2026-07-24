@@ -11,7 +11,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from . import baselines, config, data, embed, evaluate, preprocess, topics
+from . import baselines, config, data, embed, evaluate, labeling, preprocess, topics
 
 
 def run_key(source: str, model_key: str) -> str:
@@ -187,6 +187,14 @@ def run_on_dataframe(
         hierarchy = []
         _say(f"(hierarchy skipped: {exc})")
 
+    # --- Human-readable topic labels (LLM) ---
+    _say("Naming topics…")
+    try:
+        topic_labels = labeling.label_hierarchy(hierarchy, df, {str(k): v for k, v in bt_topic_words.items()})
+    except Exception as exc:  # labeling is optional; raw keyword labels remain the fallback
+        topic_labels = {}
+        _say(f"(topic naming skipped: {exc})")
+
     # --- Coherence comparison ---
     model_topics = {"BERTopic": [[w for w, _ in ws] for ws in bt_topic_words.values()]}
     baseline_objs = {}
@@ -211,6 +219,9 @@ def run_on_dataframe(
     )
     (out / "hierarchy.json").write_text(
         json.dumps(hierarchy, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    (out / "topic_labels.json").write_text(
+        json.dumps(topic_labels, ensure_ascii=False, indent=2), encoding="utf-8"
     )
     if baseline_objs:
         baseline_payload = {name: r.topics for name, r in baseline_objs.items()}
@@ -281,6 +292,10 @@ def load_run(run: str) -> dict:
     hierarchy = (
         json.loads(hierarchy_path.read_text(encoding="utf-8")) if hierarchy_path.exists() else []
     )
+    labels_path = d / "topic_labels.json"
+    topic_labels = (
+        json.loads(labels_path.read_text(encoding="utf-8")) if labels_path.exists() else {}
+    )
     return {
         "meta": meta,
         "topic_info": pd.read_parquet(d / "topic_info.parquet"),
@@ -288,7 +303,27 @@ def load_run(run: str) -> dict:
         "topic_words": topic_words,
         "baseline_topics": baseline_topics,
         "hierarchy": hierarchy,
+        "topic_labels": topic_labels,
     }
+
+
+def label_run(run: str) -> dict[str, str]:
+    """Generate (or regenerate) human-readable topic labels for an existing
+    run, purely from its saved artifacts — no re-embedding or re-fitting.
+
+    Lets already-fitted corpora (built before LLM labeling existed, or fitted
+    while the chat provider was unavailable) get real topic names on demand.
+    """
+    d = config.ARTIFACTS_DIR / run
+    hierarchy_path = d / "hierarchy.json"
+    hierarchy = json.loads(hierarchy_path.read_text(encoding="utf-8")) if hierarchy_path.exists() else []
+    topic_words = json.loads((d / "topic_words.json").read_text(encoding="utf-8"))
+    documents = pd.read_parquet(d / "documents.parquet")
+    topic_labels = labeling.label_hierarchy(hierarchy, documents, topic_words)
+    (d / "topic_labels.json").write_text(
+        json.dumps(topic_labels, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    return topic_labels
 
 
 def runs_by_source() -> dict[str, list[str]]:

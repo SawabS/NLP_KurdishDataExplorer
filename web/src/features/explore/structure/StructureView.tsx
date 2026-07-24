@@ -4,9 +4,10 @@ import { Layers3 } from "lucide-react";
 import { Alert, ErrorState, SegmentedControl, Skeleton, Slider, Typography } from "noor-ui";
 import { useTopics, useTree } from "../../../api/hooks";
 import { Plot } from "../../../charts/Plot";
-import { usePalette } from "../../../charts/palette";
-import { topicDisplayName } from "../../../lib/labels";
+import { cssToken, usePalette } from "../../../charts/palette";
+import { topicName } from "../../../lib/labels";
 import { DistributionPanel } from "./DistributionPanel";
+import { NameTopicsAction } from "./NameTopicsAction";
 import { TopicIndexTable } from "./TopicIndexTable";
 import { TopicInspector } from "./TopicInspector";
 
@@ -24,7 +25,7 @@ export function StructureView({source, model, category, params, setParams}: Prop
   const selectedParam = params.has("topic") ? Number(params.get("topic")) : undefined;
   const update = (key: string, value: string) => { const next = new URLSearchParams(params); next.set(key, value); setParams(next); };
 
-  const options = useMemo(() => (topics.data?.topics ?? []).map((item) => ({value: String(item.topic), label: `${topicDisplayName(item.name)} · ${item.count.toLocaleString()}`})), [topics.data]);
+  const options = useMemo(() => (topics.data?.topics ?? []).map((item) => ({value: String(item.topic), label: `${topicName(item)} · ${item.count.toLocaleString()}`})), [topics.data]);
   if (tree.isLoading || topics.isLoading) {
     return (
       <div className="p-4 md:p-5">
@@ -42,11 +43,15 @@ export function StructureView({source, model, category, params, setParams}: Prop
   if (!tree.data?.ids.length) return <div className="p-5"><Alert title="No hierarchy" description="Re-fit this run to generate a saved topic hierarchy." /></div>;
 
   // Leaves take the SAME topic color used on the Map (linked-view consistency);
-  // internal group nodes get a stable hashed category color, outliers stay muted.
+  // internal group nodes get a stable hashed category color, the corpus root
+  // gets its own neutral structural tone, and outliers stay muted.
+  const rootColor = cssToken("--n-border-strong", "#94a3b8");
   const colors = tree.data.ids.map((id, index) => {
     const topicId = tree.data!.topic_ids[index];
     if (topicId !== null && topicId !== undefined) return palette.colorForTopic(topicId);
-    return tree.data!.kinds[index] === "group" ? palette.colorForCategory(id) : palette.outlier;
+    const kind = tree.data!.kinds[index];
+    if (kind === "source") return rootColor;
+    return kind === "group" ? palette.colorForCategory(id) : palette.outlier;
   });
   const selected = selectedParam ?? topics.data?.topics[0]?.topic;
   const trace = {
@@ -61,7 +66,6 @@ export function StructureView({source, model, category, params, setParams}: Prop
     marker: {colors},
     hovertemplate: "<b>%{label}</b><br>%{value:,} documents<br>%{customdata[2]}<br><i>%{customdata[1]}</i><extra></extra>",
     pathbar: {visible: false},
-    root: {color: "rgba(0,0,0,0)"},
   } as unknown as Data;
   const onChartClick = (event: PlotMouseEvent) => {
     const custom = event.points[0]?.customdata as unknown as [number | null] | undefined;
@@ -74,6 +78,7 @@ export function StructureView({source, model, category, params, setParams}: Prop
         <div className="flex flex-col gap-4 px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-2"><Layers3 className="size-4 text-text-secondary" /><Typography variant="label">Hierarchy canvas</Typography><span className="text-caption text-text-muted">Area = documents</span></div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <NameTopicsAction source={source} model={model} topics={topics.data?.topics ?? []} />
             <SegmentedControl aria-label="Hierarchy layout" value={layout} options={[{value: "icicle", label: "Icicle"}, {value: "treemap", label: "Treemap"}, {value: "sunburst", label: "Sunburst"}]} onValueChange={(value) => update("layout", value)} />
             <div className="w-full sm:w-48"><div className="mb-1 flex justify-between text-caption text-text-secondary"><span>Depth</span><span>{depth === 0 ? "All" : depth}</span></div><Slider aria-label="Visible depth" min={0} max={4} step={1} value={[depth]} onValueChange={([value]) => update("depth", String(value))} /></div>
           </div>

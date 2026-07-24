@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useState, type HTMLAttributes, type ReactNode } from "react";
-import { ChartNoAxesCombined, ChevronDown, GitBranch, Map as MapIcon, Menu, Search } from "lucide-react";
+import { ChartNoAxesCombined, ChevronDown, GitBranch, Map as MapIcon, Menu, Rows3, Search } from "lucide-react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Badge, Breadcrumbs, Button, Drawer, ErrorState, IconButton, Skeleton, TabsContent, TabsList, TabsRoot, TabsTrigger, Tooltip, Typography } from "noor-ui";
 import { usePrefetchWorkspace, useRun, useSources } from "../../api/hooks";
@@ -8,6 +8,7 @@ import { useLocale } from "../../lib/i18n";
 import { compactSourceLabel } from "../../lib/labels";
 import { CorpusContext } from "./CorpusContext";
 import { FitRequired } from "./FitRequired";
+import { DocumentsView } from "./documents/DocumentsView";
 import { InsightsView } from "./insights/InsightsView";
 import { MapView } from "./map/MapView";
 import { SearchView } from "./search/SearchView";
@@ -35,6 +36,7 @@ export function ExplorePage() {
   const workspaces = [
     {value: "tree", label: t("tabStructure"), icon: GitBranch},
     {value: "map", label: t("tabMap"), icon: MapIcon},
+    {value: "documents", label: t("tabDocuments"), icon: Rows3},
     {value: "ask", label: t("tabSearch"), icon: Search},
     {value: "insights", label: t("tabInsights"), icon: ChartNoAxesCombined},
   ];
@@ -76,6 +78,8 @@ export function ExplorePage() {
     content = null;
   } else if (activeTab === "map") {
     content = <MapView source={source} model={model} category={category} params={params} setParams={setParams} />;
+  } else if (activeTab === "documents") {
+    content = <DocumentsView source={source} model={model} category={category} params={params} setParams={setParams} />;
   } else if (activeTab === "ask") {
     content = <SearchView source={source} model={model} params={params} setParams={setParams} />;
   } else if (activeTab === "insights") {

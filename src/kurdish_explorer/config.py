@@ -84,6 +84,33 @@ def best_available_model(fitted: list[str]) -> str:
     return fitted[0]
 
 
+# ---------------------------------------------------------------------------
+# Chat/completion model registry (topic labeling + RAG answers)
+# ---------------------------------------------------------------------------
+# Separate from the embedding registry above: this powers LLM generation
+# (human-readable topic labels, RAG answer synthesis), not vector embedding.
+# NVIDIA_CHAT_API_KEY/NVIDIA_CHAT_MODEL let the chat model use a different NIM
+# deployment (and key) than the embedding provider; both fall back to the
+# embedding provider's NVIDIA_API_KEY when unset.
+CHAT_MODELS: dict[str, str] = {
+    "ollama": os.getenv("OLLAMA_CHAT_MODEL", "qwen2.5:7b-instruct"),
+    "openai": os.getenv("OPENAI_CHAT_MODEL", "gpt-4o-mini"),
+    "nvidia": os.getenv("NVIDIA_CHAT_MODEL", "meta/llama-3.1-8b-instruct"),
+}
+
+
+def default_chat_provider() -> str:
+    """``KDX_CHAT_PROVIDER`` (ollama | openai | nvidia) always wins; defaults to ollama."""
+    requested = os.getenv("KDX_CHAT_PROVIDER", "").strip().lower()
+    if requested:
+        if requested not in CHAT_MODELS:
+            raise ValueError(
+                f"KDX_CHAT_PROVIDER must be one of {', '.join(CHAT_MODELS)}; received {requested!r}."
+            )
+        return requested
+    return "ollama"
+
+
 def default_model_key() -> str:
     """Choose an explicit provider, a hosted key when configured, else local.
 

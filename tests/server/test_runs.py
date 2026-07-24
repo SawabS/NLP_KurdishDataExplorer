@@ -34,11 +34,14 @@ def test_points_sampling_cap_and_category(fake_artifacts):
 
 def test_tree_values_and_depth(fake_artifacts):
     full = runs.run_tree("demo", "minilm", depth=-1)
-    assert full["values"] == [7, 3, 4]
+    # A synthetic "source" node is prepended as the visible tree root, holding
+    # the corpus title, with the original top-level merge reparented under it.
+    assert full["kinds"][0] == "source"
+    assert full["values"] == [7, 7, 3, 4]
     assert full["branchvalues"] == "total"
     assert sum(value for value, kind in zip(full["values"], full["kinds"]) if kind == "topic") == full["values"][0]
     shallow = runs.run_tree("demo", "minilm", depth=1)
-    assert shallow["ids"] == ["2"]
+    assert shallow["ids"] == ["__source__", "2"]
 
 
 def test_topic_distribution_and_404(fake_artifacts):

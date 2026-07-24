@@ -2,9 +2,9 @@
 title: "Implementation and Methodology"
 type: synthesis
 created: 2026-06-26
-updated: 2026-07-17
+updated: 2026-07-21
 status: stable
-tags: [implementation, methodology, reproducibility, bertopic, tsdae, pipeline, transparency]
+tags: [implementation, methodology, reproducibility, bertopic, tsdae, pipeline, transparency, llm-labeling, rag]
 sources: ["raw/sources/KLPT – Kurdish Language Processing Toolkit.pdf", "raw/sources/Kurdish News Dataset Headlines (KNDH) through multiclass classification.pdf", "raw/sources/Toward Kurdish language processing: Experiments in collecting and processing the AsoSoft text corpus.pdf", "raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf"]
 ---
 
@@ -124,6 +124,13 @@ final number substantially — see below.)
   (TF-IDF), 20 topics, baseline vectorizer.
 - Metric (`src/kurdish_explorer/evaluate.py`): NPMI via gensim, plus topic
   diversity and NMI-vs-labels.
+- **UI note (2026-07-20):** the app no longer surfaces this comparison as an
+  "Evaluate" tab — it read as embedding-model benchmarking, not data
+  exploration, and was replaced by an **Insights** tab (glance metrics, a
+  topic-size Pareto, category balance, run provenance — see "Application"
+  below). The `/coherence` and `/baselines` endpoints and the numbers below
+  are unchanged and still computed at fit time; they're just not shown in
+  the UI anymore.
 
 ### Final full-50K result (production config, post outlier-reduction)
 
@@ -190,6 +197,69 @@ keywords, document count, and a sample snippet for intuition; a leaf inspector b
 shows "how many documents are here", the keyword bars, and example texts. The
 **distribution** (top topics + topic×category heatmap) sits directly below the tree.
 
+**(2026-07-21) Visible corpus root.** The chart used to hide its own root
+(`root.color` forced transparent), so the tree effectively had no visible
+starting point. `tree.py:build_tree` now prepends a synthetic `__source__`
+node — labeled with the corpus title, value = sum of the top-level nodes —
+and reparents the (normally single) top-level merge node under it, so the
+icicle/treemap/sunburst reads as one tree that starts at the corpus and
+drills down into ever more specific topics.
+
+## LLM topic labeling and retrieval-augmented answers
+
+Two problems this addresses: BERTopic's own node names are raw c-TF-IDF
+keyword strings (`"نییە_ئەمە_خۆت_شتێک"`) — precise but unreadable to a
+general user — and the "Ask the corpus" search only ever ranked topic
+centroids instead of actually answering a question.
+
+**Human-readable labels.** `src/kurdish_explorer/labeling.py` batches every
+hierarchy node — leaf topics *and* internal merge groups — to a chat LLM,
+each with its top keywords and one representative document, asking for a
+short name in the *same language as the document* (uploaded corpora aren't
+always Kurdish, so the language is inferred per corpus, not hardcoded).
+Saved as `topic_labels.json` per run, keyed by node id; leaf node ids are
+exactly the BERTopic topic ids, so one file labels both the flat topic list
+and the tree. Runs automatically at fit time
+(`pipeline.run_on_dataframe`) and can retrofit any already-fitted run from
+saved artifacts alone — no re-embedding — via `pipeline.label_run()` /
+`POST /runs/{source}/{model}/label` (a background job, same queue as fits).
+The frontend surfaces this as a "Name topics" button
+(`structure/NameTopicsAction.tsx`) that only appears while some topics are
+still unlabeled; `lib/labels.ts:topicName()` prefers the LLM label
+everywhere in the UI, falling back to the old keyword formatting.
+
+**Real RAG for "Ask the corpus."** `search.py:retrieve()` now does genuine
+per-document nearest-neighbor search — cosine similarity over the run's full
+cached embedding matrix (brute-force numpy; fast enough at these corpus
+sizes, no vector DB needed) — instead of the earlier topic-centroid
+approximation (`rank()`, kept for the original `/search` endpoint).
+`search.py:answer()` feeds the retrieved passages to the chat LLM with
+inline-citation instructions (`[1]`, `[2]`...); new endpoint
+`POST /runs/{source}/{model}/ask`. It degrades gracefully if the LLM call
+fails: citations still render, with an explicit "couldn't generate an
+answer" state rather than a blank screen.
+
+**Chat/completion provider**, a separate concern from the embedding
+provider above: `config.CHAT_MODELS` / `config.default_chat_provider()` /
+`src/kurdish_explorer/llm.py`. One `chat_complete()` covers Ollama (local),
+OpenAI, and NVIDIA through the same OpenAI-compatible client shape (NVIDIA's
+and Google Gemini's APIs both expose an OpenAI-compatible endpoint, as does
+Ollama). Selected via `.env`: `KDX_CHAT_PROVIDER`
+(`ollama|openai|nvidia`), `OLLAMA_CHAT_MODEL` (default `qwen2.5:7b-instruct`),
+`NVIDIA_CHAT_API_KEY`/`NVIDIA_CHAT_MODEL` (falls back to `NVIDIA_API_KEY` if
+unset, so the chat model can use a different NIM deployment/key than the
+embedding provider).
+
+**Model-choice finding (2026-07-21).** NVIDIA's `google/gemma-4-31b-it` is a
+real, confirmed-available model on this account, but ~47s+ per call even for
+a trivial reply (cold-start/low-priority queuing) with occasional transient
+500s — labeling 45 hierarchy nodes took ~6 minutes. `meta/llama-3.1-8b-instruct`
+on the same account responds in ~1s with equally coherent, correctly-cited
+RAG answers — an identical query dropped from minutes to ~4 seconds after
+switching. `google/gemma-3-12b-it`/`gemma-3-4b-it` are listed in NVIDIA's
+catalog but 404 ("not found for account") on this key without a separate
+provisioning step. Shipped default: `meta/llama-3.1-8b-instruct`.
+
 ## Source isolation and transparency
 
 The user explores **one source at a time and sources are never mixed** unless they
@@ -233,14 +303,27 @@ The application is a Vite/React SPA using noor-ui, backed by FastAPI under
 `server/kdx_server/`. Saved Parquet/JSON artifacts are read through an mtime-keyed
 LRU cache; large map responses are sampled server-side and returned column-wise.
 Routes encode source, model, and tab, with layout/depth/topic/search state in query
-parameters. The landing Overview lists every corpus with card and row (table) views
-(persisted per browser); each explore workspace offers Structure, Map, Search, and
-Evaluate tabs. Missing model/source combinations and uploads run through a single
-worker job registry with polling, progress, error capture, and query invalidation.
-OpenAI and NVIDIA are normal registry choices and are preferred when their keys are
-configured; hosted fits require a cost acknowledgement. The Search tab (formerly
-"Ask the corpus") embeds a question with the active run's embedder and ranks cached
-topic centroids.
+parameters — the model segment is still there for shareable links, but as of
+2026-07-20 it's derived (`config.best_available_model()`), not user-chosen: the
+embedding-model picker was removed from `CorpusContext`, which now shows only
+Corpus + Category. The landing Overview lists every corpus with card and row
+(table) views (persisted per browser); each explore workspace offers **Structure,
+Map, Ask, and Insights** tabs (Evaluate was replaced by Insights on 2026-07-20 —
+see "Baselines and evaluation" above). Missing model/source combinations and
+uploads, and the topic-labeling retrofit job, all run through the same
+single-worker job registry with polling, progress, error capture, and query
+invalidation. Both the corpus-context rail and the header stat row are
+independently collapsible (persisted).
+
+Only `openai`/`nvidia` are offered when fitting a *new* corpus
+(`config.NEW_FIT_MODELS`); hosted fits still require a cost acknowledgement.
+Older local-model runs (kndh, asosoft) keep loading normally — `config.EMBEDDING_MODELS`
+still lists their keys — they're just no longer offered as a choice going forward.
+The **Ask** tab (formerly "Search"/"Ask the corpus") is now real
+retrieval-augmented generation: it embeds the question, retrieves the nearest
+documents by cosine similarity over the run's cached embeddings, and asks a chat
+LLM to synthesize a cited answer from them (see "LLM topic labeling and
+retrieval-augmented answers" above) — not just a ranked list of topic matches.
 The original `app/streamlit_app.py` and `app/upload_page.py` remain runnable as a
 compatibility interface over the same pipeline and artifacts.
 
@@ -331,3 +414,14 @@ npm run build -w web
 - 2026-07-15: Made Streamlit repair stale cached OpenAI adapter instances after a
   hot code reload, preventing old class objects from missing new token-estimation
   and throttling methods.
+- 2026-07-20: Hid the embedding-model picker from the UI (`best_available_model()`
+  serves one run per source); restricted new fits to `openai`/`nvidia`
+  (`NEW_FIT_MODELS`) while keeping local-model runs loadable; replaced the
+  Evaluate tab with Insights (glance metrics, topic-size Pareto, category
+  balance, run provenance); made the corpus rail and header stats collapsible.
+- 2026-07-21: Added LLM-generated human-readable topic labels (leaf + internal
+  hierarchy nodes, retrofittable on existing runs without re-embedding); made
+  the topic hierarchy chart show a visible corpus-root node; rebuilt "Ask the
+  corpus" as real RAG (per-document retrieval + cited LLM answer, not
+  topic-centroid ranking); added a provider-agnostic chat/completion client
+  (Ollama/OpenAI/NVIDIA) separate from the embedding provider.

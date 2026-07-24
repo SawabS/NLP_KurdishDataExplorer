@@ -43,9 +43,9 @@ export interface TreeData {
   ids: string[]; parents: string[]; labels: string[]; values: number[]; kinds: string[]; categories: string[];
   topic_ids: Array<number | null>; samples: string[]; branchvalues: "total";
 }
-export interface TopicRow { topic: number; count: number; name: string }
+export interface TopicRow { topic: number; count: number; name: string; label?: string | null }
 export interface TopicDetail {
-  topic_id: number; count: number; keywords: Array<{word: string; score: number}>;
+  topic_id: number; count: number; label?: string | null; keywords: Array<{word: string; score: number}>;
   samples: Array<{text: string; text_en?: string | null; label?: string | null}>;
 }
 export interface PointsData {
@@ -62,6 +62,41 @@ export interface SearchResult {
   query: string; best_topic_id: number | null; results: Array<{rank: number; topic_id: number; count: number; match: number;
   similarity: number; keywords: string[]; samples: Array<{text: string; text_en?: string | null; label?: string | null}>}>;
 }
+export interface AskCitation {
+  rank: number; doc_index: number; similarity: number; text: string; topic_id: number | null;
+  topic_label?: string | null; keywords: string[]; category?: string | null;
+}
+export interface AskResult { query: string; answer: string; citations: AskCitation[]; error?: string | null }
+export type ReviewStatus = "pending" | "draft" | "reviewed" | "discarded";
+export const QUALITY_FLAGS = ["duplicate", "noisy", "malformed", "off_topic", "low_confidence"] as const;
+export type QualityFlag = (typeof QUALITY_FLAGS)[number];
+
+/** A human correction to one document's derived data (the Review workflow). */
+export interface DocAnnotation {
+  status?: ReviewStatus | null;
+  topic_label?: string | null;
+  language?: string | null;
+  quality?: string[] | null;
+  note?: string | null;
+  updated_at?: string | null;
+}
+export interface DocumentRow {
+  doc_id: number; text: string; words: number; topic: number; topic_label?: string | null;
+  category?: string | null; outlier: boolean; x?: number | null; y?: number | null;
+  annotation?: DocAnnotation | null;
+}
+export interface DocumentsPage { rows: DocumentRow[]; total: number; offset: number; limit: number }
+export interface DocNeighbor { doc_id: number; similarity: number; text: string; topic: number; topic_label?: string | null }
+export interface DocumentDetail extends DocumentRow { text_en?: string | null; neighbors: DocNeighbor[] }
+export interface AnnotationSummary { annotated: number; by_status: Partial<Record<ReviewStatus, number>> }
+
+/** Server-side query for the Documents workspace — every field is URL-serializable. */
+export interface DocumentsQuery {
+  offset?: number; limit?: number; topic?: number | null; category?: string | null;
+  q?: string | null; status?: ReviewStatus | "unreviewed" | null;
+  sort?: "doc_id" | "topic" | "words"; order?: "asc" | "desc";
+}
+
 export interface Job {
   id: string; kind: string; status: "queued" | "running" | "done" | "error"; message: string; fraction: number;
   created_at: string; updated_at: string; result?: {source: string; model: string; n_docs: number; n_topics: number}; error?: string;

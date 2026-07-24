@@ -6,7 +6,7 @@ import { useTheme } from "noor-ui/providers";
 import { useSources, useTopics } from "../api/hooks";
 import { useJobs } from "../app/JobsProvider";
 import { useLocale } from "../lib/i18n";
-import { compactSourceLabel, topicDisplayName } from "../lib/labels";
+import { compactSourceLabel, topicName } from "../lib/labels";
 import { ThemeMenu } from "./ThemeMenu";
 import { useWorkspacePanel } from "./WorkspacePanel";
 
@@ -54,7 +54,7 @@ export function AppShell({children}: {children: ReactNode}) {
           group: t("topics"),
           items: topics.data.topics.slice(0, 60).map((topic) => ({
             id: `topic-${topic.topic}`,
-            label: `#${topic.topic} ${topicDisplayName(topic.name)}`,
+            label: `#${topic.topic} ${topicName(topic)}`,
             onSelect: () => navigate(`${location.pathname}?topic=${topic.topic}`),
           })),
         });

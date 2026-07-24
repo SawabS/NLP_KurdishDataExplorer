@@ -1,5 +1,6 @@
-import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { api } from "./client";
+import type { DocAnnotation, DocumentsQuery } from "./types";
 
 /** Artifact-derived data is immutable per (source, model) until a refit, which
  *  goes through `invalidateRun`. Cache it indefinitely — no spinner on revisit. */
@@ -20,6 +21,51 @@ export const useBaselines = (s: string, m: string) => useQuery({queryKey: ["base
  *  repeat queries are instant, and abandoned queries abort. */
 export const useSearchQuery = (s: string, m: string, q: string) =>
   useQuery({queryKey: ["search", s, m, q], queryFn: ({signal}) => api.search(s, m, q, signal), enabled: q.trim().length > 0, ...artifact, retry: 0});
+
+/** RAG answer for the Ask tab — same URL-driven caching as search above. */
+export const useAskQuery = (s: string, m: string, q: string) =>
+  useQuery({queryKey: ["ask", s, m, q], queryFn: ({signal}) => api.ask(s, m, q, signal), enabled: q.trim().length > 0, ...artifact, retry: 0});
+
+/** Documents workspace list. Document *content* is immutable per (source, model),
+ *  but human annotations mutate it — so this is a normal cache invalidated by the
+ *  annotation mutations below, and keeps the previous page visible while paging. */
+export const useDocuments = (s: string, m: string, query: DocumentsQuery, enabled = true) =>
+  useQuery({
+    queryKey: ["documents", s, m, query], queryFn: ({signal}) => api.documents(s, m, query, signal),
+    enabled: enabled && Boolean(s) && Boolean(m), placeholderData: keepPreviousData, staleTime: 15_000,
+  });
+
+export const useDocument = (s: string, m: string, docId?: number) =>
+  useQuery({queryKey: ["document", s, m, docId], queryFn: ({signal}) => api.document(s, m, docId!, signal), enabled: docId !== undefined, staleTime: 15_000});
+
+export const useAnnotationSummary = (s: string, m: string) =>
+  useQuery({queryKey: ["annotations", s, m], queryFn: ({signal}) => api.annotationsSummary(s, m, signal), enabled: Boolean(s) && Boolean(m), staleTime: 15_000});
+
+/** Refresh only the review-affected caches for this (source, model) after a save. */
+function invalidateReview(client: QueryClient, s: string, m: string) {
+  void client.invalidateQueries({
+    predicate: (query) => {
+      const [scope, qs, qm] = query.queryKey as [string, string, string];
+      return ["documents", "document", "annotations"].includes(scope) && qs === s && qm === m;
+    },
+  });
+}
+
+export function useSaveAnnotation(s: string, m: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({docId, patch}: {docId: number; patch: DocAnnotation}) => api.saveAnnotation(s, m, docId, patch),
+    onSuccess: () => invalidateReview(client, s, m),
+  });
+}
+
+export function useDeleteAnnotation(s: string, m: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (docId: number) => api.deleteAnnotation(s, m, docId),
+    onSuccess: () => invalidateReview(client, s, m),
+  });
+}
 
 export function useJob(id?: string) {
   return useQuery({

@@ -8,7 +8,8 @@ import pandas as pd
 from fastapi import APIRouter, HTTPException, Query
 
 from kurdish_explorer import config, embed, pipeline
-from ..runcache import load, run_dir
+from .. import jobs
+from ..runcache import clear, load, run_dir
 from ..tree import build_tree
 
 router = APIRouter(prefix="/runs/{source}/{model}", tags=["runs"])
@@ -35,7 +36,8 @@ def run_header(source: str, model: str) -> dict:
 def run_tree(source: str, model: str, depth: int = Query(-1, le=64)) -> dict:
     artifact = load(source, model)
     return build_tree(
-        artifact["hierarchy"], artifact["documents"], bool(artifact["meta"].get("has_labels")), depth
+        artifact["hierarchy"], artifact["documents"], bool(artifact["meta"].get("has_labels")), depth,
+        topic_labels=artifact.get("topic_labels"), source_title=artifact["meta"].get("title"),
     )
 
 
@@ -44,7 +46,11 @@ def topics(source: str, model: str) -> dict:
     artifact = load(source, model)
     frame = artifact["topic_info"]
     frame = frame[frame["Topic"] != -1][["Topic", "Count", "Name"]].sort_values("Count", ascending=False)
-    return {"topics": _clean(frame.rename(columns=str.lower).to_dict("records"))}
+    labels = artifact.get("topic_labels") or {}
+    records = _clean(frame.rename(columns=str.lower).to_dict("records"))
+    for record in records:
+        record["label"] = labels.get(str(record["topic"]))
+    return {"topics": records}
 
 
 @router.get("/topics/{topic_id}")
@@ -66,12 +72,30 @@ def topic(
     return {
         "topic_id": topic_id,
         "count": int(len(subset)),
+        "label": (artifact.get("topic_labels") or {}).get(str(topic_id)),
         "keywords": [
             {"word": word, "score": float(score)}
             for word, score in artifact["topic_words"].get(str(topic_id), [])
         ],
         "samples": _clean(subset[columns].head(n_samples).to_dict("records")),
     }
+
+
+@router.post("/label")
+def label_topics(source: str, model: str) -> dict:
+    """(Re)generate human-readable topic names for an already-fitted run,
+    purely from saved artifacts — no re-embedding. Runs as a background job so
+    the UI can show progress the same way a fit does."""
+    run_dir(source, model)  # 404s early if the run doesn't exist
+    job = jobs.submit("label-topics", lambda progress: _label_job(source, model, progress))
+    return {"job_id": job.id}
+
+
+def _label_job(source: str, model: str, progress) -> dict:
+    progress("Naming topics…")
+    labels = pipeline.label_run(pipeline.run_key(source, model))
+    clear()
+    return {"source": source, "model": model, "labeled": len(labels)}
 
 
 @router.get("/points")
@@ -91,8 +115,9 @@ def points(
     total = len(frame)
     if total > max_points:
         frame = frame.sample(max_points, random_state=config.SEED)
+    labels = artifact.get("topic_labels") or {}
     words = {
-        int(topic_id): " ".join(word for word, _ in values[:4])
+        int(topic_id): labels.get(topic_id) or " ".join(word for word, _ in values[:4])
         for topic_id, values in artifact["topic_words"].items()
         if int(topic_id) != -1
     }

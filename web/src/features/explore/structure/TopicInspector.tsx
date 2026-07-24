@@ -5,6 +5,9 @@ import { useTopic } from "../../../api/hooks";
 export function TopicInspector({source, model, topicId, category, options, onChange}: {source: string; model: string; topicId?: number; category?: string; options: Array<{value: string; label: string}>; onChange: (id: number) => void}) {
   const detail = useTopic(source, model, topicId, category);
   if (!topicId && topicId !== 0) return <EmptyState heading="Select a leaf topic" description="Choose a topic from the hierarchy." />;
+  // The dropdown option label is built from the same LLM name (falling back to
+  // keywords) as everywhere else, so reuse it instead of re-deriving it here.
+  const heading = options.find((item) => item.value === String(topicId))?.label.replace(/ · [\d,]+$/, "");
 
   return (
     <section className="flex h-full min-h-[560px] flex-col bg-surface">
@@ -13,6 +16,7 @@ export function TopicInspector({source, model, topicId, category, options, onCha
           <div className="flex items-center gap-2"><Hash className="size-4 text-text-secondary" /><Typography variant="label">Topic lens</Typography></div>
           {detail.data && <Badge>{detail.data.count.toLocaleString()} docs</Badge>}
         </div>
+        {heading && <p dir="auto" className="corpus-text mb-3 text-heading-sm font-semibold">{heading}</p>}
         <Select aria-label="Topic" value={String(topicId)} options={options} onValueChange={(value) => onChange(Number(value))} />
       </div>
 

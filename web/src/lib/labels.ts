@@ -11,3 +11,9 @@ export function compactSourceLabel(title: string) {
 export function topicDisplayName(name: string) {
   return name.replace(/^\d+_/, "").replaceAll("_", " · ");
 }
+
+/** Prefer the LLM-generated human-readable topic name; fall back to the raw
+ *  BERTopic keyword string (formatted) for runs that haven't been labeled yet. */
+export function topicName(row: {name: string; label?: string | null}) {
+  return row.label?.trim() || topicDisplayName(row.name);
+}

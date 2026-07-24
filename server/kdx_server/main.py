@@ -12,7 +12,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import Response
 
 from . import ROOT
-from .routers import jobs, models, runs, search, sources, uploads
+from .routers import documents, jobs, models, runs, search, sources, uploads
 
 
 class SPAStaticFiles(StaticFiles):
@@ -51,7 +51,7 @@ def create_app(*, mount_spa: bool = True) -> FastAPI:
     def health() -> dict:
         return {"status": "ok"}
 
-    for router in (sources.router, models.router, runs.router, search.router, uploads.router, jobs.router):
+    for router in (sources.router, models.router, runs.router, documents.router, search.router, uploads.router, jobs.router):
         app.include_router(router, prefix="/api")
 
     dist = ROOT / "web" / "dist"

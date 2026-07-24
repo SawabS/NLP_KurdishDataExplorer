@@ -7,7 +7,7 @@ import type { RunMeta, SourceSummary } from "../../../api/types";
 import { Plot } from "../../../charts/Plot";
 import { usePalette } from "../../../charts/palette";
 import { useLocale } from "../../../lib/i18n";
-import { topicDisplayName } from "../../../lib/labels";
+import { topicName } from "../../../lib/labels";
 
 interface Props {source: string; model: string; sourceInfo: SourceSummary; run: RunMeta}
 
@@ -107,7 +107,7 @@ export function InsightsView({source, model, sourceInfo, run}: Props) {
       // shared *categorical* axis, which would scramble the cumulative line.
       x: top.map((_, index) => index),
       labels: top.map((row) => `#${row.topic}`),
-      names: top.map((row) => topicDisplayName(row.name)),
+      names: top.map((row) => topicName(row)),
       counts: top.map((row) => row.count),
       share,
       cumulative,

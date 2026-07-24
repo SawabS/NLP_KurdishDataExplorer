@@ -5,7 +5,14 @@ from collections import defaultdict
 import pandas as pd
 
 
-def build_tree(hierarchy: list[dict], docs: pd.DataFrame, has_labels: bool, depth: int = -1) -> dict:
+def build_tree(
+    hierarchy: list[dict],
+    docs: pd.DataFrame,
+    has_labels: bool,
+    depth: int = -1,
+    topic_labels: dict[str, str] | None = None,
+    source_title: str | None = None,
+) -> dict:
     samples = {
         int(tid): str(group["text"].iloc[0])[:120]
         for tid, group in docs[docs["topic"] != -1].groupby("topic")
@@ -48,6 +55,7 @@ def build_tree(hierarchy: list[dict], docs: pd.DataFrame, has_labels: bool, dept
             levels[node_id] = 1 if parent not in node_by_id else level(parent) + 1
         return levels[node_id]
 
+    topic_labels = topic_labels or {}
     rows = []
     for node in hierarchy:
         node_id = str(node["id"])
@@ -58,13 +66,35 @@ def build_tree(hierarchy: list[dict], docs: pd.DataFrame, has_labels: bool, dept
         rows.append({
             "id": node_id,
             "parent": str(node.get("parent", "")),
-            "label": node.get("label") or node_id,
+            "label": topic_labels.get(node_id) or node.get("label") or node_id,
             "value": int(node.get("count", 0)),
             "kind": "topic" if node.get("is_leaf") else "group",
             "category": max(counts, key=counts.get) if counts else ("(unlabeled)" if has_labels else "(group)"),
             "topic_id": None if topic_id is None else int(topic_id),
             "sample": samples.get(int(topic_id), "") if topic_id is not None else "",
         })
+
+    # Make the corpus itself the visible root: reparent the (normally single)
+    # top-level merge node(s) under one synthetic "source" node instead of
+    # leaving them rootless, so the icicle/treemap/sunburst reads as one tree
+    # that starts at the corpus and drills down into ever more specific topics.
+    top_level_ids = [row["id"] for row in rows if row["parent"] == ""]
+    if top_level_ids:
+        root_id = "__source__"
+        for row in rows:
+            if row["id"] in top_level_ids:
+                row["parent"] = root_id
+        rows.insert(0, {
+            "id": root_id,
+            "parent": "",
+            "label": source_title or "Corpus",
+            "value": sum(row["value"] for row in rows if row["id"] in top_level_ids),
+            "kind": "source",
+            "category": "(source)",
+            "topic_id": None,
+            "sample": "",
+        })
+
     return {
         "ids": [row["id"] for row in rows],
         "parents": [row["parent"] for row in rows],

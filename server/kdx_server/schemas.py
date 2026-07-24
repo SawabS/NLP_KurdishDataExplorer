@@ -40,6 +40,18 @@ class PeekRequest(BaseModel):
     path: str
 
 
+class AnnotationPatch(BaseModel):
+    """A human correction to one document's derived data. Every field is
+    optional; only the fields actually sent are applied (PATCH semantics), so a
+    reviewer can, e.g., set a status without disturbing an existing note."""
+
+    status: Literal["pending", "draft", "reviewed", "discarded"] | None = None
+    topic_label: str | None = None
+    language: str | None = None
+    quality: list[str] | None = None
+    note: str | None = None
+
+
 class FitRunRequest(BaseModel):
     source: str
     model: str

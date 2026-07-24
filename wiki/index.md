@@ -25,7 +25,7 @@ the synthesis page for how the sources fit together.
 - [BERTopic](entities/bertopic.md) — transformer-based topic modeling method (primary modeling tool).
 - [KuBERT](entities/kubert.md) — Kurdish BERT variant.
 - [Soran Badawi](entities/soran-badawi.md) — author of KNDH and the Sorani NMT model.
-- [KDX-MiniLM-TSDAE (fine-tuned embedder)](entities/kdx-minilm-tsdae-model.md) — our domain-adapted Kurdish embedder with anisotropy-aware leaf clustering; the default local model, selectable alongside base MiniLM and hosted OpenAI/NVIDIA embeddings.
+- [KDX-MiniLM-TSDAE (fine-tuned embedder)](entities/kdx-minilm-tsdae-model.md) — our domain-adapted Kurdish embedder with anisotropy-aware leaf clustering. Still powers already-fitted corpora (kndh, asosoft) and is no longer user-facing; as of 2026-07-20 only OpenAI/NVIDIA are offered for new fits, and the app derives one "best available" run per source instead of asking.
 
 ## Concepts
 
@@ -45,5 +45,5 @@ No question pages yet.
 
 - [Application Architecture and Operation](synthesis/application-architecture-and-operation.md) — how to run the React/FastAPI and Streamlit interfaces, with Mermaid system, request, and fitting-flow diagrams plus troubleshooting.
 - [Kurdish Data Explorer Pipeline](synthesis/kurdish-data-explorer-pipeline.md) — how the eight sources ground each stage of the project pipeline.
-- [Implementation and Methodology](synthesis/implementation-and-methodology.md) — transparent as-built record: data provenance, BERTopic tuning, OpenAI/NVIDIA embeddings, FastAPI + React behavior, retained Streamlit compatibility, and reproducibility.
+- [Implementation and Methodology](synthesis/implementation-and-methodology.md) — transparent as-built record: data provenance, BERTopic tuning, OpenAI/NVIDIA embeddings, LLM topic labeling, RAG-based "Ask the corpus," FastAPI + React behavior, retained Streamlit compatibility, and reproducibility.
 - [Project Presentation Overview](synthesis/project-presentation-overview.md) — single linear narrative (problem → literature → methodology → results → limitations → conclusion), refreshed with the KDX clustering diagnosis for presentations/podcast generation.
