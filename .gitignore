@@ -19,5 +19,20 @@ artifacts/
 *.npy
 graphify-out/
 
+# Final-report build byproducts
+reports/final/build/
+reports/final/main.aux
+reports/final/main.bbl
+reports/final/main.bcf
+reports/final/main.blg
+reports/final/main.fdb_latexmk
+reports/final/main.fls
+reports/final/main.lof
+reports/final/main.log
+reports/final/main.lot
+reports/final/main.pdf
+reports/final/main.run.xml
+reports/final/main.toc
+
 # OS
 .DS_Store

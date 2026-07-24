@@ -1,4 +1,4 @@
-% Kurdish Data Explorer — Final Project Report
+% Kurdish Data Explorer: Final Project Report
 % Compile from this directory with:
 %   latexmk -lualatex -interaction=nonstopmode -halt-on-error main.tex
 \documentclass[11pt,a4paper]{article}
@@ -39,6 +39,7 @@
 \AtBeginDocument{\color{Ink}}
 
 \usepackage{graphicx}
+\usepackage{fontawesome5}
 \graphicspath{{assets/screenshots/}{assets/diagrams/}}
 \usepackage{booktabs}
 \usepackage{tabularx}
@@ -139,6 +140,11 @@
   giveninits=true
 ]{biblatex}
 \addbibresource{references.bib}
+\AtEveryBibitem{%
+  \ifentrytype{software}
+    {\textcolor{Navy}{\faGithub}\hspace{0.35em}}
+    {}%
+}
 
 \usepackage{hyperref}
 \usepackage{bookmark}
@@ -159,6 +165,7 @@
 \newcommand{\crawlerrepo}{https://github.com/SawabS/Bahdini\_Crawler}
 \newcommand{\code}[1]{\texttt{\small #1}}
 \newcommand{\sourcecode}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\githubicon}{\textcolor{Navy}{\faGithub}\hspace{0.35em}}
 
 \begin{document}
 \pagenumbering{gobble}
@@ -174,8 +181,8 @@
   \fill[Blue] ([yshift=-132mm]current page.north west) rectangle
     ([yshift=-135mm]current page.north east);
   \draw[Rule,line width=.7pt]
-    ([xshift=23mm,yshift=16mm]current page.south west) --
-    ([xshift=-23mm,yshift=16mm]current page.south east);
+    ([xshift=23mm,yshift=20mm]current page.south west) --
+    ([xshift=-23mm,yshift=20mm]current page.south east);
 \end{tikzpicture}
 
 \vspace*{14mm}
@@ -189,20 +196,23 @@ An Interactive Topic-Modeling and Corpus Research Workspace\\
 for Kurdish Text\par}
 
 \vspace{45mm}
-\begin{minipage}{0.58\textwidth}
+\begin{minipage}[t]{0.58\textwidth}
 {\sffamily\bfseries\color{Navy}\large Project profile}\par
 \vspace{3mm}
-\begin{tabularx}{\linewidth}{@{}>{\sffamily\color{Slate}}p{34mm}Y@{}}
-Student name & \textbf{Sawab Hussein}\\
-Student ID & \textbf{A25100071}\\
-Course & \textbf{Project Based Course I}\\
-Instructor & \textbf{Dr.\ Dara Sherwani}\\
-Department & \textbf{Department of Computer Science}\\
+\begin{tabular}{@{}>{\sffamily\color{Slate}\arraybackslash}m{34mm}
+                    >{\RaggedRight\arraybackslash}m{54mm}@{}}
+University & \textbf{The American University of Kurdistan (AUK), Duhok}\\[2.2mm]
+Student name & \textbf{Sawab Hussein}\\[2.2mm]
+Student ID & \textbf{A25100071}\\[2.2mm]
+Course & \textbf{Project Based Course I}\\[2.2mm]
+Instructor & \textbf{Dr.\ Dara Sherwani}\\[2.2mm]
+Department & \textbf{Computer Science and Information Technology (CSIT)}\\[2.2mm]
 Submission date & \textbf{July 24, 2026}\\
-\end{tabularx}
+\end{tabular}
 \end{minipage}
 \hfill
-\begin{minipage}{0.30\textwidth}
+\begin{minipage}[t]{0.30\textwidth}
+\vspace{0pt}
 \centering
 \begin{tcolorbox}[colback=white,colframe=Rule,halign=center]
 \qrcode[height=32mm]{https://kdx-explorer.fly.dev}\\[2mm]
@@ -213,7 +223,7 @@ Submission date & \textbf{July 24, 2026}\\
 
 \vfill
 {\sffamily\small\color{Slate}
-Source code: \href{https://github.com/SawabS/NLP_KurdishDataExplorer}{github.com/SawabS/NLP\_KurdishDataExplorer}\par}
+\githubicon Source code: \href{https://github.com/SawabS/NLP_KurdishDataExplorer}{github.com/SawabS/NLP\_KurdishDataExplorer}\par}
 \end{titlepage}
 
 \pagenumbering{roman}
@@ -230,9 +240,11 @@ OpenAI \texttt{text-embedding-3-small} or NVIDIA
 hierarchy, semantic map, document review tools, search, and grounded question
 answering are delivered through a React single-page application and FastAPI
 service on Fly.io. On the identical sample, NVIDIA produced 32 topics with
-99.448\% coverage and NPMI coherence of 0.0491 in 337.4 seconds; OpenAI
-produced 38 topics with 99.132\% coverage and NPMI of 0.0374 in 3,628.7
-seconds. The report documents the as-built system, evaluates its practical
+99.448\% coverage and normalized pointwise mutual information (NPMI) coherence
+of 0.0491 in 337.4 seconds; OpenAI produced 38 topics with 99.132\% coverage
+and NPMI of 0.0374 in 3,628.7 seconds. NPMI measures how strongly a topic's top
+words tend to occur together, with positive values indicating greater
+coherence. The report documents the as-built system, evaluates its practical
 trade-offs, and identifies corpus review, dialect-aware normalization, and
 controlled human evaluation as the highest-priority next steps.
 \end{abstract}
@@ -275,22 +287,22 @@ languages \parencite{grootendorst2022,medvecki2024}.
 The objective was to build and deploy a reproducible workspace that lets users
 discover, compare, and verify semantic structure in Kurdish corpora. The
 implemented scope includes file profiling; paragraph-level ingestion;
-normalization; two hosted embedding providers and two local research options;
-BERTopic fitting; topic hierarchies; semantic maps; document inspection and
-review; semantic search; grounded Q\&A; artifact persistence; and a production
-web deployment. The live demonstration deliberately uses one fixed,
-unlabelled corpus and two fitted embedding runs so that users compare model
-behavior on identical evidence. It does not claim exhaustive linguistic
-coverage, supervised classification accuracy, or a publication-ready corpus.
+normalization; two hosted embedding providers; BERTopic fitting; topic
+hierarchies; semantic maps; document inspection and review; semantic search;
+grounded Q\&A; artifact persistence; and a production web deployment. The live
+demonstration deliberately uses one fixed, unlabelled corpus and two fitted
+embedding runs so that users compare model behavior on identical evidence. It
+does not claim exhaustive linguistic coverage, supervised classification
+accuracy, or a publication-ready corpus.
 
 % --------------------------------------------------------------------------
 \section{Dataset Description}
 
 \subsection{Source and collection}
 
-The live data originated in the author's
-\href{https://github.com/SawabS/Bahdini_Crawler}{Bahdini Crawler} repository
-\parencite{hussein2026crawler}. That project records three collection routes:
+The live data originated in the
+\githubicon\href{https://github.com/SawabS/Bahdini_Crawler}{SawabS/Bahdini\_Crawler}
+GitHub repository \parencite{sawabs2026crawler}. That project records three collection routes:
 a breadth-first crawler for public Kurdish websites, a Playwright collector for
 an electronic-library Facebook group, and a resumable Telethon downloader for
 three public book channels. Its manifests preserve source URLs, page/message
@@ -349,8 +361,8 @@ pipeline combines dense semantic embeddings with UMAP neighborhood
 preservation \parencite{mcinnes2018}, HDBSCAN density clustering
 \parencite{campello2013}, and class-based TF--IDF topic words. Unlike LDA, the
 number of topics does not have to be supplied in advance, and documents that
-do not belong to a dense region can remain outliers. MMR keyword
-diversification reduces near-duplicate descriptors.
+do not belong to a dense region can remain outliers. Maximal marginal relevance
+(MMR) keyword diversification reduces near-duplicate descriptors.
 
 Two hosted embedding models were fitted on exactly the same 100,000 documents.
 OpenAI \texttt{text-embedding-3-small} provides a broadly capable commercial
@@ -358,17 +370,14 @@ baseline \parencite{openai2024embeddings}. NVIDIA
 \texttt{nemotron-3-embed-1b} provides 2,048-dimensional multilingual
 embeddings, a 32k-token context window, batching, and concurrent requests
 \parencite{nvidia2025nemotron}. Keeping both fitted artifacts makes the model
-choice visible rather than hiding it behind a single score. For offline
-research, the repository also contains base multilingual MiniLM and a
-Sorani-adapted MiniLM trained with the unsupervised TSDAE objective
-\parencite{wang2021tsdae}.
+choice visible rather than hiding it behind a single score.
 
 \subsection{Development and fitting process}
 
-The implementation is Python 3.11 with pandas, NumPy, PyArrow, KLPT,
-sentence-transformers, UMAP, HDBSCAN, BERTopic, scikit-learn, FastAPI, and
-Uvicorn. The client is React 18 and TypeScript with Vite, TanStack Query,
-Plotly, and deck.gl. Figure~\ref{fig:pipeline} summarizes the actual data path.
+The implementation is Python 3.11 with pandas, NumPy, PyArrow, KLPT, UMAP,
+HDBSCAN, BERTopic, scikit-learn, FastAPI, and Uvicorn. The client is React 18
+and TypeScript with Vite, TanStack Query, Plotly, and deck.gl.
+Figure~\ref{fig:pipeline} summarizes the actual data path.
 
 \begin{figure}[htbp]
 \centering
@@ -409,30 +418,22 @@ exponential retry for rate or server errors. UMAP reduces embeddings to five
 dimensions for HDBSCAN and separately to two dimensions for display.
 HDBSCAN discovers dense regions; BERTopic then reassigns eligible outliers by
 c-TF-IDF similarity, extracts ten words per topic, constructs a binary topic
-hierarchy, and optionally generates readable labels. NPMI is computed from
-topic-word co-occurrence. All outputs are written to an isolated
+hierarchy, and optionally generates readable labels. Normalized pointwise
+mutual information (NPMI), a coherence score based on how often a topic's top
+words occur together, is computed from topic-word co-occurrence. All outputs
+are written to an isolated
 \sourcecode{artifacts/<source>__<model>/} directory.
 
-\subsubsection{Training, tuning, and reproducibility}
+\subsubsection{Tuning and reproducibility}
 
 The production experiment is transductive and unsupervised: UMAP and HDBSCAN
-are fitted on the corpus that users explore, so a conventional supervised
-train/validation/test split is neither used nor presented. Reproducibility
-instead comes from a fixed sample, seed 42, explicit provider identifiers, a
-content-keyed embedding cache, saved hyperparameters, and a complete
-\sourcecode{meta.json} manifest for every run. The tuning script can sweep
-HDBSCAN's minimum cluster size while reporting topic count, outlier rate, NPMI,
-topic diversity, and---when labels exist---normalized mutual information.
-
-The optional local KDX MiniLM experiment supplies the report's true
-weight-training stage. It deduplicates KNDH headlines and sentence-split
-AsoSoft text, shuffles with seed 42, caps the corpus at 120,000 sentences, and
-trains a transformer denoising auto-encoder for one epoch. Each input sentence
-is corrupted and the decoder reconstructs it from the encoder representation;
-no class labels are required. The resulting sentence-transformer directory is
-versioned as a selectable offline model. Its observed anisotropic embedding
-space required a wider 50-neighbor UMAP graph, HDBSCAN leaf selection, and a
-minimum cluster size of 100 rather than silently reusing unsuitable defaults.
+are fitted on the corpus that users explore. Evaluation therefore relies on
+fixed-corpus reproducibility rather than a supervised data split.
+Reproducibility comes from a fixed sample, seed 42, explicit provider
+identifiers, a content-keyed embedding cache, saved hyperparameters, and a
+complete \sourcecode{meta.json} manifest for every run. The tuning script can
+sweep HDBSCAN's minimum cluster size while reporting topic count, outlier rate,
+NPMI, topic diversity, plus normalized mutual information when labels exist.
 
 After clustering, topic naming is a separate, auditable enrichment step.
 Representative keywords and passages are sent to a configured chat model,
@@ -444,9 +445,15 @@ re-run or replaced independently.
 
 \subsection{Hyperparameters}
 
+Table~\ref{tab:hyperparameters} collects the key hyperparameters actually used at
+each stage of the pipeline, from seeded sampling and the two UMAP projections
+through HDBSCAN clustering and c-TF-IDF topic representation, to the NVIDIA
+embedding adapter. Values are read directly from the deployed run manifests
+and implementation rather than restated from defaults.
+
 \begin{table}[htbp]
 \centering
-\caption{Key model and training hyperparameters implemented in the repository.}
+\caption{Key pipeline hyperparameters implemented in the repository.}
 \label{tab:hyperparameters}
 \small
 \rowcolors{2}{RowShade}{white}
@@ -458,12 +465,11 @@ HDBSCAN & Minimum cluster size; minimum samples; metric & 250; 10; Euclidean\\
 Topic representation & c-TF-IDF; n-grams; topic words; MMR diversity & reduced frequent words; unigrams; 10; 0.3\\
 Map projection & Components; minimum distance; metric & 2; 0.1; cosine\\
 NVIDIA adapter & Batch; workers; retries; truncation & 64; 8; 6; end\\
-Optional TSDAE & Sentences; epochs; batch; learning rate & 120,000; 1; 16; $3\times10^{-5}$\\
-Optional TSDAE & Scheduler; weight decay; optimizer & constant; 0; AdamW (sentence-transformers default)\\
 \end{tabularx}
 \end{table}
 
 % --------------------------------------------------------------------------
+\clearpage
 \section{Results and Evaluation}
 
 \subsection{Production comparison}
@@ -471,11 +477,12 @@ Optional TSDAE & Scheduler; weight decay; optimizer & constant; 0; AdamW (senten
 The comparison is controlled at the corpus level: both providers received the
 same sampled documents and downstream BERTopic configuration. Table
 \ref{tab:results} reports the persisted measurements. NVIDIA achieved higher
-NPMI, fewer outliers, and a 10.8$\times$ shorter end-to-end refit. OpenAI
-discovered six more topics, which may expose finer distinctions but also
-produced more unclustered documents. Because fit time includes cache state,
-provider calls, UMAP, clustering, labeling, and artifact writing, it is an
-operational benchmark rather than a pure embedding-throughput test.
+topic coherence as measured by NPMI, fewer outliers, and a 10.8$\times$ shorter
+end-to-end refit. OpenAI discovered six more topics, which may expose finer
+distinctions but also produced more unclustered documents. Because fit time
+includes cache state, provider calls, UMAP, clustering, labeling, and artifact
+writing, it is an operational benchmark rather than a pure
+embedding-throughput test.
 
 \begin{table}[htbp]
 \centering
@@ -483,70 +490,23 @@ operational benchmark rather than a pure embedding-throughput test.
 \label{tab:results}
 \small
 \rowcolors{2}{RowShade}{white}
-\begin{tabularx}{\linewidth}{@{}Yrrrr@{}}
-\rowcolor{Navy}\thc{Embedding run} & \thc{Topics} & \thc{Outliers} & \thc{Coverage} & \thc{NPMI}\\
-NVIDIA Nemotron-3-Embed-1B & 32 & 552 & 99.448\% & \textbf{0.04915}\\
-OpenAI text-embedding-3-small & 38 & 868 & 99.132\% & 0.03742\\
+\begin{tabularx}{\linewidth}{@{}Yrrrrr@{}}
+\rowcolor{Navy}\thc{Embedding run} & \thc{Topics} & \thc{Outliers} & \thc{Coverage} & \thc{NPMI} & \thc{Fit time (s)}\\
+NVIDIA Nemotron-3-Embed-1B & 32 & 552 & 99.448\% & \textbf{0.04915} & \textbf{337.4}\\
+OpenAI text-embedding-3-small & 38 & 868 & 99.132\% & 0.03742 & 3{,}628.7\\
 \end{tabularx}
 \end{table}
 
-\begin{figure}[htbp]
-\centering
-\resizebox{\linewidth}{!}{%
-\begin{tikzpicture}[
-  font=\sffamily\small,
-  bar/.style={rounded corners=1mm,line width=.7pt},
-  rowlabel/.style={anchor=east,align=right,text=Ink},
-  value/.style={anchor=west,font=\sffamily\bfseries\small,text=Navy}
-]
-% Second per centimetre so bar lengths are true to the measured values.
-\def\sx{0.002632}
-% Single-line labels sit on the exact vertical centre of each bar, so label,
-% bar and value read as one straight line. Full model IDs are in Table 3 above.
-% OpenAI row (centre y = 1.5)
-\node[rowlabel] at (-0.35,1.5) {OpenAI};
-\filldraw[bar,draw=Blue!55,fill=Sky!70] (0,1.24) rectangle (9.551,1.76);
-\node[value] at (9.75,1.5) {3{,}628.7 s};
-% NVIDIA row (centre y = 0.5)
-\node[rowlabel] at (-0.35,0.5) {NVIDIA};
-\filldraw[bar,draw=Blue,fill=Blue!68] (0,0.24) rectangle (0.888,0.76);
-\node[value] at (1.088,0.5) {337.4 s};
-% Baseline axis
-\draw[Rule,line width=.5pt] (0,0) -- (10.002,0);
-\foreach \x/\txt in {0/0,2.632/{1,000},5.264/{2,000},7.896/{3,000}} {
-  \draw[Rule,line width=.45pt] (\x,-0.07) -- (\x,0.06);
-  \node[anchor=north,font=\sffamily\scriptsize,text=Slate] at (\x,-0.1) {\txt};
-}
-\node[anchor=north,font=\sffamily\scriptsize,text=Slate]
-  at (5.0,-0.44) {End-to-end fit time (seconds)};
-% Framed card matching the document's boxed figures.
-\begin{scope}[on background layer]
-  \draw[rounded corners=2mm,draw=Rule,line width=.55pt,fill=Paper]
-    (-2.5,-0.66) rectangle (12.3,2.02);
-\end{scope}
-\end{tikzpicture}
-}
-\caption{Measured end-to-end fitting time on the identical sample. NVIDIA completed the saved refit approximately 10.8 times faster than OpenAI.}
-\label{fig:fit-time}
-\end{figure}
-
 \subsection{Quality evidence and interpretation}
 
-NPMI measures whether a topic's highest-ranked words occur together more often
-than chance; positive values are preferred. Both production runs are positive,
-and NVIDIA's 0.04915 exceeds OpenAI's 0.03742 by about 31\% relative. Coverage
-is excellent for both systems: 99,448 and 99,132 documents respectively were
-assigned to a topic. The NVIDIA structure has a larger leading topic (about
-15\%) than OpenAI (about 11\%), so its higher coherence and speed come with
-somewhat coarser organization.
-
-An additional labelled KNDH experiment provides a useful development check.
-The Sorani-adapted KDX MiniLM improved BERTopic NPMI from $-0.0470$ for base
-MiniLM to $+0.0567$ on 50,000 headlines. In the same saved run, NMF scored
-0.1071 and LDA $-0.1490$. These scores should not be mixed with the live
-Bahdini comparison because they use a different corpus; they demonstrate that
-representation choice and corpus-specific adaptation materially affect topic
-quality.
+Normalized pointwise mutual information (NPMI) measures whether a topic's
+highest-ranked words occur together more often than chance; positive values
+indicate greater topic coherence. Both production runs are positive, and
+NVIDIA's 0.04915 exceeds OpenAI's 0.03742 by about 31\% relative. Coverage is
+the share of documents assigned to a topic and is excellent for both systems:
+99,448 and 99,132 documents respectively were assigned. The NVIDIA structure
+has a larger leading topic (about 15\%) than OpenAI (about 11\%), so its higher
+coherence and speed come with somewhat coarser organization.
 
 The interface supplied a second layer of practical evaluation. Automated
 browser verification confirmed that topic counts and coverage update when the
@@ -570,9 +530,10 @@ one query is not a substitute for a formal retrieval benchmark.
 A confusion matrix is not applicable: the deployed data has no target classes,
 and topic identifiers are arbitrary clusters rather than predicted class
 labels. Substituting a confusion matrix would imply supervision that does not
-exist. Appropriate evidence is therefore NPMI, outlier coverage, topic-size
-balance, cross-model comparison, and qualitative inspection of defining terms
-and representative documents.
+exist. Appropriate evidence is therefore NPMI topic-word coherence, the share
+of documents assigned rather than left as outliers, topic-size balance,
+cross-model comparison, and qualitative inspection of defining terms and
+representative documents.
 
 \subsection{Observed limitations}
 
@@ -582,9 +543,9 @@ pages, mixed dialects, or OCR errors can form topics. Second, automated topic
 labels are generated by an LLM and may overstate what the representative
 documents support. Third, two-dimensional UMAP is an exploratory projection:
 distance and apparent cluster area should not be interpreted as exact semantic
-geometry. Fourth, NPMI rewards word co-occurrence but does not measure usefulness
-to a Kurdish-speaking researcher. Human topic-intrusion and label-quality
-studies are still required.
+geometry. Fourth, the NPMI coherence metric rewards word co-occurrence but does
+not measure usefulness to a Kurdish-speaking researcher. Human topic-intrusion
+and label-quality studies are still required.
 
 % --------------------------------------------------------------------------
 \section{Deployment}
@@ -651,10 +612,11 @@ collection with provenance, corpus preparation, transformer embedding,
 unsupervised topic discovery, measurable evaluation, artifact persistence, a
 usable research interface, RAG-based evidence access, and public deployment.
 The fixed 100,000-document comparison makes the main result concrete. NVIDIA
-offered the strongest operational trade-off in this run---higher NPMI, fewer
-outliers, and substantially lower fit time---while OpenAI exposed a finer
-38-topic structure. The result is not simply a model notebook; it is an
-inspectable system in which users can trace topics and answers back to text.
+offered the strongest operational trade-off in this run: higher topic-word
+coherence, fewer outliers, and substantially lower fit time, while OpenAI
+exposed a finer 38-topic structure. The result is not simply a model notebook;
+it is an inspectable system in which users can trace topics and answers back to
+text.
 
 The next development phase should prioritize data quality over adding another
 model. OCR outputs should pass document-level human review, duplicates and
@@ -665,8 +627,10 @@ intrusion, word intrusion, label correctness, and task-completion studies.
 Technically, durable job storage, approximate-nearest-neighbor search, streaming
 artifact loading, provider-cost logging, and role-based review would support
 larger corpora and collaborative use. Finally, a held-out, manually labelled
-Bahdini evaluation set would enable NMI and controlled downstream retrieval
-tests without misrepresenting unsupervised topics as classes.
+Bahdini evaluation set would enable normalized mutual information, which
+measures agreement between discovered topics and human labels, as well as
+controlled downstream retrieval tests without misrepresenting unsupervised
+topics as classes.
 
 \clearpage
 \printbibliography[heading=bibintoc,title={References}]
@@ -876,9 +840,9 @@ tests without misrepresenting unsupervised topics as classes.
 \rowcolor{Navy}\thc{Requirement} & \thc{Project location or access method}\\
 Final report PDF & \sourcecode{reports/final/Kurdish_Data_Explorer_Final_Report.pdf}\\
 LaTeX source & \sourcecode{reports/final/main.tex} and \sourcecode{references.bib}\\
-Source code & \href{https://github.com/SawabS/NLP_KurdishDataExplorer}{github.com/SawabS/NLP\_KurdishDataExplorer}\\
-Dataset instructions & \href{https://github.com/SawabS/Bahdini_Crawler}{github.com/SawabS/Bahdini\_Crawler}; raw/OCR data are excluded from Git\\
-Trained/fitted models & \sourcecode{artifacts/<source>__<model>/}; production image includes OpenAI and NVIDIA run artifacts\\
+Source code & \githubicon\href{https://github.com/SawabS/NLP_KurdishDataExplorer}{github.com/SawabS/NLP\_KurdishDataExplorer}\\
+Dataset instructions & \githubicon\href{https://github.com/SawabS/Bahdini_Crawler}{github.com/SawabS/Bahdini\_Crawler}; raw/OCR data are excluded from Git\\
+Saved production runs & \sourcecode{artifacts/<source>__<model>/}; production image includes OpenAI and NVIDIA run artifacts\\
 Presentation slides & Existing project presentation materials are documented in \sourcecode{wiki/synthesis/project-presentation-overview.md}\\
 Deployment & \url{\projecturl}; health endpoint at \url{https://kdx-explorer.fly.dev/api/health}\\
 \end{tabularx}
