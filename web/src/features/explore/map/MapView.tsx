@@ -41,10 +41,10 @@ export function MapView({source, model, category, params, setParams}: Props) {
 
   if (points.isLoading) {
     return (
-      <div className="p-4 md:p-6">
-        <div className="overflow-hidden rounded-xl bg-surface shadow-sm">
-          <Skeleton className="m-4 h-9 w-96 max-w-full" />
-          <Skeleton className="mx-4 mb-4 h-[600px]" />
+      <div className="flex h-full min-h-0 p-3 md:p-4 xl:p-5">
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl bg-surface shadow-sm">
+          <Skeleton className="m-4 h-9 w-96 max-w-full shrink-0" />
+          <Skeleton className="mx-4 mb-4 min-h-0 flex-1" />
         </div>
       </div>
     );
@@ -54,9 +54,9 @@ export function MapView({source, model, category, params, setParams}: Props) {
   const matched = highlight !== undefined ? data.topic.filter((topic) => topic === highlight).length : 0;
 
   return (
-    <div className="p-4 md:p-6">
-      <section className="overflow-hidden rounded-xl bg-surface shadow-sm">
-        <div className="flex flex-col gap-4 px-4 py-3 xl:flex-row xl:items-center xl:justify-between">
+    <div className="flex h-full min-h-0 p-3 md:p-4 xl:p-5">
+      <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl bg-surface shadow-sm">
+        <div className="flex shrink-0 flex-col gap-4 px-4 py-3 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2"><ScanSearch className="size-4 text-text-secondary" /><Typography variant="label">Semantic field</Typography></div>
             <Badge>{data.shown.toLocaleString()} / {data.total.toLocaleString()} docs</Badge>
@@ -70,7 +70,7 @@ export function MapView({source, model, category, params, setParams}: Props) {
           </div>
         </div>
         {view === "table" ? (
-          <div className="max-h-[620px] overflow-auto">
+          <div className="min-h-0 flex-1 overflow-auto">
             <Table>
               <TableHeader><TableRow><TableHead>Topic</TableHead><TableHead>Docs in sample</TableHead><TableHead>Keywords</TableHead></TableRow></TableHeader>
               <TableBody>
@@ -86,7 +86,7 @@ export function MapView({source, model, category, params, setParams}: Props) {
           </div>
         ) : (
           <>
-            <div className="relative h-[660px] bg-canvas/50">
+            <div className="relative min-h-0 flex-1 bg-canvas/50">
               <DeckMap
                 data={data}
                 mode={renderMode}

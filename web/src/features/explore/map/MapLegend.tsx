@@ -9,7 +9,7 @@ export function MapLegend({topics, highlight, onToggle}: {topics: LegendTopic[];
   const palette = usePalette();
   if (!topics.length) return null;
   return (
-    <div className="flex flex-wrap items-center gap-1.5 border-t border-border px-4 py-2.5" role="group" aria-label="Topic legend">
+    <div className="flex shrink-0 flex-wrap items-center gap-1.5 border-t border-border px-4 py-2.5" role="group" aria-label="Topic legend">
       {topics.map((item) => {
         const active = highlight === item.topic;
         return (

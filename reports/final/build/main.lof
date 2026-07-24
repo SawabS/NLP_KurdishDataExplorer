@@ -1,0 +1,16 @@
+\babel@toc {english}{}\relax 
+\contentsline {figure}{\numberline {1}{\ignorespaces As-built corpus-to-interface pipeline. Fitting is performed once; ordinary exploration reads saved artifacts.}}{3}{figure.caption.2}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Measured end-to-end fitting time. NVIDIA completed the saved refit approximately 10.8 times faster.}}{4}{figure.caption.5}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Deployed Insights workspace for NVIDIA: 32 topics, 99\% rounded coverage, and topic-size distribution. Captured from the live application on July 24, 2026.}}{5}{figure.caption.6}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Two primary views in the deployed application. Full-resolution captures are provided in Appendix~\ref {app:screenshots}.}}{6}{figure.caption.7}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Production component architecture. Expensive fitting uses a serialized worker; ordinary browsing reads immutable run artifacts through the cache.}}{9}{figure.caption.8}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Verified corpus provenance from Bahdini Crawler to the deployed analytical sample. “Unreviewed” is retained as an explicit quality state.}}{10}{figure.caption.9}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Grounded question-answering flow. The instruction requires the model to use only retrieved passages and to state when evidence is insufficient.}}{11}{figure.caption.10}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Corpus overview: the controlled deployment exposes one 100,000-document source.}}{12}{figure.8}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Structure workspace: topic treemap, defining terms, and representative Kurdish documents.}}{13}{figure.caption.11}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Map workspace: 12,000 displayed points sampled from 99,132 clustered OpenAI documents.}}{14}{figure.caption.12}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Documents workspace: searchable table, topic assignments, word counts, and review states.}}{15}{figure.caption.13}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Sample input and output: an English question answered from eight retrieved passages. The cautious answer illustrates evidence-bounded RAG behavior.}}{16}{figure.caption.14}%
+\contentsline {figure}{\numberline {13}{\ignorespaces OpenAI run insights: topic-size distribution and exact run provenance.}}{17}{figure.caption.15}%
+\contentsline {figure}{\numberline {14}{\ignorespaces NVIDIA run insights after switching the model selector in the live application.}}{18}{figure.caption.16}%
+\contentsline {figure}{\numberline {15}{\ignorespaces Upload workflow for TXT, CSV, TSV, Excel, or Parquet source material.}}{19}{figure.caption.17}%

@@ -95,10 +95,10 @@ export function ExplorePage() {
   const coverage = run.data && run.data.n_docs > 0 ? Math.round((clustered / run.data.n_docs) * 100) : 0;
 
   return (
-    <div className="flex min-h-full min-w-0">
+    <div className="flex h-full min-h-0 min-w-0">
       {/* Corpus panel — collapsed via the rail toggle to free visualization width. */}
-      {panel.open && <aside className="hidden w-[288px] shrink-0 overflow-y-auto bg-surface lg:block">{context}</aside>}
-      <TabsRoot value={activeTab} onValueChange={(value) => go(source, model, value)} className="flex min-w-0 flex-1 flex-col bg-canvas" activationMode="manual">
+      {panel.open && <aside className="hidden h-full w-[288px] shrink-0 overflow-y-auto bg-surface lg:block">{context}</aside>}
+      <TabsRoot value={activeTab} onValueChange={(value) => go(source, model, value)} className="flex min-h-0 min-w-0 flex-1 flex-col bg-canvas" activationMode="manual">
         <div className="shrink-0 px-4 pt-4 md:px-6 md:pt-5">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
@@ -165,7 +165,11 @@ export function ExplorePage() {
           </TabsList>
         </div>
         {workspaces.map((item) => (
-          <TabsContent key={item.value} value={item.value} className="min-h-0 flex-1 bg-canvas pt-0">
+          <TabsContent
+            key={item.value}
+            value={item.value}
+            className={`min-h-0 flex-1 bg-canvas pt-0 ${item.value === "map" ? "overflow-hidden" : "overflow-y-auto"}`}
+          >
             {item.value === activeTab ? content : null}
           </TabsContent>
         ))}
