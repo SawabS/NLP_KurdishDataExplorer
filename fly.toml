@@ -1,19 +1,19 @@
-# Fly.io app config — `fly launch` will detect the Dockerfile and mostly just
-# ask for an app name/region; keep this file as-is when it offers to
-# regenerate one.
+# fly.toml app configuration file generated for kdx-explorer on 2026-07-24T10:01:27+03:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-app = "kdx-explorer"
-primary_region = "iad"
+app = 'kdx-explorer'
+primary_region = 'iad'
 
 [build]
-
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = "off"
+  auto_stop_machines = 'off'
   auto_start_machines = true
   min_machines_running = 1
 
 [[vm]]
-  size = "shared-cpu-2x"
-  memory = "2gb"
+  size = 'shared-cpu-2x'
+  memory = '2gb'
