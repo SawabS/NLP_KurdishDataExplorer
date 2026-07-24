@@ -10,7 +10,7 @@ export function TopicInspector({source, model, topicId, category, options, onCha
   const heading = options.find((item) => item.value === String(topicId))?.label.replace(/ · [\d,]+$/, "");
 
   return (
-    <section className="flex h-full min-h-[560px] flex-col bg-surface">
+    <section className="flex h-full min-h-[560px] flex-col overflow-hidden bg-surface xl:min-h-0">
       <div className="border-b border-border p-4">
         <div className="mb-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2"><Hash className="size-4 text-text-secondary" /><Typography variant="label">Topic lens</Typography></div>

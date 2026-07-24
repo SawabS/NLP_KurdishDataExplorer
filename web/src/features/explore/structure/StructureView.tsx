@@ -113,7 +113,10 @@ export function StructureView({source, model, category, params, setParams}: Prop
             )}
           </div>
         </div>
-        <div className="grid xl:grid-cols-[minmax(0,1fr)_380px]">
+        {/* xl:h-[600px] bounds the row so the inspector's own scroll area (not
+            the page) absorbs long representative-document lists. Below xl the
+            panel stacks under the chart with natural page height instead. */}
+        <div className="grid xl:h-[600px] xl:grid-cols-[minmax(0,1fr)_380px]">
           <div className="h-[600px] min-w-0 border-b border-border/60 xl:border-b-0 xl:border-e">
             <Plot data={[trace]} layout={{height: 600, margin: {l: 0, r: 0, t: 8, b: 0}}} onClick={onChartClick} />
           </div>

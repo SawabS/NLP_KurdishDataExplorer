@@ -71,7 +71,10 @@ export function DeckMap({data, mode, colorBy, highlight, palette, onSelectTopic}
     zoom: Math.min(Math.log2(720 / bounds.spanX), Math.log2(600 / bounds.spanY)) - 0.3,
   }), [bounds]);
 
-  const activeColor = toRGBA(palette.highlight.active, 242);
+  // The highlighted set takes the SAME color as its topic everywhere else in the
+  // app (Structure treemap, Insights bars) — not a generic warning tone — so a
+  // selection reads as "this topic" rather than just "something is selected".
+  const activeColor = highlight !== undefined ? toRGBA(palette.colorForTopic(highlight), 242) : undefined;
   const dimColor = toRGBA(palette.highlight.dim, 90);
 
   const layer = mode === "density"
@@ -91,7 +94,7 @@ export function DeckMap({data, mode, colorBy, highlight, palette, onSelectTopic}
         radiusUnits: "pixels",
         getRadius: (row) => highlight !== undefined ? (row.topic === highlight ? 5 : 3) : 3.5,
         getFillColor: (row) => {
-          if (highlight !== undefined) return row.topic === highlight ? activeColor : dimColor;
+          if (highlight !== undefined) return row.topic === highlight ? activeColor! : dimColor;
           const base = colorBy === "category"
             ? (row.label ? palette.colorForCategory(row.label) : palette.outlier)
             : palette.colorForTopic(row.topic);
