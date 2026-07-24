@@ -164,7 +164,11 @@ MODEL_FIT_OVERRIDES: dict[str, dict] = {
 }
 
 # Token pattern keeps Unicode word characters (works for Arabic-script Kurdish).
-TOKEN_PATTERN = r"(?u)\b\w\w+\b"
+# Minimum 3 word-characters: 1-2 letter tokens are almost always grammatical
+# particles/enclitics (Kurdish "کو", "دا", "بو", "ده", ...; also short function
+# words in other scripts), never a meaningful topic-defining term, and neither
+# KLPT's Sorani nor Kurmanji stopword lists cover every dialect's short forms.
+TOKEN_PATTERN = r"(?u)\b\w{3,}\b"
 
 # BERTopic c-TF-IDF runs its vectorizer over *grouped per-topic* documents (one
 # concatenated doc per topic), so min_df must stay tiny and max_df off — otherwise

@@ -1,0 +1,27 @@
+# Never ship secrets in the image — Fly secrets are injected as env vars.
+.env
+.env.*
+
+.git
+node_modules
+web/node_modules
+web/dist
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+
+# Editor / tooling noise, not needed at runtime
+.claude
+.codex
+.obsidian
+.vscode
+graphify-out
+checkpoints
+
+# Docs/tests aren't needed to run the app — trims the build context
+wiki
+docs
+tests
+reports

@@ -10,6 +10,20 @@ interface Props {
   onClick?: (event: PlotMouseEvent) => void;
 }
 
+/** Plotly's own click-to-zoom navigation for treemap/sunburst/icicle traces
+ *  fights with our click-to-select-topic handler and corrupts the layout when
+ *  it fires (the graph partially re-renders into a broken zoomed state). This
+ *  app already has explicit navigation (Depth slider, topic Select) for those
+ *  charts, so a click should only ever mean "select," never "drill in" — cancel
+ *  the built-in navigation by returning false from its click events. */
+function disableHierarchyDrilldown(graphDiv: unknown) {
+  const el = graphDiv as { on?: (event: string, handler: () => boolean) => void };
+  const cancel = () => false;
+  el.on?.("plotly_treemapclick", cancel);
+  el.on?.("plotly_sunburstclick", cancel);
+  el.on?.("plotly_iciclesclick", cancel);
+}
+
 export function Plot({data, layout, className, onClick}: Props) {
   const theme = usePlotlyTheme();
   // react-plotly.js does not re-apply nested layout colors when the palette
@@ -46,6 +60,7 @@ export function Plot({data, layout, className, onClick}: Props) {
       className={className ?? "h-full min-h-[420px] w-full"}
       useResizeHandler
       onClick={onClick}
+      onInitialized={(_figure, graphDiv) => disableHierarchyDrilldown(graphDiv)}
     />
   );
 }
