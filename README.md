@@ -1,19 +1,20 @@
 # Kurdish Data Explorer
 
-Interactive topic modeling and exploratory analysis for Central Kurdish (Sorani)
-text and, generically, for any text corpus you point it at. Upload a raw text
-file or a dataset with a text column (CSV / TSV / Excel / Parquet, any size)
-and explore it through four workspace tabs:
-Structure (drill-down topic tree), Map (2D document map), Search (free-text
-semantic search with one-click example questions), and Evaluate
-(keyword/baseline comparisons). The Overview landing page lists every corpus
-with switchable card and row (table) views.
+An end-to-end corpus research workspace for Central Kurdish (Sorani). FastAPI
+serves a React application for ingesting text, fitting BERTopic, reviewing
+documents, comparing embedding providers, and asking grounded questions against
+the corpus. The five workspaces are **Structure**, **Map**, **Documents**,
+**Ask**, and **Insights**.
 
 One **BERTopic** pipeline (sentence embeddings → UMAP → HDBSCAN → c-TF-IDF)
 with selectable **OpenAI**, **NVIDIA**, and local sentence-transformer models.
 When provider keys are configured, new runs prefer NVIDIA and then OpenAI;
-local KDX MiniLM and base MiniLM remain available for offline use and model
-comparison. LDA/NMF remain evaluation baselines (NPMI coherence).
+local KDX MiniLM and base MiniLM remain available for offline research.
+
+The current Fly demo is deliberately narrow: one 100,000-document
+`corpus-unreviewed` source with completed NVIDIA and OpenAI fits. Keeping the
+deployed corpus fixed makes the provider comparison and human review workflow
+clear, reproducible, and small enough for a short-lived demonstration.
 
 ## Quickstart
 
@@ -50,16 +51,6 @@ frontend change. If port 8655 is occupied, pick another with
 `PORT=8656 ./scripts/serve_web.sh`. The serve script uses the `ai` conda
 environment's Python by default; override with `PYTHON=/path/to/python`.
 
-The original Streamlit interface remains supported and reads the same artifacts:
-
-```bash
-/home/sawab/miniconda3/envs/ai/bin/python -m streamlit run app/streamlit_app.py \
-  --server.headless true --server.port 8655
-```
-
-When running both applications simultaneously, use another port for the migrated
-web app, for example `PORT=8656 ./scripts/serve_web.sh`.
-
 For development, start FastAPI and Vite together from the repository root:
 
 ```bash
@@ -75,6 +66,71 @@ dropdown to switch between fitted embedders; models without artifacts are shown
 as **fit required** and run in a serialized background worker. Runs on a hosted
 provider are labeled as such wherever they are started. Set `PRELOAD_EMBEDDER=1`
 to construct the preferred embedder during API startup.
+
+## Deploy to Fly.io
+
+The repository deploys as one container: Node builds the React SPA, then
+FastAPI serves both the SPA and `/api`. The existing app name and machine
+configuration live in `fly.toml`.
+
+Install and authenticate `flyctl` once:
+
+```bash
+curl -L https://fly.io/install.sh | sh
+export PATH="$HOME/.fly/bin:$PATH"
+fly auth login
+```
+
+Configure runtime secrets once per Fly app. Both embedding keys are required to
+query the two deployed model spaces; NVIDIA provides chat completions. Values
+below are examples, not literal credentials:
+
+```bash
+fly secrets set -a kdx-explorer \
+  OPENAI_API_KEY="sk-..." \
+  NVIDIA_API_KEY="nvapi-..." \
+  NVIDIA_CHAT_API_KEY="nvapi-..." \
+  NVIDIA_CHAT_MODEL="meta/llama-3.1-8b-instruct" \
+  KDX_CHAT_PROVIDER="nvidia"
+```
+
+From the repository root, deploy the current working tree:
+
+```bash
+npm run build -w web
+fly deploy -a kdx-explorer --remote-only
+```
+
+The Docker build performs its own frontend build, but the local build above is
+a useful pre-deployment TypeScript check. `--remote-only` uses Fly's remote
+builder and does not require local Docker. Deployment is intentionally manual:
+fitted artifacts and the local Noor workspace are git-ignored, so a clean
+GitHub Actions checkout does not contain the complete Docker build context.
+
+Verify the release:
+
+```bash
+fly status -a kdx-explorer
+fly logs -a kdx-explorer
+curl -fsS https://kdx-explorer.fly.dev/api/health
+curl -fsS https://kdx-explorer.fly.dev/api/sources
+```
+
+The demo artifact set is intentionally controlled by `.dockerignore`; never
+delete local artifacts to reduce a deployment. At present, the build context
+allows only:
+
+- `artifacts/corpus-unreviewed__nvidia/`
+- `artifacts/corpus-unreviewed__openai/`
+- `artifacts/embeddings/nvidia_6aaced7846221f39.npy`
+- `artifacts/embeddings/openai_596f760f62c82cf9.npy`
+
+This produces one visible source, `corpus-unreviewed`, while retaining the
+two model choices and the embedding matrices required by semantic search, RAG,
+and nearest-document review. The 231 MB uploaded source file, every other fitted
+corpus, and unrelated embedding caches stay local and are excluded from the
+image. When replacing a fit later, update both its run-directory and exact-cache
+allow-list entries before deploying.
 
 Use the in-app **Upload & explore** mode to run the pipeline on your own text;
 the result becomes a selectable source next to the built-ins. Upload asks for no
@@ -106,8 +162,9 @@ override.
 **OpenAI.** New runs use `text-embedding-3-small` by default; set
 `OPENAI_EMBEDDING_MODEL=text-embedding-3-large` to choose another. Requests
 are token-aware: long documents are split and recombined, requests stay below
-a safe fraction of the configured token-per-minute limit, and 429 responses
-retry with server-aware exponential backoff. The default is the free-tier
+a safe fraction of the configured token-per-minute limit, and transient
+connections, timeouts, 429s, and 5xx responses retry with server-aware
+exponential backoff. The default is the free-tier
 `OPENAI_EMBEDDING_TPM=40000`; set this environment variable to your
 dashboard's higher TPM after upgrading. The adapter also adopts a higher limit
 automatically when the API returns it in rate-limit headers.
@@ -129,7 +186,6 @@ default 6).
 
 | Path | What it is |
 | --- | --- |
-| `app/` | Retained Streamlit explorer and upload interface |
 | `server/kdx_server/` | FastAPI artifact/search/upload/job API and production SPA host |
 | `web/` | Vite + React + TypeScript SPA built from noor-ui source and Plotly |
 | `src/kurdish_explorer/` | The pipeline package: config, data, preprocess (KLPT), embed, topics (BERTopic), baselines, evaluate, pipeline |
@@ -140,6 +196,10 @@ default 6).
 | `reports/` | LaTeX project proposal |
 | `tests/` | Pytest suite |
 | `wiki/`, `raw/`, `tools/`, `AGENTS.md` | The source-grounded research wiki (below) |
+
+The legacy Streamlit application was removed after the FastAPI/React migration
+became the sole product direction. Runtime UI code now has one entry point and
+one deployment path.
 
 ## Embedding models
 
@@ -153,6 +213,14 @@ The registry in `src/kurdish_explorer/config.py` exposes four choices:
   sentence-split AsoSoft running text), deduplicated, shuffled (seed 42), no labels.
 - **`minilm` (base MiniLM)**: the unadapted base, kept only as the evaluation
   comparison point.
+
+For the current deterministic 100,000-document demo sample, the NVIDIA run has
+32 topics (NPMI 0.04915); its cache-reusing refit took 337.4 seconds, while the
+earlier cold NVIDIA fit took 597.5 seconds. The OpenAI
+`text-embedding-3-small` run took 3,628.7 seconds and has 38 topics
+(NPMI 0.03742). These are end-to-end fit measurements, not a controlled
+embedding-only benchmark; they make the practical speed/structure trade-off
+visible on the same corpus.
 
 On the existing local-model KNDH comparison, KDX MiniLM reaches positive NPMI topic
 coherence (+0.057 vs −0.047 for base MiniLM; earlier DistilUSE/MPNet

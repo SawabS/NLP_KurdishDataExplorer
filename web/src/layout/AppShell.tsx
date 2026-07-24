@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useMemo, useRef, useState, type ReactNode } from "react";
 import { ChartNoAxesCombined, Database, FolderUp, GitBranch, Home, Languages, Map, PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CommandPalette, IconButton, Sidebar, SidebarItem, Spinner, Tooltip, Typography, type CommandPaletteGroup } from "noor-ui";
@@ -7,6 +7,7 @@ import { useSources, useTopics } from "../api/hooks";
 import { useJobs } from "../app/JobsProvider";
 import { useLocale } from "../lib/i18n";
 import { compactSourceLabel, topicName } from "../lib/labels";
+import { NavWobble } from "./NavWobble";
 import { ThemeMenu } from "./ThemeMenu";
 import { useWorkspacePanel } from "./WorkspacePanel";
 
@@ -19,6 +20,7 @@ export function AppShell({children}: {children: ReactNode}) {
   const sources = useSources();
   const panel = useWorkspacePanel();
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const appBarRef = useRef<HTMLElement>(null);
 
   const exploreMatch = location.pathname.match(/^\/explore\/([^/]+)\/([^/]+)\/([^/]+)/);
   const currentSource = exploreMatch ? decodeURIComponent(exploreMatch[1]) : "";
@@ -153,13 +155,14 @@ export function AppShell({children}: {children: ReactNode}) {
         ))}
       </Sidebar>
 
-      <div className="flex min-w-0 flex-1 flex-col pb-16 md:pb-0">
-        <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-border bg-surface/95 px-4 md:px-6">
-          <div className="flex min-w-0 items-baseline gap-3">
+      <div className="relative flex min-w-0 flex-1 flex-col pb-16 md:pb-0">
+        <header ref={appBarRef} className="kdx-glass-nav absolute inset-x-0 top-0 z-sticky flex h-14 items-center justify-between gap-3 border-b border-border/70 px-4 shadow-sm md:px-6">
+          <NavWobble targetRef={appBarRef} />
+          <div className="relative z-10 flex min-w-0 items-baseline gap-3">
             <Typography variant="label">{t("appName")}</Typography>
             <span className="hidden text-caption text-text-muted sm:inline">{t("appTagline")}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="relative z-10 flex items-center gap-2">
             {active.length > 0 && (
               <button
                 type="button"
@@ -173,10 +176,10 @@ export function AppShell({children}: {children: ReactNode}) {
             <div className="flex items-center gap-1 md:hidden">{localeToggle}<ThemeMenu /></div>
           </div>
         </header>
-        <main className="min-h-0 flex-1 overflow-hidden">{children}</main>
+        <main className="min-h-0 flex-1 overflow-y-auto pt-14">{children}</main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-sticky flex h-16 items-stretch border-t border-border bg-surface md:hidden" aria-label="Primary navigation">
+      <nav className="kdx-glass-nav fixed inset-x-0 bottom-0 z-sticky flex h-16 items-stretch border-t border-border/70 md:hidden" aria-label="Primary navigation">
         {navigation.map((item) => {
           const Icon = item.icon;
           return (

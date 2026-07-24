@@ -17,8 +17,9 @@ def list_sources() -> list[dict]:
     grouped = pipeline.runs_by_source()
     sources = []
     for source, fitted_models in grouped.items():
-        # Serve one "best available" run per source; the model choice is no
-        # longer surfaced in the UI (the app is about exploring the data).
+        # Use the preferred run for source-level metadata, but expose every
+        # fitted registered model so the same corpus can be compared without
+        # presenting irrelevant/unfitted backends.
         best = config.best_available_model(fitted_models)
         meta = pipeline.run_meta(pipeline.run_key(source, best))
         categories = meta.get("categories") or []
@@ -27,8 +28,14 @@ def list_sources() -> list[dict]:
             labels = pd.read_parquet(documents, columns=["label"])["label"]
             unique = labels.dropna().astype(str).drop_duplicates().head(101).tolist()
             categories = sorted(unique) if len(unique) <= 100 else []
+        registered = [model for model in fitted_models if model in config.EMBEDDING_MODELS]
         models = [
-            {"key": best, "label": config.EMBEDDING_MODEL_LABELS.get(best, best), "fitted": True}
+            {"key": model, "label": config.EMBEDDING_MODEL_LABELS.get(model, model), "fitted": True}
+            for model in sorted(
+                registered,
+                key=lambda model: config.MODEL_PREFERENCE.index(model)
+                if model in config.MODEL_PREFERENCE else len(config.MODEL_PREFERENCE),
+            )
         ]
         sources.append({
             "source": source,

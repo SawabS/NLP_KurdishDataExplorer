@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import os
-import time
+import shutil
 
 import pytest
 from fastapi import HTTPException
@@ -20,6 +20,20 @@ def test_source_and_run_shapes(fake_artifacts):
     assert runs.run_header("demo", "minilm")["n_topics"] == 2
     assert listing[0]["categories"] == ["news", "sport"]
     assert [item["topic"] for item in runs.topics("demo", "minilm")["topics"]] == [1, 0]
+
+
+def test_source_lists_every_fitted_registered_model(fake_artifacts):
+    source = fake_artifacts / "demo__minilm"
+    target = fake_artifacts / "demo__nvidia"
+    shutil.copytree(source, target)
+    meta_path = target / "meta.json"
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    meta.update(model_key="nvidia", model_name="nvidia/nemotron-3-embed-1b")
+    meta_path.write_text(json.dumps(meta), encoding="utf-8")
+
+    listing = sources.list_sources()
+
+    assert [model["key"] for model in listing[0]["models"]] == ["nvidia", "minilm"]
 
 
 def test_points_sampling_cap_and_category(fake_artifacts):

@@ -7,18 +7,19 @@ import { DeleteCorpusDialog } from "./DeleteCorpusDialog";
 
 interface Props {
   source: string;
+  model: string;
   category: string;
   sourceInfo: SourceSummary;
   sources: SourceSummary[];
   run?: RunMeta;
   onSourceChange: (value: string) => void;
+  onModelChange: (value: string) => void;
   onCategoryChange: (value: string) => void;
   onDeleted: () => void;
 }
 
-/** Left rail: what corpus am I looking at, and how do I slice it. The embedding
- *  model is deliberately not shown — the app is about the data, not the backend. */
-export function CorpusContext({source, category, sourceInfo, sources, run, onSourceChange, onCategoryChange, onDeleted}: Props) {
+/** Left rail: what corpus/model am I looking at, and how do I slice it. */
+export function CorpusContext({source, model, category, sourceInfo, sources, run, onSourceChange, onModelChange, onCategoryChange, onDeleted}: Props) {
   const { t } = useLocale();
   return (
     <div className="p-5">
@@ -26,6 +27,14 @@ export function CorpusContext({source, category, sourceInfo, sources, run, onSou
       <div className="mt-5 space-y-5">
         <FormField label={t("corpus")}>
           <Select aria-label={t("corpus")} value={source} options={sources.map((item) => ({value: item.source, label: compactSourceLabel(item.title)}))} onValueChange={onSourceChange} />
+        </FormField>
+        <FormField label="Embedding model">
+          <Select
+            aria-label="Embedding model"
+            value={model}
+            options={sourceInfo.models.map((item) => ({value: item.key, label: item.label}))}
+            onValueChange={onModelChange}
+          />
         </FormField>
         <FormField label={t("categories")}>
           <Select aria-label={t("categories")} disabled={!sourceInfo.has_labels} value={category} options={[{value: "(all)", label: sourceInfo.has_labels ? "All categories" : "No categories"}, ...sourceInfo.categories.map((value) => ({value, label: value}))]} onValueChange={onCategoryChange} />

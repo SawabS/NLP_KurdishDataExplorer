@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState, type ComponentType } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowUpRight, Search, Sparkles } from "lucide-react";
-import { Alert, Badge, Button, Input, Progress, Skeleton, Typography } from "noor-ui";
+import { ArrowUpRight, CheckCircle2, Circle, FileSearch, ListFilter, MessageSquareText, Search, Sparkles } from "lucide-react";
+import { Alert, Badge, Button, Input, Skeleton, Spinner, Typography } from "noor-ui";
 import { useAskQuery } from "../../../api/hooks";
 
 interface Props {source: string; model: string; params: URLSearchParams; setParams: (params: URLSearchParams) => void}
@@ -39,12 +39,7 @@ export function SearchView({source, model, params, setParams}: Props) {
       </section>
 
       {ask.isFetching && !ask.data && (
-        <div className="mt-6 max-w-4xl space-y-3">
-          <p className="text-body-sm text-text-secondary" aria-live="polite">Retrieving matching documents and generating an answer…</p>
-          <Progress value={null} label="Thinking" />
-          <Skeleton className="h-28 w-full" />
-          <Skeleton className="h-40 w-full" />
-        </div>
+        <AskLoadingState />
       )}
       {ask.isError && <Alert className="mt-5 max-w-4xl" variant="danger" title="Ask failed" description={ask.error.message} />}
 
@@ -98,6 +93,95 @@ export function SearchView({source, model, params, setParams}: Props) {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+const askSteps: Array<{label: string; detail: string; icon: ComponentType<{className?: string}>}> = [
+  {label: "Finding evidence", detail: "Searching the corpus for relevant passages", icon: FileSearch},
+  {label: "Checking relevance", detail: "Ranking the strongest matches", icon: ListFilter},
+  {label: "Writing the answer", detail: "Grounding every claim in a source", icon: MessageSquareText},
+];
+
+/** The Ask endpoint performs retrieval, ranking, then generation in one
+ * request. Time-based staging communicates that real sequence without showing
+ * a fake percentage or an indeterminate full-width progress bar. */
+function AskLoadingState() {
+  const [activeStep, setActiveStep] = useState(0);
+
+  useEffect(() => {
+    const rankTimer = window.setTimeout(() => setActiveStep(1), 1_500);
+    const answerTimer = window.setTimeout(() => setActiveStep(2), 4_000);
+    return () => {
+      window.clearTimeout(rankTimer);
+      window.clearTimeout(answerTimer);
+    };
+  }, []);
+
+  return (
+    <div className="mt-5 max-w-4xl space-y-4" role="status" aria-live="polite">
+      <section className="rounded-xl border border-border bg-surface p-4 shadow-sm md:p-5">
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-full bg-primary-action/10 text-primary-action">
+            <Spinner size="sm" label="" />
+          </span>
+          <div>
+            <Typography variant="label">Building a grounded answer</Typography>
+            <p className="mt-0.5 text-caption text-text-muted">This can take a moment for a large corpus.</p>
+          </div>
+        </div>
+
+        <ol className="mt-4 grid gap-2 sm:grid-cols-3">
+          {askSteps.map((step, index) => {
+            const Icon = step.icon;
+            const done = index < activeStep;
+            const active = index === activeStep;
+            return (
+              <li
+                key={step.label}
+                aria-current={active ? "step" : undefined}
+                className={`rounded-lg border p-3 transition-colors ${
+                  active ? "border-primary-action/40 bg-primary-action/5" : "border-border bg-surface-raised/40"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  {done
+                    ? <CheckCircle2 className="size-4 shrink-0 text-success" />
+                    : active
+                      ? <Icon className="size-4 shrink-0 text-primary-action" />
+                      : <Circle className="size-4 shrink-0 text-text-muted" />}
+                  <span className={`text-body-sm font-medium ${active ? "text-text-primary" : "text-text-secondary"}`}>{step.label}</span>
+                </div>
+                <p className="mt-1 ps-6 text-caption text-text-muted">{step.detail}</p>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
+
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1.25fr)_minmax(240px,.75fr)]" aria-hidden="true">
+        <section className="rounded-xl bg-surface p-4 shadow-sm">
+          <div className="flex items-center gap-2"><Skeleton className="size-4 rounded-full" /><Skeleton className="h-4 w-20" /></div>
+          <div className="mt-4 space-y-2.5">
+            <Skeleton className="h-3 w-full" />
+            <Skeleton className="h-3 w-[92%]" />
+            <Skeleton className="h-3 w-[78%]" />
+            <Skeleton className="mt-4 h-3 w-[88%]" />
+            <Skeleton className="h-3 w-[64%]" />
+          </div>
+        </section>
+        <section className="rounded-xl bg-surface p-4 shadow-sm">
+          <div className="flex items-center justify-between"><Skeleton className="h-4 w-16" /><Skeleton className="h-3 w-14" /></div>
+          <div className="mt-4 space-y-3">
+            {[0, 1, 2].map((item) => (
+              <div key={item} className="flex gap-3">
+                <Skeleton className="size-6 shrink-0 rounded-full" />
+                <div className="flex-1 space-y-1.5"><Skeleton className="h-3 w-full" /><Skeleton className="h-3 w-2/3" /></div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

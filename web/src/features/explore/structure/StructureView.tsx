@@ -125,7 +125,7 @@ export function StructureView({source, model, category, params, setParams}: Prop
       </div>
 
       <div className="mt-5 grid gap-5 2xl:grid-cols-[minmax(0,1.35fr)_minmax(360px,.65fr)]">
-        <DistributionPanel source={source} model={model} />
+        <DistributionPanel source={source} model={model} topics={topicRows} onSelect={(topic) => update("topic", String(topic))} />
         <TopicIndexTable topics={topics.data?.topics ?? []} onSelect={(topic) => update("topic", String(topic))} />
       </div>
     </div>

@@ -24,3 +24,52 @@ html, body, #root { min-height: 100%; }
 body { margin: 0; letter-spacing: 0; }
 .corpus-text { font-family: "Noto Sans Arabic", var(--n-font-sans); line-height: 1.8; }
 .plot-container, .js-plotly-plot { width: 100% !important; }
+
+.kdx-glass-nav {
+  background: color-mix(in srgb, var(--n-surface) 72%, transparent);
+  backdrop-filter: blur(18px) saturate(145%);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+}
+
+.kdx-nav-wobble {
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  width: 48px;
+  height: 48px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 90ms cubic-bezier(.2, .8, .2, 1);
+  will-change: transform;
+}
+
+.kdx-nav-wobble[data-visible="true"] { opacity: .94; }
+
+.kdx-nav-wobble > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 1px solid color-mix(in srgb, var(--n-primary-action) 40%, transparent);
+  background:
+    radial-gradient(circle at 28% 28%, color-mix(in srgb, var(--n-info) 78%, transparent), transparent 48%),
+    radial-gradient(circle at 72% 68%, color-mix(in srgb, var(--n-warning) 70%, transparent), transparent 50%),
+    color-mix(in srgb, var(--n-primary-action) 24%, transparent);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--n-primary-action) 34%, transparent);
+  filter: saturate(1.3);
+  animation: kdx-wobble 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes kdx-wobble {
+  0% { border-radius: 58% 42% 48% 52% / 42% 54% 46% 58%; transform: rotate(-8deg) scale(.9); }
+  55% { border-radius: 43% 57% 61% 39% / 55% 42% 58% 45%; transform: rotate(8deg) scale(1.05); }
+  100% { border-radius: 61% 39% 44% 56% / 39% 61% 43% 57%; transform: rotate(-3deg) scale(.96); }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .kdx-glass-nav,
+  .kdx-glass-nav * { cursor: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kdx-nav-wobble { display: none; }
+}

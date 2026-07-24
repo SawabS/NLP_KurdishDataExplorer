@@ -1,9 +1,9 @@
 # Kurdish Data Explorer — single-container deploy (FastAPI serves the built
 # React SPA + API from one process). Built for a short-lived Fly.io deployment:
-# the existing artifacts/ (fitted corpora, embedding cache, local model
-# weights) are baked into the image rather than provisioned on a volume, so a
-# single `fly deploy` reproduces the current local dev state with no extra
-# setup steps.
+# the deploy-approved fitted corpus is baked into the image rather than
+# provisioned on a volume. .dockerignore is the deployment allow-list: local
+# corpora, uploads, embedding caches, and model weights stay on disk but never
+# enter the Fly build context.
 
 # ---- stage 1: build the React SPA -----------------------------------------
 FROM node:20-slim AS web-build
@@ -39,9 +39,9 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu \
     && pip install --no-cache-dir -r requirements.txt
 
-# Baked-in artifacts (fitted runs, embedding cache, local model weights) — a
-# large, rarely-changing layer, copied before the frequently-edited source so
-# `docker build` cache reuse keeps later iterations fast.
+# Baked-in comparison runs. The build context contains only the completed
+# NVIDIA and OpenAI fits of corpus_unreviewed plus their exact semantic-search
+# caches (enforced by .dockerignore).
 COPY artifacts artifacts
 
 COPY src src

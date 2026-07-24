@@ -64,7 +64,7 @@ def rank(source: str, model: str, query: str, limit: int = 3) -> dict:
     return {"query": query, "best_topic_id": results[0]["topic_id"] if results else None, "results": results}
 
 
-@lru_cache(maxsize=4)
+@lru_cache(maxsize=1)
 def _document_vectors(source: str, model: str, mtime_ns: int) -> np.ndarray:
     del mtime_ns
     artifact = load(source, model)
