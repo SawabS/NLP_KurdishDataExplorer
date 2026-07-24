@@ -40,6 +40,8 @@ export interface Palette {
   colorForTopic: (topicId: number) => string;
   colorForCategory: (name: string) => string;
   outlier: string;
+  /** Readable text color to place ON a filled categorical tile (treemap/icicle). */
+  onFill: string;
   highlight: { active: string; dim: string };
   /** Theme-aware sequential ramp for heatmaps (canvas → info). */
   sequential: Array<[number, string]>;
@@ -81,6 +83,9 @@ export function usePalette(): Palette {
       colorForTopic: (topicId: number) => topicId < 0 ? outlier : categorical[topicId % categorical.length],
       colorForCategory: (name: string) => categorical[hashString(name) % categorical.length],
       outlier,
+      // Light tiles use the mid-dark Okabe–Ito ramp → white text; dark tiles use
+      // the lightened ramp → near-black text. Both clear AA on the ramp colors.
+      onFill: dark ? "#15181f" : "#ffffff",
       highlight: {
         active: cssToken("--n-warning", dark ? "#f0b95c" : "#b45309"),
         dim: cssToken("--n-border-strong", dark ? "#424242" : "#cbd5e1"),

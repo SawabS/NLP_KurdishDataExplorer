@@ -67,6 +67,18 @@ export function useDeleteAnnotation(s: string, m: string) {
   });
 }
 
+/** Permanently delete a corpus (all its runs + embeddings + uploaded file). */
+export function useDeleteSource() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (source: string) => api.deleteSource(source),
+    onSuccess: () => {
+      client.clear(); // every artifact-derived cache referenced the deleted corpus
+      void client.invalidateQueries({queryKey: ["sources"]});
+    },
+  });
+}
+
 export function useJob(id?: string) {
   return useQuery({
     queryKey: ["job", id], queryFn: ({signal}) => api.job(id!, signal), enabled: Boolean(id),

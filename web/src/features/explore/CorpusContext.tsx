@@ -1,8 +1,9 @@
 import { Database } from "lucide-react";
-import { Badge, DataList, FormField, Select, Typography } from "noor-ui";
+import { Badge, DataList, FormField, Select, Separator, Typography } from "noor-ui";
 import type { RunMeta, SourceSummary } from "../../api/types";
 import { useLocale } from "../../lib/i18n";
 import { compactSourceLabel } from "../../lib/labels";
+import { DeleteCorpusDialog } from "./DeleteCorpusDialog";
 
 interface Props {
   source: string;
@@ -12,11 +13,12 @@ interface Props {
   run?: RunMeta;
   onSourceChange: (value: string) => void;
   onCategoryChange: (value: string) => void;
+  onDeleted: () => void;
 }
 
 /** Left rail: what corpus am I looking at, and how do I slice it. The embedding
  *  model is deliberately not shown — the app is about the data, not the backend. */
-export function CorpusContext({source, category, sourceInfo, sources, run, onSourceChange, onCategoryChange}: Props) {
+export function CorpusContext({source, category, sourceInfo, sources, run, onSourceChange, onCategoryChange, onDeleted}: Props) {
   const { t } = useLocale();
   return (
     <div className="p-5">
@@ -39,6 +41,11 @@ export function CorpusContext({source, category, sourceInfo, sources, run, onSou
             {label: t("categories"), value: sourceInfo.has_labels ? <Badge variant="info">{sourceInfo.categories.length}</Badge> : <span className="text-text-muted">—</span>},
           ]}
         />
+      </div>
+      <Separator className="my-6" />
+      <div>
+        <p className="mb-2 text-caption uppercase tracking-wide text-text-muted">Manage</p>
+        <DeleteCorpusDialog source={source} title={sourceInfo.title} onDeleted={onDeleted} />
       </div>
     </div>
   );

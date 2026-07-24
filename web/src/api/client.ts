@@ -32,6 +32,7 @@ export function documentsQueryString(query: DocumentsQuery): string {
  *  source/model/tab mid-flight cancels the request instead of racing the cache. */
 export const api = {
   sources: (signal?: AbortSignal) => request<SourceSummary[]>("/sources", {signal}),
+  deleteSource: (source: string) => request<{source: string; removed_runs: string[]; removed_uploads: string[]}>(`/sources/${encodeURIComponent(source)}`, {method: "DELETE"}),
   models: (signal?: AbortSignal) => request<ModelRegistry>("/models", {signal}),
   run: (source: string, model: string, signal?: AbortSignal) => request<RunMeta>(run(source, model), {signal}),
   tree: (source: string, model: string, signal?: AbortSignal) => request<TreeData>(`${run(source, model)}/tree`, {signal}),

@@ -84,6 +84,18 @@ def test_estimate_uses_fitted_reference_for_unfitted_model(fake_artifacts):
     assert estimate == {"n_docs": 8, "model": "nvidia"}
 
 
+def test_delete_source_removes_run_and_is_404_after(fake_artifacts):
+    run_dir = fake_artifacts / "demo__minilm"
+    assert run_dir.is_dir()
+    result = sources.delete_source("demo")
+    assert result["removed_runs"] == ["demo__minilm"]
+    assert not run_dir.exists()
+    assert sources.list_sources() == []
+    with pytest.raises(HTTPException) as exc:
+        sources.delete_source("demo")
+    assert exc.value.status_code == 404
+
+
 def test_high_cardinality_labels_are_not_source_categories(fake_artifacts):
     from kurdish_explorer import config
     import pandas as pd

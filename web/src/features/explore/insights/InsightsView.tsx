@@ -7,7 +7,7 @@ import type { RunMeta, SourceSummary } from "../../../api/types";
 import { Plot } from "../../../charts/Plot";
 import { usePalette } from "../../../charts/palette";
 import { useLocale } from "../../../lib/i18n";
-import { topicName } from "../../../lib/labels";
+import { topicDisplayName, topicName } from "../../../lib/labels";
 
 interface Props {source: string; model: string; sourceInfo: SourceSummary; run: RunMeta}
 
@@ -94,25 +94,19 @@ export function InsightsView({source, model, sourceInfo, run}: Props) {
   const largestShare = largest && run.n_docs > 0 ? Math.round((largest.count / run.n_docs) * 100) : 0;
   const avgPerTopic = rows.length ? Math.round(clustered / rows.length) : 0;
 
-  // Share-based Pareto: bars and the cumulative line share ONE % axis (no
-  // dual-scale). Bars = each topic's share of the corpus; the line is the
-  // running total, so its plateau IS the clustered coverage.
-  const pareto = useMemo(() => {
-    const top = rows.slice(0, 24);
-    let running = 0;
-    const share = top.map((row) => (run.n_docs > 0 ? (row.count / run.n_docs) * 100 : 0));
-    const cumulative = share.map((value) => (running += value));
+  // Biggest themes, by their real names — a horizontal bar reads long Kurdish /
+  // Arabic labels far better than an x-axis of #ids, and answers "what dominates
+  // this corpus" at a glance. Reversed so the largest sits at the top.
+  const topTopics = useMemo(() => {
+    const top = rows.slice(0, 12).reverse();
     return {
-      // Fixed numeric x-positions keep both traces aligned; Plotly can reorder a
-      // shared *categorical* axis, which would scramble the cumulative line.
-      x: top.map((_, index) => index),
-      labels: top.map((row) => `#${row.topic}`),
       names: top.map((row) => topicName(row)),
       counts: top.map((row) => row.count),
-      share,
-      cumulative,
+      keywords: top.map((row) => topicDisplayName(row.name)),
+      colors: top.map((row) => palette.colorForTopic(row.topic)),
+      shares: top.map((row) => (run.n_docs > 0 ? (row.count / run.n_docs) * 100 : 0)),
     };
-  }, [rows, run.n_docs]);
+  }, [rows, run.n_docs, palette]);
 
   // Category balance (labeled corpora only): sum the topic×category matrix down
   // to documents per category — the class distribution a modeller checks first.
@@ -155,35 +149,21 @@ export function InsightsView({source, model, sourceInfo, run}: Props) {
         <div className="rounded-xl bg-surface p-3 shadow-sm">
           {topics.isLoading ? <Skeleton className="h-[440px] w-full" /> : !rows.length ? null : (
             <Plot
-              data={[
-                {
-                  type: "bar",
-                  name: `${t("topics")} · %`,
-                  x: pareto.x,
-                  y: pareto.share,
-                  customdata: pareto.names.map((name, index) => [name, pareto.counts[index], pareto.labels[index]]),
-                  marker: {color: palette.kind.bertopic},
-                  hovertemplate: "<b>%{customdata[2]} · %{customdata[0]}</b><br>%{y:.1f}% · %{customdata[1]:,} docs<extra></extra>",
-                } as Data,
-                {
-                  type: "scatter",
-                  mode: "lines+markers",
-                  name: t("cumulativeCoverage"),
-                  x: pareto.x,
-                  y: pareto.cumulative,
-                  customdata: pareto.labels,
-                  line: {color: palette.categorical[1], width: 2},
-                  marker: {size: 6, color: palette.categorical[1]},
-                  hovertemplate: "%{customdata}<br>" + t("cumulativeCoverage") + " %{y:.0f}%<extra></extra>",
-                } as Data,
-              ]}
+              data={[{
+                type: "bar",
+                orientation: "h",
+                x: topTopics.counts,
+                y: topTopics.names,
+                customdata: topTopics.names.map((_, index) => [topTopics.keywords[index], topTopics.shares[index]]),
+                marker: {color: topTopics.colors},
+                hovertemplate: "<b>%{y}</b><br>%{x:,} documents · %{customdata[1]:.1f}%<br><i>%{customdata[0]}</i><extra></extra>",
+              } as Data]}
               layout={{
-                height: 440,
-                margin: {l: 48, r: 16, t: 10, b: 52},
-                yaxis: {title: {text: "% of corpus"}, ticksuffix: "%", rangemode: "tozero"},
-                xaxis: {title: {text: t("topics")}, tickmode: "array", tickvals: pareto.x, ticktext: pareto.labels, tickangle: 0, tickfont: {size: 10}},
-                legend: {orientation: "h", y: 1.12, x: 0},
-                bargap: 0.25,
+                height: Math.max(280, topTopics.names.length * 34),
+                margin: {l: 12, r: 24, t: 8, b: 40},
+                xaxis: {title: {text: t("documents")}, rangemode: "tozero"},
+                yaxis: {automargin: true, ticksuffix: "  ", tickfont: {size: 12}},
+                bargap: 0.35,
               }}
             />
           )}

@@ -64,6 +64,7 @@ export function ExplorePage() {
         value === "(all)" ? next.delete("category") : next.set("category", value);
         setParams(next);
       }}
+      onDeleted={() => navigate("/")}
     />
   );
 
