@@ -347,9 +347,13 @@ FastAPI/React is now the only runtime UI and deployment path.
 
 ### Current interaction and loading design (2026-07-24)
 
-- The fixed app bar is a translucent, backdrop-blurred theme surface. On precise
-  pointing devices, a theme-colored gradient wobble follows the pointer within
-  the bar; touch devices and reduced-motion users keep the native behavior.
+- The fixed app bar is a lightly translucent theme surface (44% surface color,
+  5 px backdrop blur) with no bottom divider or shadow. Language and theme
+  controls occupy the physical top-right in both LTR and RTL layouts.
+- On precise pointing devices, a compact 34 px theme-colored wobble follows the
+  pointer across the entire application. A contrasting 4 px center marks the
+  exact click target and expands on press. Touch devices and reduced-motion
+  users keep the native cursor.
 - Ask shows staged retrieval and generation feedback plus answer/citation
   skeletons. The former full-width green progress line was removed because it
   implied measurable completion where the backend only exposes an indeterminate
@@ -467,3 +471,7 @@ npm run build -w web
   `corpus-unreviewed` runs; bounded RAG's document-vector cache to one matrix;
   redesigned Ask loading, Corpus distribution, scrolling, and the translucent
   theme-aware app bar.
+- 2026-07-24: Extended the theme-aware pointer wobble from the app bar to the
+  full application, reduced it to 34 px with a precise click center, moved
+  language/theme controls to the physical top-right, and reduced the app bar to
+  44% surface opacity with 5 px blur and no divider.

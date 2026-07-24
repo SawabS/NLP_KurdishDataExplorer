@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { ChartNoAxesCombined, Database, FolderUp, GitBranch, Home, Languages, Map, PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CommandPalette, IconButton, Sidebar, SidebarItem, Spinner, Tooltip, Typography, type CommandPaletteGroup } from "noor-ui";
@@ -7,7 +7,7 @@ import { useSources, useTopics } from "../api/hooks";
 import { useJobs } from "../app/JobsProvider";
 import { useLocale } from "../lib/i18n";
 import { compactSourceLabel, topicName } from "../lib/labels";
-import { NavWobble } from "./NavWobble";
+import { SiteWobble } from "./SiteWobble";
 import { ThemeMenu } from "./ThemeMenu";
 import { useWorkspacePanel } from "./WorkspacePanel";
 
@@ -20,7 +20,6 @@ export function AppShell({children}: {children: ReactNode}) {
   const sources = useSources();
   const panel = useWorkspacePanel();
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const appBarRef = useRef<HTMLElement>(null);
 
   const exploreMatch = location.pathname.match(/^\/explore\/([^/]+)\/([^/]+)\/([^/]+)/);
   const currentSource = exploreMatch ? decodeURIComponent(exploreMatch[1]) : "";
@@ -88,7 +87,7 @@ export function AppShell({children}: {children: ReactNode}) {
   }, [exploreMatch, locale, location.pathname, navigate, resolvedTheme, setLocale, setTheme, sources.data, t, topics.data]);
 
   const localeToggle = (
-    <Tooltip content={`${t("language")} · ${locale === "en" ? "کوردی" : "English"}`} side="right">
+    <Tooltip content={`${t("language")} · ${locale === "en" ? "کوردی" : "English"}`} side="bottom">
       <IconButton
         aria-label={t("language")}
         variant="ghost"
@@ -102,6 +101,7 @@ export function AppShell({children}: {children: ReactNode}) {
 
   return (
     <div className="flex h-dvh overflow-hidden bg-canvas text-text-primary">
+      <SiteWobble />
       <CommandPalette items={paletteGroups} open={paletteOpen} onOpenChange={setPaletteOpen} enableShortcut placeholder={t("commandPlaceholder")} />
 
       {/* Fixed-width icon rail — its width never changes, so content stays put. */}
@@ -145,8 +145,6 @@ export function AppShell({children}: {children: ReactNode}) {
                 </button>
               </Tooltip>
             )}
-            {localeToggle}
-            <ThemeMenu />
           </div>
         }
       >
@@ -156,13 +154,12 @@ export function AppShell({children}: {children: ReactNode}) {
       </Sidebar>
 
       <div className="relative flex min-w-0 flex-1 flex-col pb-16 md:pb-0">
-        <header ref={appBarRef} className="kdx-glass-nav absolute inset-x-0 top-0 z-sticky flex h-14 items-center justify-between gap-3 border-b border-border/70 px-4 shadow-sm md:px-6">
-          <NavWobble targetRef={appBarRef} />
-          <div className="relative z-10 flex min-w-0 items-baseline gap-3">
+        <header dir="ltr" className="kdx-glass-nav absolute inset-x-0 top-0 z-sticky flex h-14 items-center justify-between gap-3 px-4 md:px-6">
+          <div dir={locale === "ckb" ? "rtl" : "ltr"} className="flex min-w-0 items-baseline gap-3">
             <Typography variant="label">{t("appName")}</Typography>
             <span className="hidden text-caption text-text-muted sm:inline">{t("appTagline")}</span>
           </div>
-          <div className="relative z-10 flex items-center gap-2">
+          <div dir="ltr" className="flex shrink-0 items-center gap-1">
             {active.length > 0 && (
               <button
                 type="button"
@@ -173,7 +170,8 @@ export function AppShell({children}: {children: ReactNode}) {
                 <span aria-live="polite">{t("activeFit")} · {Math.round((active[0].fraction ?? 0) * 100)}%</span>
               </button>
             )}
-            <div className="flex items-center gap-1 md:hidden">{localeToggle}<ThemeMenu /></div>
+            {localeToggle}
+            <ThemeMenu />
           </div>
         </header>
         <main className="min-h-0 flex-1 overflow-y-auto pt-14">{children}</main>
