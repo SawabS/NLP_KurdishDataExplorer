@@ -45,7 +45,7 @@ export function ThemeMenu() {
 
   return (
     <DropdownMenu
-      side="right"
+      side="bottom"
       align="end"
       trigger={
         <IconButton aria-label={t("theme")} title={t("theme")} variant="ghost" size="sm">

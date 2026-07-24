@@ -477,3 +477,16 @@ centroids instead of actually answering the question.
   [[Project Presentation Overview]] so the literature-grounded rationale and
   presentation narrative match the active provider registry, five workspaces,
   current KDX role, and controlled Fly demo.
+
+## [2026-07-24] refine | Site-wide pointer wobble and lighter app bar
+
+- Replaced the navbar-scoped pointer effect with a site-wide, theme-aware 34 px
+  wobble for fine-pointer devices. Added a contrasting 4 px center and press
+  response so the exact click target remains visible.
+- Moved language and theme controls from the desktop sidebar footer into the
+  physical top-right app bar; verified their placement in English, Sorani RTL,
+  and the 390 px mobile layout.
+- Removed the app bar's bottom divider and shadow, reduced its surface mixture
+  to 44%, and reduced backdrop blur from 18 px to 5 px.
+- Preserved native cursor behavior for touch, coarse-pointer, and
+  reduced-motion users.
