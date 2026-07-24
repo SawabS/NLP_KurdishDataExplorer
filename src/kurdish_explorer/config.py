@@ -37,12 +37,12 @@ KNDH_CATEGORIES = ["economic", "health", "science & technology", "social", "spor
 # ---------------------------------------------------------------------------
 # Embedding model registry
 # ---------------------------------------------------------------------------
-# The project presents ONE model: KDX MiniLM — multilingual MiniLM domain-
-# adapted to Sorani with TSDAE (scripts/finetune_tsdae.py, trained on KNDH
-# headlines + AsoSoft sentences). The off-the-shelf base MiniLM stays
-# registered only as the evaluation comparison point. Earlier experiments
-# (DistilUSE, MPNet, E5-base) scored worse on NPMI coherence and were
-# unregistered; their artifacts remain on disk but are not shown in the app.
+# The registry supports hosted OpenAI/NVIDIA comparison runs plus two local
+# research options. KDX MiniLM is multilingual MiniLM domain-adapted to Sorani
+# with TSDAE (scripts/finetune_tsdae.py, trained on KNDH headlines + AsoSoft
+# sentences); base MiniLM is its offline comparison and keyless fallback when
+# the trained KDX directory is absent. Earlier DistilUSE/MPNet/E5 experiments
+# scored worse on NPMI coherence and were unregistered.
 EMBEDDING_MODELS: dict[str, str] = {
     # Domain-adapted (TSDAE) MiniLM — produced by scripts/finetune_tsdae.py.
     "kdx-minilm-tsdae": str(ARTIFACTS_DIR / "models" / "kdx-minilm-tsdae"),
@@ -60,6 +60,53 @@ EMBEDDING_MODEL_LABELS: dict[str, str] = {
     "openai": f"OpenAI · {EMBEDDING_MODELS['openai']}",
     "nvidia": f"NVIDIA · {EMBEDDING_MODELS['nvidia']} (concurrent, max speed)",
 }
+
+
+# Models offered for NEW fits / uploads. The local models above remain loadable
+# for existing research artifacts, while new demo fits focus on the two hosted
+# providers used by the side-by-side corpus comparison.
+NEW_FIT_MODELS: tuple[str, ...] = ("openai", "nvidia")
+
+# When a corpus has several fitted runs on disk, use this order for its default
+# route and model selector. Every fitted registered model remains available.
+MODEL_PREFERENCE: tuple[str, ...] = (
+    "openai", "nvidia", "kdx-minilm-tsdae", "minilm", "mpnet", "distiluse", "e5-base",
+)
+
+
+def best_available_model(fitted: list[str]) -> str:
+    """Pick a source's default route while leaving all fitted runs selectable."""
+    for key in MODEL_PREFERENCE:
+        if key in fitted:
+            return key
+    return fitted[0]
+
+
+# ---------------------------------------------------------------------------
+# Chat/completion model registry (topic labeling + RAG answers)
+# ---------------------------------------------------------------------------
+# Separate from the embedding registry above: this powers LLM generation
+# (human-readable topic labels, RAG answer synthesis), not vector embedding.
+# NVIDIA_CHAT_API_KEY/NVIDIA_CHAT_MODEL let the chat model use a different NIM
+# deployment (and key) than the embedding provider; both fall back to the
+# embedding provider's NVIDIA_API_KEY when unset.
+CHAT_MODELS: dict[str, str] = {
+    "ollama": os.getenv("OLLAMA_CHAT_MODEL", "qwen2.5:7b-instruct"),
+    "openai": os.getenv("OPENAI_CHAT_MODEL", "gpt-4o-mini"),
+    "nvidia": os.getenv("NVIDIA_CHAT_MODEL", "meta/llama-3.1-8b-instruct"),
+}
+
+
+def default_chat_provider() -> str:
+    """``KDX_CHAT_PROVIDER`` (ollama | openai | nvidia) always wins; defaults to ollama."""
+    requested = os.getenv("KDX_CHAT_PROVIDER", "").strip().lower()
+    if requested:
+        if requested not in CHAT_MODELS:
+            raise ValueError(
+                f"KDX_CHAT_PROVIDER must be one of {', '.join(CHAT_MODELS)}; received {requested!r}."
+            )
+        return requested
+    return "ollama"
 
 
 def default_model_key() -> str:
@@ -115,7 +162,11 @@ MODEL_FIT_OVERRIDES: dict[str, dict] = {
 }
 
 # Token pattern keeps Unicode word characters (works for Arabic-script Kurdish).
-TOKEN_PATTERN = r"(?u)\b\w\w+\b"
+# Minimum 3 word-characters: 1-2 letter tokens are almost always grammatical
+# particles/enclitics (Kurdish "کو", "دا", "بو", "ده", ...; also short function
+# words in other scripts), never a meaningful topic-defining term, and neither
+# KLPT's Sorani nor Kurmanji stopword lists cover every dialect's short forms.
+TOKEN_PATTERN = r"(?u)\b\w{3,}\b"
 
 # BERTopic c-TF-IDF runs its vectorizer over *grouped per-topic* documents (one
 # concatenated doc per topic), so min_df must stay tiny and max_df off — otherwise

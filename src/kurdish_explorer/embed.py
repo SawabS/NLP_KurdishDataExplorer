@@ -31,7 +31,10 @@ class OpenAIEmbedder:
 
         self.model = model
         # Handle retries here so token-budget reservations include every retry.
-        self.client = OpenAI(max_retries=0)
+        # Keep individual requests bounded; this adapter owns retries so the
+        # token limiter can account for every attempt.
+        timeout = max(1.0, float(os.getenv("OPENAI_EMBEDDING_TIMEOUT", "120")))
+        self.client = OpenAI(max_retries=0, timeout=timeout)
         try:
             self.encoding = tiktoken.encoding_for_model(model)
         except KeyError:
@@ -130,7 +133,7 @@ class OpenAIEmbedder:
         token_count: int,
         limiter: "_TokenRateLimiter",
     ):
-        from openai import RateLimitError
+        from openai import APIConnectionError, APIStatusError
 
         delay = 1.0
         max_retries = getattr(self, "max_retries", 6)
@@ -145,8 +148,12 @@ class OpenAIEmbedder:
                 if api_limit:
                     limiter.update_limit(max(1, int(float(api_limit) * 0.9)))
                 return raw_response.parse()
-            except RateLimitError as exc:
-                if attempt == max_retries:
+            except (APIConnectionError, APIStatusError) as exc:
+                status_code = getattr(exc, "status_code", None)
+                retryable = isinstance(exc, APIConnectionError) or (
+                    status_code == 429 or (status_code is not None and status_code >= 500)
+                )
+                if attempt == max_retries or not retryable:
                     raise
                 wait_seconds = self._retry_delay(
                     exc, min(60.0, delay * (1.0 + random.random()))

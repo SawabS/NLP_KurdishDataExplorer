@@ -23,7 +23,7 @@ from kurdish_explorer import config, pipeline  # noqa: E402
 def main() -> None:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--source", default="kndh", choices=["kndh", "asosoft"])
-    p.add_argument("--model", default=config.DEFAULT_EMBEDDING_MODEL, choices=list(config.EMBEDDING_MODELS),
+    p.add_argument("--model", default=config.default_model_key(), choices=list(config.EMBEDDING_MODELS),
                    help="embedding model to fit; ignored when --all-models is set")
     p.add_argument("--all-models", action="store_true",
                    help="fit every configured embedding model for the selected source")

@@ -5,6 +5,9 @@ __pycache__/
 .ipynb_checkpoints/
 .venv/
 .env
+node_modules/
+web/dist/
+/raw/sources/noor-ui/
 
 # Datasets and generated artifacts (large / reproducible — not committed)
 data/raw/

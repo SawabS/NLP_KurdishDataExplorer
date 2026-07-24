@@ -2,7 +2,7 @@
 title: "Project Presentation Overview"
 type: synthesis
 created: 2026-07-04
-updated: 2026-07-11
+updated: 2026-07-24
 status: stable
 tags: [presentation, overview, narrative, bertopic, kurdish, sorani, podcast-source]
 sources: ["raw/sources/KLPT – Kurdish Language Processing Toolkit.pdf", "raw/sources/Kurdish News Dataset Headlines (KNDH) through multiclass classification.pdf", "raw/sources/Toward Kurdish language processing: Experiments in collecting and processing the AsoSoft text corpus.pdf", "raw/sources/THE KURDISH LANGUAGE CORPUS: STATE OF THE ART.pdf", "raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf", "raw/sources/Idiom Detection in Sorani Kurdish Texts.pdf", "raw/sources/A Transformer-based Neural Network Machine Translation Model for the Kurdish Sorani Dialect.pdf", "raw/sources/Morphological Feature Extraction for Fine-Grained Sorani Kurdish Dialect.pdf"]
@@ -40,7 +40,7 @@ Build an interactive topic-modeling explorer for Sorani Kurdish text that:
 2. Uses transformer-based topic modeling ([[BERTopic]]) as the primary method,
    compared honestly against classical baselines (LDA, NMF) rather than assumed
    superior.
-3. Ships as a live, explorable Streamlit app — not a static report — so a user
+3. Ships as a live FastAPI + React application — not a static report — so a user
    can drill from broad topic clusters down to individual example documents.
 4. Generalizes beyond Kurdish: the long-term architecture goal is a **language-
    and source-agnostic, size-unbounded text-exploration engine**, with Kurdish/KNDH
@@ -120,7 +120,7 @@ Concretely (config in `src/kurdish_explorer/config.py`, code in
    topic diversity (fraction of unique words across topic keyword lists), and NMI
    against the 5 KNDH ground-truth categories (only possible because KNDH is
    labelled).
-7. **Serve.** A Streamlit app reads precomputed artifacts per run
+7. **Serve.** FastAPI reads precomputed artifacts per run and serves a React SPA
    (`artifacts/<source>__<model>/`) — it never re-fits a model on page load, so it
    stays responsive even though fitting itself is expensive.
 
@@ -188,37 +188,47 @@ the embedder away from the project's generic, size-unbounded goal.
 | KDX anisotropy-aware fit (leaf, UMAP n=50, mcs=100) | 46 | **6%** | **+0.057** | 0.737 | 0.212 |
 
 This is a genuine trade-off, not a clean win, and the project records it as such.
-The important July 2026 correction is that the KDX embedding space is highly
+An important July 2026 correction is that the KDX embedding space is highly
 anisotropic: random KNDH documents have mean cosine similarity around 0.951, so
 the default HDBSCAN EOM fit created a 27k-document junk topic. A wider UMAP
 neighborhood plus HDBSCAN leaf selection fixes that KDX-specific failure (largest
-topic 54% → 6%; NPMI +0.038 → +0.057). KDX now gives the best shipped BERTopic
+topic 54% → 6%; NPMI +0.038 → +0.057). KDX gives the best local KNDH BERTopic
 coherence, while base MiniLM remains slightly stronger on category alignment and
-keyword diversity. The app presents KDX as the single production embedder, with
-base MiniLM retained only as the evaluation comparison bar.
+keyword diversity. KDX is now a registered local fallback and research model;
+the current interactive demo compares completed OpenAI and NVIDIA fits over the
+same 100,000-document sample.
 
 ## 7. The application
 
-`app/streamlit_app.py` is a Streamlit app that reads precomputed artifacts only —
-it never re-fits a model at load time, so it stays responsive. Two modes:
+`server/kdx_server/` and `web/` provide the sole FastAPI + React application.
+Ordinary exploration reads precomputed artifacts and never re-fits at page load.
+Two modes:
 
-- **Explore a source** — pick a corpus (KNDH, AsoSoft, or a prior upload), then an
-  embedding model, and browse a drill-down **topic hierarchy** (BERTopic's
-  `hierarchical_topics`, rendered as an icicle/treemap/sunburst — start broad,
-  click to reveal sub-topics), a sampled **2D document map**, and a
-  **topic × category** comparison against LDA/NMF baselines.
+- **Explore a source** — pick a corpus and one of its completed embedding runs,
+  then use **Structure**, **Map**, **Documents**, **Ask**, and **Insights**.
+  Structure contains the drill-down BERTopic hierarchy and ranked topic
+  distribution; Map samples the 2D document projection; Documents supports
+  review; Ask retrieves document vectors and generates a cited answer; Insights
+  reports run provenance and distribution metrics.
 - **Upload & explore** — a user supplies their own `.txt`, or a tabular file
-  (CSV/TSV/Excel/Parquet) with a chosen text column, and the same pipeline runs on
-  it, becoming a new selectable source. This is the generic-engine proof of
-  concept: server-path input bypasses the browser upload cap, files are streamed
-  rather than loaded twice, and a schema-peek step avoids reading whole tables
-  before the user picks columns.
+  (CSV/TSV/Excel/Parquet), and the server derives an ingestion plan from a
+  bounded profile before the same pipeline runs. Files are streamed to disk,
+  table schemas are inspected before materialization, and fitting is serialized
+  in one background worker.
 
 Sources are never mixed unless explicitly requested — each run key is
 `<source>__<model>`, and every source shows a provenance banner (what it is, its
 size, whether it's labelled, where it came from). This "source isolation and
 transparency" principle was a deliberate UX decision, not an accident of the data
 layout.
+
+The short-lived Fly deployment is intentionally narrower than the complete local
+research workspace: only `corpus-unreviewed` is visible, with OpenAI
+`text-embedding-3-small` and NVIDIA `nemotron-3-embed-1b` runs over the same
+deterministic 100,000-document sample. NVIDIA produced 32 topics (NPMI 0.04915)
+and OpenAI produced 38 (NPMI 0.03742). The recorded full-fit times were 337.4
+seconds for a cache-reusing NVIDIA refit and 3,628.7 seconds for OpenAI; these are
+workflow measurements, not an embedding-only benchmark.
 
 ## 8. Honest limitations and open questions
 
@@ -245,8 +255,8 @@ Stated directly, for a presentation Q&A:
   UMAP is roughly O(n^1.5) and HDBSCAN is memory-heavy, so the plan
   (`docs/ARCHITECTURE.md`) is GPU-accelerated cuML, or incremental/online
   clustering (`BERTopic.partial_fit`), or sample-fit-then-assign, auto-selected by
-  corpus size. None of these are implemented yet — the current pipeline is proven
-  correct and well-tuned up to the ~50k-document scale of KNDH.
+  corpus size. None of these are implemented yet — the current demonstration
+  confirms a sampled 100,000-document workflow, not million-document scaling.
 
 ## 9. Conclusion
 
@@ -273,3 +283,6 @@ that acknowledges the current ceiling rather than glossing over it.
   presentation, to serve as the primary NotebookLM source document.
 - 2026-07-11: Refreshed the KDX section after the anisotropy diagnosis and leaf
   clustering fix; updated KNDH/AsoSoft result numbers and Large-corpus status.
+- 2026-07-24: Updated the narrative for the single FastAPI/React product, five
+  workspaces, current KDX role, and the controlled 100,000-document
+  OpenAI/NVIDIA Fly comparison.

@@ -2,7 +2,9 @@ import sys
 from pathlib import Path
 from types import SimpleNamespace
 
+import httpx
 import numpy as np
+from openai import APIConnectionError
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
@@ -129,6 +131,50 @@ def test_openai_embedder_splits_long_docs_and_respects_token_budget() -> None:
     assert all(len(item) <= 4 for batch in calls for item in batch)
     assert progress[-1] == (3, 3)
     np.testing.assert_allclose(vectors, [[3.0, 4.0], [3.0, 4.0]])
+
+
+def test_openai_embedder_retries_transient_connection_errors(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    attempts = 0
+
+    class FakeRawEmbeddings:
+        @property
+        def with_raw_response(self):
+            return self
+
+        def create(self, model: str, input: list[list[int]]):
+            nonlocal attempts
+            attempts += 1
+            if attempts == 1:
+                raise APIConnectionError(
+                    request=httpx.Request("POST", "https://api.openai.com/v1/embeddings")
+                )
+            parsed = SimpleNamespace(data=[SimpleNamespace(index=0, embedding=[1.0, 0.0])])
+            return SimpleNamespace(headers={}, parse=lambda: parsed)
+
+    class FakeLimiter:
+        def __init__(self) -> None:
+            self.waits = 0
+
+        def wait_for(self, tokens: int) -> None:
+            self.waits += 1
+
+        def update_limit(self, token_budget: int) -> None:
+            pass
+
+    monkeypatch.setattr("kurdish_explorer.embed.time.sleep", lambda _: None)
+    embedder = OpenAIEmbedder.__new__(OpenAIEmbedder)
+    embedder.model = "test-model"
+    embedder.client = SimpleNamespace(embeddings=FakeRawEmbeddings())
+    embedder.max_retries = 1
+    limiter = FakeLimiter()
+
+    response = embedder._request_with_backoff([[1]], 1, limiter)
+
+    assert response.data[0].embedding == [1.0, 0.0]
+    assert attempts == 2
+    assert limiter.waits == 2
 
 
 def test_nvidia_embedder_batches_orders_and_normalizes_responses() -> None:

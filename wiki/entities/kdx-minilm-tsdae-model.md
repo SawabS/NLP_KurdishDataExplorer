@@ -2,7 +2,7 @@
 title: "KDX-MiniLM-TSDAE (fine-tuned embedder)"
 type: entity
 created: 2026-06-26
-updated: 2026-07-17
+updated: 2026-07-24
 status: stable
 tags: [model, embedding, tsdae, fine-tuning, domain-adaptation, sorani, minilm]
 sources: ["raw/sources/Multilingual transformer and BERTopic for short text topic modeling: The case of Serbian.pdf"]
@@ -72,15 +72,13 @@ embedder. KDX remains the production model because it is the project-specific
 Sorani adaptation and gives the best shipped BERTopic coherence while avoiding the
 bad cluster collapse.
 
-Status in the app (since 2026-07-10, superseded 2026-07-15): **KDX-MiniLM-TSDAE
-is the default local embedder** and the fallback when no hosted API key is
-configured (`config.default_model_key()`). The explorer and upload engine now
-expose an explicit model dropdown (`EMBEDDING_MODELS`: `kdx-minilm-tsdae`,
-`minilm`, `openai`, `nvidia`) so any registered model can be selected or fitted
-interactively; unfitted combinations are marked "fit required." Base MiniLM
-remains the comparison bar in the Model & evaluation tab; the category-alignment
-trade-off above is disclosed there. DistilUSE / MPNet / E5-base were
-unregistered from `config.EMBEDDING_MODELS` (all negative NPMI).
+Current status (2026-07-24): **KDX-MiniLM-TSDAE is the preferred local
+fallback** when no hosted key is configured and the trained model directory is
+present (`config.default_model_key()`). Existing KDX runs remain loadable, but
+new interactive fits deliberately offer only OpenAI and NVIDIA. A source's model
+selector lists its completed registered runs, so KDX appears only where a KDX
+artifact exists. Base MiniLM remains the unadapted offline comparison.
+DistilUSE, MPNet, and E5-base are unregistered (all negative NPMI).
 
 ## Connections
 
@@ -122,3 +120,6 @@ unregistered from `config.EMBEDDING_MODELS` (all negative NPMI).
   in-app fitting (OpenAI, then NVIDIA) alongside KDX; KDX remains the default
   local model rather than the app's only model. See
   [[Implementation and Methodology]].
+- 2026-07-24: Clarified the final product role: KDX remains a registered local
+  fallback and research artifact, while new interactive fits and the current
+  Fly comparison focus on OpenAI and NVIDIA.

@@ -1,0 +1,43 @@
+# Never ship secrets in the image — Fly secrets are injected as env vars.
+.env
+.env.*
+
+.git
+node_modules
+web/node_modules
+web/dist
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+
+# Editor / tooling noise, not needed at runtime
+.claude
+.codex
+.obsidian
+.vscode
+graphify-out
+checkpoints
+
+# Docs/tests aren't needed to run the app — trims the build context
+wiki
+docs
+tests
+reports
+
+# Fly demo allow-list: keep every generated artifact locally, but send only the
+# completed NVIDIA and OpenAI fits of corpus_unreviewed in the Docker build
+# context. Every unrelated corpus and embedding cache remains excluded.
+artifacts/**
+!artifacts/corpus-unreviewed__openai/
+!artifacts/corpus-unreviewed__openai/**
+!artifacts/corpus-unreviewed__nvidia/
+!artifacts/corpus-unreviewed__nvidia/**
+!artifacts/embeddings/
+artifacts/embeddings/**
+!artifacts/embeddings/openai_596f760f62c82cf9.npy
+!artifacts/embeddings/nvidia_6aaced7846221f39.npy
+
+# The Dockerfile never copies the source datasets.
+data

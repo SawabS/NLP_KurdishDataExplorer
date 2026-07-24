@@ -25,7 +25,7 @@ the synthesis page for how the sources fit together.
 - [BERTopic](entities/bertopic.md) — transformer-based topic modeling method (primary modeling tool).
 - [KuBERT](entities/kubert.md) — Kurdish BERT variant.
 - [Soran Badawi](entities/soran-badawi.md) — author of KNDH and the Sorani NMT model.
-- [KDX-MiniLM-TSDAE (fine-tuned embedder)](entities/kdx-minilm-tsdae-model.md) — our domain-adapted Kurdish embedder with anisotropy-aware leaf clustering; the default local model, selectable alongside base MiniLM and hosted OpenAI/NVIDIA embeddings.
+- [KDX-MiniLM-TSDAE (fine-tuned embedder)](entities/kdx-minilm-tsdae-model.md) — domain-adapted Kurdish embedder with anisotropy-aware clustering; retained as a local fallback and for existing research runs while new interactive fits focus on OpenAI/NVIDIA.
 
 ## Concepts
 
@@ -43,6 +43,7 @@ No question pages yet.
 
 ## Synthesis
 
-- [Kurdish Data Explorer Pipeline](synthesis/kurdish-data-explorer-pipeline.md) — how the eight sources ground each stage of the project pipeline.
-- [Implementation and Methodology](synthesis/implementation-and-methodology.md) — transparent as-built record: data provenance, BERTopic tuning, interactive fitting, rate-safe OpenAI and max-throughput NVIDIA embeddings, app behavior, reproducibility.
-- [Project Presentation Overview](synthesis/project-presentation-overview.md) — single linear narrative (problem → literature → methodology → results → limitations → conclusion), refreshed with the KDX clustering diagnosis for presentations/podcast generation.
+- [Application Architecture and Operation](synthesis/application-architecture-and-operation.md) — current React/FastAPI topology, local commands, model routing, controlled Fly deployment, memory constraints, and troubleshooting.
+- [Kurdish Data Explorer Pipeline](synthesis/kurdish-data-explorer-pipeline.md) — how eight research sources ground the active BERTopic pipeline, four-model registry, and deployed provider comparison.
+- [Implementation and Methodology](synthesis/implementation-and-methodology.md) — transparent as-built record: data provenance, BERTopic tuning, OpenAI/NVIDIA comparison, LLM topic labeling, RAG-based Ask, current FastAPI/React behavior, and reproducibility.
+- [Project Presentation Overview](synthesis/project-presentation-overview.md) — current linear narrative from research problem through the five-workspace application, 100k-document provider comparison, limitations, and conclusion.
